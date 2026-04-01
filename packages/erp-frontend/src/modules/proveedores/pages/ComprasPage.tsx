@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Search, Plus, Pencil } from 'lucide-react';
-import { Button, DataTable, ExportMenu, Modal } from '../../../core/components';
+import { Button, DataTable, ExportMenu } from '../../../core/components';
 import { InvoiceModal } from '../components/InvoiceModal';
 import { API_BASE_URL } from '../../../core/config/apiConfig';
 
@@ -181,7 +181,6 @@ export const ComprasPage = () => {
         onClose={() => setIsInvoiceModalOpen(false)} 
         onSave={handleSaveInvoice}
         initialData={selectedInvoice}
-        isStandalone={true}
       />
     </div>
   );
