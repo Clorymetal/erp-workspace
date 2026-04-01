@@ -10,7 +10,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Rutas Globales Base (Gateway)
 app.get('/health', (req: Request, res: Response) => {
-  res.status(200).json({ status: 'ok', message: 'ERP Core is running' });
+  res.status(200).json({ status: 'ok', message: 'ERP Core is running', version: '2.1.0-auth' });
 });
 
 // Módulos
