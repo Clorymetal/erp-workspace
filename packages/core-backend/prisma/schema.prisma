@@ -1,0 +1,275 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// MODULE: PROVEEDORES (Cuentas por Pagar)
+// ==========================================
+
+model Prov_Category {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  providers   Prov_Provider[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Prov_Provider {
+  id             String   @id @default(uuid())
+  businessName   String
+  taxId          String   @unique
+  address        String?
+  postalCode     String?
+  province       String?
+  taxCondition   String?
+  discountRate   Float    @default(0.0)
+  isCtaCte       Boolean  @default(true)
+  
+  categoryId     String?
+  category       Prov_Category? @relation(fields: [categoryId], references: [id])
+  
+  contacts       Prov_Contact[]
+  bankAccounts   Prov_BankAccount[]
+  invoices       Prov_Invoice[]
+  payments       Prov_Payment[]
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Prov_Contact {
+  id         String   @id @default(uuid())
+  name       String
+  phone      String?
+  email      String?
+  role       String?
+
+  providerId String
+  provider   Prov_Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Prov_BankAccount {
+  id            String   @id @default(uuid())
+  bankName      String
+  accountType   String
+  accountNumber String?
+  cbuCvu        String?
+  alias         String?
+
+  providerId    String
+  provider      Prov_Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+enum InvoiceType {
+  FACTURA_A
+  FACTURA_B
+  FACTURA_C
+  NOTA_CREDITO
+}
+
+enum InvoiceStatus {
+  PENDIENTE
+  PAGADA_PARCIAL
+  PAGADA
+  VENCIDA
+}
+
+model Prov_Invoice {
+  id             String   @id @default(uuid())
+  invoiceType    InvoiceType @default(FACTURA_A)
+  pointOfSale    String
+  invoiceNumber  String
+  
+  issueDate      DateTime
+  receptionDate  DateTime?
+  dueDate        DateTime?
+  
+  netAmount      Float
+  taxAmount      Float
+  perceptionAmount Float  @default(0.0)
+  nonTaxedAmount Float    @default(0.0)
+  totalAmount    Float
+  
+  isCtaCte       Boolean  @default(true)
+  status         InvoiceStatus @default(PENDIENTE)
+
+  providerId     String
+  provider       Prov_Provider @relation(fields: [providerId], references: [id], onDelete: Restrict)
+
+  paymentsItems  Prov_PaymentItem[]
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([providerId, pointOfSale, invoiceNumber])
+}
+
+enum PaymentMethod {
+  EFECTIVO
+  TRANSFERENCIA
+  CHEQUE
+}
+
+model Prov_Payment {
+  id              String   @id @default(uuid())
+  paymentDate     DateTime @default(now())
+  totalAmount     Float
+  paymentMethod   PaymentMethod
+  referenceNotes  String?
+  
+  providerId      String
+  provider        Prov_Provider @relation(fields: [providerId], references: [id], onDelete: Restrict)
+
+  invoicesPaid    Prov_PaymentItem[]
+  checks          Prov_Check[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// Tabla Pivot para relacionar Pagos con Facturas
+model Prov_PaymentItem {
+  id           String   @id @default(uuid())
+  amountPaid   Float
+
+  paymentId    String
+  payment      Prov_Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  invoiceId    String
+  invoice      Prov_Invoice @relation(fields: [invoiceId], references: [id], onDelete: Restrict)
+
+  createdAt    DateTime @default(now())
+}
+
+model Prov_Check {
+  id              String   @id @default(uuid())
+  checkNumber     String
+  bankName        String
+  issuerName      String
+  issueDate       DateTime
+  dueDate         DateTime
+  amount          Float
+
+  paymentId       String
+  payment         Prov_Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+// ==========================================
+// MODULE: CORE / NOTIFICACIONES
+// ==========================================
+
+model Core_Parameter {
+  id        String   @id @default(uuid())
+  category  String   // e.g., 'PROVINCIA', 'COMPROBANTE', 'COND_FISCAL'
+  key       String?  // e.g., 'CH', 'A', 'RI'
+  value     String   // El valor real o descripción
+  label     String?  // Etiqueta para mostrar
+  isActive  Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([category, key])
+}
+
+model Core_Notification {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  type        String   @default("INFO") // INFO, SUCCESS, WARNING, ERROR
+  isRead      Boolean  @default(false)
+  
+  // Metadatos opcionales (ej: link a la factura)
+  metadata    Json?    
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ==========================================
+// MODULE: EMPLEADOS
+// ==========================================
+
+enum PayType {
+  MONTHLY
+  BIWEEKLY
+}
+
+model Emp_Employee {
+  id           Int       @id @default(autoincrement())
+  name         String
+  payType      PayType   @default(MONTHLY)
+  baseSalary   Float
+  isActive     Boolean   @default(true)
+  
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  salaryPeriods Emp_SalaryPeriod[]
+  advances      Emp_Advance[]
+}
+
+model Emp_SalaryPeriod {
+  id                Int          @id @default(autoincrement())
+  
+  employeeId        Int
+  employee          Emp_Employee @relation(fields: [employeeId], references: [id])
+  
+  periodYear        Int
+  periodMonth       Int          // 1-12
+  
+  baseSalary        Float
+  firstInstallment  Float?       // Solo quincenales
+  secondInstallment Float?       // Solo quincenales
+  
+  totalAdvances     Float        @default(0)
+  balance           Float        // Computado: baseSalary - totalAdvances
+  isClosed          Boolean      @default(false)
+  
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  advances          Emp_Advance[]
+
+  // No permitimos dos periodos iguales para el mismo empleado
+  @@unique([employeeId, periodYear, periodMonth])
+}
+
+model Emp_Advance {
+  id             Int          @id @default(autoincrement())
+  
+  employeeId     Int
+  employee       Emp_Employee @relation(fields: [employeeId], references: [id])
+  
+  periodId       Int
+  period         Emp_SalaryPeriod @relation(fields: [periodId], references: [id])
+  
+  date           DateTime     @default(now())
+  
+  cashAmount     Float        @default(0)
+  checkAmount    Float        @default(0)
+  transferAmount Float        @default(0)
+  totalAmount    Float        // cash + check + transfer
+  
+  accumulated    Float        // Historial total hasta este avance en este periodo específico
+  balance        Float        // Saldo después de aplicar este avance
+  
+  notes          String?
+  
+  createdAt      DateTime     @default(now())
+}
+

@@ -1,0 +1,29 @@
+{
+  "name": "erp-clorymetal",
+  "version": "1.0.0",
+  "description": "Monolito modular para ERP Clorymetal",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "modules/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "start": "node packages/core-backend/dist/index.js",
+    "db:up": "docker-compose up -d",
+    "db:down": "docker-compose down"
+  },
+  "overrides": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "keywords": [
+    "erp",
+    "monorepo",
+    "modular"
+  ],
+  "author": "Antigravity & Clorymetal",
+  "license": "ISC"
+}

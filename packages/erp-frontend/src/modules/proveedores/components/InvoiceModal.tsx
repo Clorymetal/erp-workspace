@@ -1,0 +1,199 @@
+import { useState, useEffect } from 'react';
+import { Modal, Button } from '../../../core/components';
+
+interface InvoiceModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (data: any) => void;
+  initialData?: any;
+}
+
+export const InvoiceModal = ({ isOpen, onClose, onSave, initialData }: InvoiceModalProps) => {
+  const [formData, setFormData] = useState({
+    invoiceType: 'FACTURA_A',
+    pointOfSale: '',
+    invoiceNumber: '',
+    issueDate: new Date().toISOString().split('T')[0],
+    dueDate: '',
+    totalAmount: '',
+    netAmount: '',
+    taxAmount: '',
+    perceptionAmount: '',
+    nonTaxedAmount: '',
+    isCtaCte: true,
+    status: 'PENDIENTE'
+  });
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        ...initialData,
+        issueDate: initialData.issueDate ? new Date(initialData.issueDate).toISOString().split('T')[0] : '',
+        dueDate: initialData.dueDate ? new Date(initialData.dueDate).toISOString().split('T')[0] : '',
+        totalAmount: initialData.totalAmount.toString(),
+        netAmount: initialData.netAmount?.toString() || '',
+        taxAmount: initialData.taxAmount?.toString() || '',
+        perceptionAmount: initialData.perceptionAmount?.toString() || '',
+        nonTaxedAmount: initialData.nonTaxedAmount?.toString() || '',
+      });
+    }
+  }, [initialData, isOpen]);
+
+  // Auto-calcular total
+  useEffect(() => {
+    const net = parseFloat(formData.netAmount) || 0;
+    const tax = parseFloat(formData.taxAmount) || 0;
+    const perc = parseFloat(formData.perceptionAmount) || 0;
+    const nonTax = parseFloat(formData.nonTaxedAmount) || 0;
+    
+    // Solo si se están tocando los campos del desglose, recalculamos el total
+    // Para evitar sobreescribir un total manual si el usuario prefiere poner el total directo.
+    if (net !== 0 || tax !== 0 || perc !== 0 || nonTax !== 0) {
+      setFormData(prev => ({ ...prev, totalAmount: (net + tax + perc + nonTax).toFixed(2) }));
+    }
+  }, [formData.netAmount, formData.taxAmount, formData.perceptionAmount, formData.nonTaxedAmount]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave(formData);
+  };
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} title={initialData ? "Editar Factura" : "Registrar Nueva Factura"}>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors">Tipo de Comprobante</label>
+            <select
+              value={formData.invoiceType}
+              onChange={e => setFormData({ ...formData, invoiceType: e.target.value })}
+              className="mt-1 w-full p-2 bg-gray-50 dark:bg-gray-800 border rounded-lg dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-primary-500 outline-none"
+            >
+              <option value="FACTURA_A">Factura A</option>
+              <option value="FACTURA_B">Factura B</option>
+              <option value="FACTURA_C">Factura C</option>
+              <option value="NOTA_CREDITO">Nota de Crédito</option>
+            </select>
+          </div>
+          <div className="flex gap-2">
+            <div className="w-20">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">P.V.</label>
+              <input
+                type="text"
+                maxLength={4}
+                value={formData.pointOfSale}
+                onChange={e => setFormData({ ...formData, pointOfSale: e.target.value })}
+                className="mt-1 w-full p-2 bg-gray-50 dark:bg-gray-800 border rounded-lg dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-primary-500 outline-none"
+                placeholder="0001"
+              />
+            </div>
+            <div className="flex-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Número de Factura</label>
+              <input
+                type="text"
+                value={formData.invoiceNumber}
+                onChange={e => setFormData({ ...formData, invoiceNumber: e.target.value })}
+                className="mt-1 w-full p-2 bg-gray-50 dark:bg-gray-800 border rounded-lg dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-primary-500 outline-none"
+                placeholder="00001234"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Emisión</label>
+            <input
+              type="date"
+              value={formData.issueDate}
+              onChange={e => setFormData({ ...formData, issueDate: e.target.value })}
+              className="mt-1 w-full p-2 bg-gray-50 dark:bg-gray-800 border rounded-lg dark:border-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Vencimiento</label>
+            <input
+              type="date"
+              value={formData.dueDate}
+              onChange={e => setFormData({ ...formData, dueDate: e.target.value })}
+              className="mt-1 w-full p-2 bg-gray-50 dark:bg-gray-800 border rounded-lg dark:border-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 outline-none"
+            />
+          </div>
+        </div>
+
+        <div className="p-4 bg-primary-50 dark:bg-primary-900/10 rounded-xl border border-primary-100 dark:border-primary-800/50">
+          <p className="text-xs text-primary-600 dark:text-primary-400 font-bold mb-3 uppercase tracking-wider">Desglose Fiscal (Fórmula Excel)</p>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-xs text-gray-500 dark:text-gray-400 font-medium">Neto Gravado</label>
+              <input
+                type="number"
+                step="0.01"
+                value={formData.netAmount}
+                onChange={e => setFormData({ ...formData, netAmount: e.target.value })}
+                className="w-full text-sm p-2 bg-white dark:bg-gray-800 border rounded-lg dark:border-gray-700 dark:text-gray-100"
+              />
+            </div>
+            <div>
+              <label className="text-xs text-gray-500 dark:text-gray-400 font-medium">IVA (21%)</label>
+              <input
+                type="number"
+                step="0.01"
+                value={formData.taxAmount}
+                onChange={e => setFormData({ ...formData, taxAmount: e.target.value })}
+                className="w-full text-sm p-2 bg-white dark:bg-gray-800 border rounded-lg dark:border-gray-700 dark:text-gray-100"
+              />
+            </div>
+            <div>
+              <label className="text-xs text-gray-500 dark:text-gray-400 font-medium">Percepciones</label>
+              <input
+                type="number"
+                step="0.01"
+                value={formData.perceptionAmount}
+                onChange={e => setFormData({ ...formData, perceptionAmount: e.target.value })}
+                className="w-full text-sm p-2 bg-white dark:bg-gray-800 border rounded-lg dark:border-gray-700 dark:text-gray-100"
+              />
+            </div>
+            <div>
+              <label className="text-xs text-gray-500 dark:text-gray-400 font-medium">No Gravado / Otros</label>
+              <input
+                type="number"
+                step="0.01"
+                value={formData.nonTaxedAmount}
+                onChange={e => setFormData({ ...formData, nonTaxedAmount: e.target.value })}
+                className="w-full text-sm p-2 bg-white dark:bg-gray-800 border rounded-lg dark:border-gray-700 dark:text-gray-100"
+              />
+            </div>
+          </div>
+          
+          <div className="mt-4 pt-4 border-t border-primary-100 dark:border-primary-800/50 flex justify-between items-center">
+            <span className="text-sm font-bold text-gray-700 dark:text-gray-300">TOTAL FACTO (Cálculo)</span>
+            <div className="text-lg font-black text-primary-600 dark:text-primary-400">
+              {new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(parseFloat(formData.totalAmount) || 0)}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+           <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Estado:</label>
+           <select 
+             value={formData.status}
+             onChange={e => setFormData({...formData, status: e.target.value})}
+             className="text-sm p-1.5 bg-gray-50 dark:bg-gray-800 border rounded-lg dark:border-gray-700"
+           >
+             <option value="PENDIENTE">PENDIENTE</option>
+             <option value="PAGADA">PAGADA</option>
+             <option value="VENCIDA">VENCIDA</option>
+           </select>
+        </div>
+
+        <div className="flex justify-end gap-3 mt-6">
+          <Button variant="outline" onClick={onClose} type="button">Cancelar</Button>
+          <Button variant="primary" type="submit">
+            {initialData ? 'Actualizar Factura' : 'Guardar Factura'}
+          </Button>
+        </div>
+      </form>
+    </Modal>
+  );
+};

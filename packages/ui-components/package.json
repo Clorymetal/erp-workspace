@@ -1,0 +1,13 @@
+{
+  "name": "@erp/ui-components",
+  "version": "1.0.0",
+  "description": "Shared React UI Components for ERP Clorymetal",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}

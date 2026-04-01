@@ -1,0 +1,19 @@
+🚀 COMANDOS PARA INICIAR ERP (POWER_SHELL READY) 🚀
+
+Abre tres pestañas de terminal y pega estos comandos (con ruta completa):
+
+--- TERMINAL 1: INFRAESTRUCTURA (Docker) ---
+docker-compose -f "D:\E\Clorymetal\Desarrollo\Aplicaciones\erp-workspace\docker-compose.yml" up -d
+
+
+--- TERMINAL 2: SERVIDOR (Backend) ---
+cd "D:\E\Clorymetal\Desarrollo\Aplicaciones\erp-workspace\packages\core-backend" ; npm run dev
+
+
+--- TERMINAL 3: INTERFAZ (Frontend) ---
+cd "D:\E\Clorymetal\Desarrollo\Aplicaciones\erp-workspace\packages\erp-frontend" ; npm run dev
+
+
+--- ACCESO DIRECTO ---
+🌐 INTERFAZ WEB:  http://localhost:5173
+📊 BACKEND API:    http://localhost:4000
