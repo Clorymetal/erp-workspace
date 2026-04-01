@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ExportMenu } from '../../core/components/ExportMenu';
 import { EmployeeCard } from './components/EmployeeCard';
 import { AdvanceModal } from './components/AdvanceModal';
+import { API_BASE_URL } from '../../core/config/apiConfig';
 
 export const EmpleadosPage: React.FC = () => {
   const [employees, setEmployees] = useState<any[]>([]);
@@ -18,14 +19,14 @@ export const EmpleadosPage: React.FC = () => {
   const loadData = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch(`http://localhost:4000/api/empleados/dashboard?year=${currentYear}&month=${currentMonth}`);
+      const res = await fetch(`${API_BASE_URL}/empleados/dashboard?year=${currentYear}&month=${currentMonth}`);
       const data = await res.json();
       
       // Expandir los advances paralelos (mock para mantener los adelantos completos del endpoint detail si se requiere o hacer requests paralelos).
       // En un app real podria traer el detail con el join de Prisma si usamos `getDetail` pero vamos a pedir todos con detail:
       const fullData = await Promise.all(
         data.data.map(async (emp: any) => {
-          const detailRes = await fetch(`http://localhost:4000/api/empleados/${emp.id}/detail?year=${currentYear}&month=${currentMonth}`);
+          const detailRes = await fetch(`${API_BASE_URL}/empleados/${emp.id}/detail?year=${currentYear}&month=${currentMonth}`);
           const detailData = await detailRes.json();
           return detailData.data;
         })

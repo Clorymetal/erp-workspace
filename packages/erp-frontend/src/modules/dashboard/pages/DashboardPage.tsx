@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { DollarSign, ShoppingBag, Calendar, TrendingUp, MapPin, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { API_BASE_URL } from '../../../core/config/apiConfig';
 
 export const DashboardPage = () => {
   const [stats, setStats] = useState<any>(null);
@@ -9,7 +10,7 @@ export const DashboardPage = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/dashboard/stats');
+        const res = await fetch(`${API_BASE_URL}/dashboard/kpis`);
         if (res.ok) {
           setStats(await res.json());
         }

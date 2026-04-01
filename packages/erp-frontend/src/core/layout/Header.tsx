@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Bell, Moon, Sun, Search, Menu } from 'lucide-react';
+import { API_BASE_URL } from '../config/apiConfig';
 
 export const Header = () => {
   const [isDark, setIsDark] = useState(false);
@@ -11,7 +12,7 @@ export const Header = () => {
 
   const fetchNotifications = async () => {
     try {
-      const res = await fetch('http://localhost:4000/api/notificaciones');
+      const res = await fetch(`${API_BASE_URL}/notificaciones`);
       if (res.ok) {
         const data = await res.json();
         setNotifications(data);

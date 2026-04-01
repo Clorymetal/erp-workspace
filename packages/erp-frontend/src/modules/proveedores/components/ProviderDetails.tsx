@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { X, Plus, Receipt, Edit, CheckCircle } from 'lucide-react';
 import { DataTable } from '../../../core/components/DataTable';
 import type { Column } from '../../../core/components/DataTable';
+import { API_BASE_URL } from '../../../core/config/apiConfig';
 
 interface Invoice {
   id: string;
@@ -32,7 +33,7 @@ export const ProviderDetails = ({ provider, onClose, onAddInvoice, onEditInvoice
   const fetchInvoices = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`http://localhost:4000/api/proveedores/${provider.id}/facturas`);
+      const res = await fetch(`${API_BASE_URL}/proveedores/${provider.id}/facturas`);
       if (res.ok) {
         const data = await res.json();
         setInvoices(data);

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Search, Filter, Calendar, FileText, Download, Share2, Plus, Pencil } from 'lucide-react';
 import { Button, DataTable, ExportMenu, Modal } from '../../../core/components';
 import { InvoiceModal } from '../components/InvoiceModal';
+import { API_BASE_URL } from '../../../core/config/apiConfig';
 
 export const ComprasPage = () => {
   const [invoices, setInvoices] = useState<any[]>([]);
@@ -31,7 +32,7 @@ export const ComprasPage = () => {
         isCtaCte: filters.isCtaCte === 'cta_cte' ? 'true' : (filters.isCtaCte === 'contado' ? 'false' : ''),
         province: filters.province,
       });
-      const res = await fetch(`http://localhost:4000/api/proveedores/facturas?${query}`);
+      const res = await fetch(`${API_BASE_URL}/proveedores/facturas?${query}`);
       if (res.ok) {
         setInvoices(await res.json());
       }

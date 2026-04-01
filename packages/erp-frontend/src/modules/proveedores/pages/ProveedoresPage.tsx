@@ -4,6 +4,7 @@ import { Button, DataTable, Modal, ExportMenu } from '../../../core/components';
 import { AnimatePresence } from 'framer-motion';
 import { ProviderDetails } from '../components/ProviderDetails';
 import { InvoiceModal } from '../components/InvoiceModal';
+import { API_BASE_URL } from '../../../core/config/apiConfig';
 
 interface Proveedor {
   id: string;
@@ -47,8 +48,8 @@ export const ProveedoresPage = () => {
   const fetchParameters = async () => {
     try {
       const [rp, rc] = await Promise.all([
-        fetch('http://localhost:4000/api/parametros?category=PROVINCIA'),
-        fetch('http://localhost:4000/api/parametros?category=COND_FISCAL')
+        fetch(`${API_BASE_URL}/parametros?category=PROVINCIA`),
+        fetch(`${API_BASE_URL}/parametros?category=COND_FISCAL`)
       ]);
       if (rp.ok) setProvincias(await rp.json());
       if (rc.ok) setCondicionesFiscales(await rc.json());
@@ -58,7 +59,7 @@ export const ProveedoresPage = () => {
   const fetchProviders = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch('http://localhost:4000/api/proveedores');
+      const res = await fetch(`${API_BASE_URL}/proveedores`);
       if (res.ok) {
         const data = await res.json();
         setProviders(data.map((p: any) => ({
@@ -91,7 +92,7 @@ export const ProveedoresPage = () => {
     if (!formData.razonSocial || !formData.cuit) return alert("Razón Social y CUIT obligatorios");
     setIsSubmitting(true);
     try {
-      const url = isEditingProvider ? `http://localhost:4000/api/proveedores/${editingProviderId}` : 'http://localhost:4000/api/proveedores';
+      const url = isEditingProvider ? `${API_BASE_URL}/proveedores/${editingProviderId}` : `${API_BASE_URL}/proveedores`;
       const res = await fetch(url, {
         method: isEditingProvider ? 'PATCH' : 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -111,8 +112,8 @@ export const ProveedoresPage = () => {
     try {
       const isEdit = !!selectedInvoice;
       const url = isEdit 
-        ? `http://localhost:4000/api/proveedores/${selectedProvider.id}/facturas/${selectedInvoice.id}`
-        : `http://localhost:4000/api/proveedores/${selectedProvider.id}/facturas`;
+        ? `${API_BASE_URL}/proveedores/${selectedProvider.id}/facturas/${selectedInvoice.id}`
+        : `${API_BASE_URL}/proveedores/${selectedProvider.id}/facturas`;
       const res = await fetch(url, {
         method: isEdit ? 'PATCH' : 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -129,7 +130,7 @@ export const ProveedoresPage = () => {
   const handleStatusChange = async (invoiceId: string, status: string) => {
     if (!selectedProvider) return;
     try {
-      await fetch(`http://localhost:4000/api/proveedores/${selectedProvider.id}/facturas/${invoiceId}`, {
+      await fetch(`${API_BASE_URL}/proveedores/${selectedProvider.id}/facturas/${invoiceId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status })
