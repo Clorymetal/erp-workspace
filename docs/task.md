@@ -49,6 +49,12 @@
 - [x] **Carga Interactiva:** Formulario rápido de "Adelanto" y baja destructiva de compensación matemática (recálculo en cascada temporal).
 - [x] **Exportación Inteligente:** PDF compreso (A4 Vertical denso), envíos WhatsApp de texto resumido y tabulación en CSV.
 
+### Fase 10: Seguridad y Control de Acceso (PRÓXIMA PRIORIDAD 🚨)
+- [ ] Implementar **Google Login** para restringir el acceso a la App.
+- [ ] Crear Middleware de autenticación en el Backend (JWT/Session).
+- [ ] Definir Perfiles de Usuario (Administrador/Lectura).
+- [ ] Asegurar que solo usuarios autorizados vean saldos y empleados.
+
 ### Fase 9: Infraestructura y Despliegue Cloud (COMPLETADA ✅)
 - [X] Crear Repositorio GitHub (Oficial)
 - [X] Configurar Base de Datos PostgreSQL en **Neon.tech**
@@ -56,7 +62,7 @@
 - [X] Refactorizar Frontend para URLs dinámicas (Desarrollo vs Producción)
 - [X] Desplegar Frontend en **Vercel.com**
 
-### Próximos Pasos (Fase 7 - Continuación):
-- [ ] Implementar Modal de Pago en Compras (Cta Cte)
-- [ ] Auditoría de Saldos en tiempo real
-- [ ] Módulo Inventario (Preliminar)
+### Próximos Pasos (Próxima Sesión):
+- [ ] **Fase 10 (Seguridad)**: Google Auth e Identidad.
+- [ ] **Fase 7 (Pagos)**: Modal de Pago en Compras (Cta Cte).
+- [ ] **Fase 8 (RRHH)**: Reportes de Cierre de Mes.

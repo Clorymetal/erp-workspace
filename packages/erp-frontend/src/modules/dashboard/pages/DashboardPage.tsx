@@ -10,7 +10,7 @@ export const DashboardPage = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/dashboard/kpis`);
+        const res = await fetch(`${API_BASE_URL}/dashboard/stats`);
         if (res.ok) {
           setStats(await res.json());
         }
