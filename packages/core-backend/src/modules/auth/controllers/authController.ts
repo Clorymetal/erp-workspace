@@ -22,31 +22,40 @@ export const googleLogin = async (req: Request, res: Response) => {
 
     const { email, name, picture } = payload;
 
-    // Buscar o crear usuario
-    let user = await prisma.core_User.findUnique({
-      where: { email },
-    });
+    // Buscar usuario usando SQL directo (evita dependencia del Prisma client generado)
+    const existingUsers = await prisma.$queryRawUnsafe<any[]>(
+      `SELECT * FROM "Core_User" WHERE "email" = $1 LIMIT 1`, email
+    );
+
+    let user = existingUsers[0] || null;
 
     if (!user) {
-      // Si es el primer usuario, lo hacemos ADMIN (opcional)
-      const isFirstUser = (await prisma.core_User.count()) === 0;
-      
-      user = await prisma.core_User.create({
-        data: {
-          email,
-          name,
-          picture,
-          role: isFirstUser ? 'ADMIN' : 'VIEWER',
-          isActive: true, // Por ahora activamos a todos por defecto
-        },
-      });
+      // Verificar si es el primer usuario para asignarle rol ADMIN
+      const countResult = await prisma.$queryRawUnsafe<any[]>(
+        `SELECT COUNT(*) as count FROM "Core_User"`
+      );
+      const isFirstUser = parseInt(countResult[0]?.count || '0') === 0;
+      const role = isFirstUser ? 'ADMIN' : 'VIEWER';
+      const id = crypto.randomUUID();
+      const now = new Date().toISOString();
+
+      await prisma.$executeRawUnsafe(
+        `INSERT INTO "Core_User" ("id", "email", "name", "picture", "role", "isActive", "createdAt", "updatedAt")
+         VALUES ($1, $2, $3, $4, $5, true, $6, $7)`,
+        id, email, name ?? null, picture ?? null, role, now, now
+      );
+
+      const newUsers = await prisma.$queryRawUnsafe<any[]>(
+        `SELECT * FROM "Core_User" WHERE "id" = $1`, id
+      );
+      user = newUsers[0];
     }
 
     // Actualizar último login
-    await prisma.core_User.update({
-      where: { id: user.id },
-      data: { lastLogin: new Date() },
-    });
+    await prisma.$executeRawUnsafe(
+      `UPDATE "Core_User" SET "lastLogin" = $1 WHERE "id" = $2`,
+      new Date().toISOString(), user.id
+    );
 
     // Generar JWT
     const token = jwt.sign(
@@ -65,13 +74,15 @@ export const googleLogin = async (req: Request, res: Response) => {
         role: user.role,
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error during Google Login:', error);
-    res.status(500).json({ error: 'Authentication failed' });
+    res.status(500).json({
+      error: 'Authentication failed',
+      detail: error?.message || String(error),
+    });
   }
 };
 
 export const getCurrentUser = async (req: any, res: Response) => {
-    // El middleware de auth ya puso al user en req.user
-    res.json(req.user);
+  res.json(req.user);
 };
