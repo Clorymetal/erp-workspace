@@ -41,7 +41,7 @@ export const googleLogin = async (req: Request, res: Response) => {
 
       await prisma.$executeRawUnsafe(
         `INSERT INTO "Core_User" ("id", "email", "name", "picture", "role", "isActive", "createdAt", "updatedAt")
-         VALUES ($1, $2, $3, $4, $5::"UserRole", true, $6, $7)`,
+         VALUES ($1, $2, $3, $4, $5::"UserRole", true, $6::timestamp, $7::timestamp)`,
         id, email, name ?? null, picture ?? null, role, now, now
       );
 
@@ -53,7 +53,7 @@ export const googleLogin = async (req: Request, res: Response) => {
 
     // Actualizar último login
     await prisma.$executeRawUnsafe(
-      `UPDATE "Core_User" SET "lastLogin" = $1 WHERE "id" = $2`,
+      `UPDATE "Core_User" SET "lastLogin" = $1::timestamp WHERE "id" = $2`,
       new Date().toISOString(), user.id
     );
 
