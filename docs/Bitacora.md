@@ -199,8 +199,25 @@ El proyecto ya tiene una hoja de ruta clara para pasar de "Local" a "Cloud". Cua
 - [x] **Protected Routes:** Reestructuración de `App.tsx` para bloquear el acceso a cualquier ruta (Dashboard, Proveedores, Empleados) si no existe una sesión válida de Google.
 - [x] **Header Integration:** El Header ahora muestra el avatar, nombre y rol del usuario logueado, e incluye el botón de "Cerrar Sesión".
 
+### Sesión 12: 01 de Abril de 2026 - Fix de Autenticación y Preparación de Migración de Datos
+**Objetivos:**
+- Resolver error 500 en producción con Google OAuth debido a divergencias de Prisma Client.
+- Migrar datos históricos del entorno de Desarrollo (Docker/Localhost) a la Nube (Neon/Render).
+
+**Acciones Realizadas:**
+- [x] **Auth Controller Fix:** Se reescribió `authController.ts` para usar SQL Nativo con Prisma (`$executeRawUnsafe` y `$queryRawUnsafe`) evitando errores por modelos faltantes en los clientes generados en producción.
+- [x] **Tipos Estrictos (SQL Casts):** Se corrigió un error de PostgreSQL donde los strings ISO no eran convertidos mágicamente a `timestamp`. Se aplicaron cast explícitos `::"UserRole"` y `::timestamp`.
+- [x] **Tracking Automático de Deploys:** Se agregó versionamiento continuo en `/health` para ver el estado real del servidor desde Vercel sin recurrir al panel de Render.
+- [x] **Script de Migración Creado:** Se escribió `migrateToCloud.ts` para extraer toda la base local (Provincias, Empleados, Salarios, Confirmaciones, Facturas, Proveedores) e insertarla en la de Producción.
+
 **Estado Actual:**
-La aplicación ha pasado de ser pública a ser un sistema privado y seguro. El acceso está restringido y el backend valida la identidad en cada petición. El sistema está listo para que el usuario configure sus credenciales finales de Google Cloud.
+- **Autenticación (RESUELTO):** El inicio de sesión vía Google ya funciona de manera 100% estable. Entras seguro al Dashboard.
+- **Datos (PENDIENTE PARA PRÓXIMA SESIÓN):** El script de clonación arrojó un error de desincronización de esquemas (`The column isCtaCte does not exist in the current database.`), ya que en local se añadió `isCtaCte` pero en producción (Neon) aún no existe esa columna. El comando `prisma db push` a remoto se quedó "colgado" conectando a Neon.
+
+**Siguientes pasos (PRÓXIMA SESIÓN):**
+1. Sincronizar el esquema de la base de datos remota (`isCtaCte`) manualmente o vía psql.
+2. Volver a correr el script `npx ts-node packages/core-backend/scripts/migrateToCloud.ts` para completar el volcado de datos que tenías en tu Terminal.
+3. Continuar operando únicamente sobre la app productiva oficial.
 
 ---
 _Nota: Al retomar el trabajo, leer siempre el último registro de estado y revisar `task.md`._
