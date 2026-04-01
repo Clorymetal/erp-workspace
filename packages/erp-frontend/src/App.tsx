@@ -1,22 +1,39 @@
 import { useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Layout } from './core/layout/Layout';
+import { AuthProvider, useAuth } from './core/contexts/AuthContext';
 
 import { DashboardPage } from './modules/dashboard/pages/DashboardPage';
 import { ProveedoresPage } from './modules/proveedores/pages/ProveedoresPage';
 import { ComprasPage } from './modules/proveedores/pages/ComprasPage';
 import ParametersPage from './modules/configuracion/pages/ParametersPage';
 import { EmpleadosPage } from './modules/empleados/EmpleadosPage';
-// Placeholder: 404
-const NotFound = () => (
-  <div className="flex flex-col items-center justify-center p-12 text-center animate-in fade-in duration-500">
-    <h2 className="text-2xl font-semibold mb-2">404 - No Encontrado</h2>
-    <p className="text-gray-500">El módulo que buscas no existe o está en construcción.</p>
-  </div>
-);
+import { LoginPage } from './modules/auth/pages/LoginPage';
+
+// Recuperar Client ID de las variables de entorno de Vite
+// Si no existe, usamos uno de prueba (debe ser cambiado tras el setup en Google Cloud Console)
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "erp-clorymetal-placeholder.apps.googleusercontent.com";
+
+const ProtectedRoute = () => {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-dark-bg">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <Outlet />;
+};
 
 function App() {
-  // Inicialización básica de Dark Mode (luego se puede delegar a un contexto)
   useEffect(() => {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     if (prefersDark) {
@@ -25,18 +42,27 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<DashboardPage />} />
-          <Route path="proveedores" element={<ProveedoresPage />} />
-          <Route path="compras" element={<ComprasPage />} />
-          <Route path="parametros" element={<ParametersPage />} />
-          <Route path="empleados" element={<EmpleadosPage />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <BrowserRouter>
+        <AuthProvider>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            
+            <Route element={<ProtectedRoute />}>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<DashboardPage />} />
+                <Route path="proveedores" element={<ProveedoresPage />} />
+                <Route path="compras" element={<ComprasPage />} />
+                <Route path="parametros" element={<ParametersPage />} />
+                <Route path="empleados" element={<EmpleadosPage />} />
+              </Route>
+            </Route>
+
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </AuthProvider>
+      </BrowserRouter>
+    </GoogleOAuthProvider>
   );
 }
 

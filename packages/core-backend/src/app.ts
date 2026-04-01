@@ -19,11 +19,13 @@ import proveedoresRouter from './modules/proveedores/api/providerRoutes';
 import notificationsRouter from './modules/notificaciones/api/notificationRoutes';
 import parametersRouter from './modules/parametros/api/parameterRoutes';
 import employeeRouter from './modules/empleados/employee.routes';
+import authRouter from './modules/auth/api/authRoutes';
 
 app.use('/api/dashboard', dashboardRouter);
 app.use('/api/proveedores', proveedoresRouter);
 app.use('/api/notificaciones', notificationsRouter);
 app.use('/api/parametros', parametersRouter);
 app.use('/api/empleados', employeeRouter);
+app.use('/api/auth', authRouter);
 
 export default app;

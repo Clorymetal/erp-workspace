@@ -49,11 +49,14 @@
 - [x] **Carga Interactiva:** Formulario rápido de "Adelanto" y baja destructiva de compensación matemática (recálculo en cascada temporal).
 - [x] **Exportación Inteligente:** PDF compreso (A4 Vertical denso), envíos WhatsApp de texto resumido y tabulación en CSV.
 
-### Fase 10: Seguridad y Control de Acceso (PRÓXIMA PRIORIDAD 🚨)
-- [ ] Implementar **Google Login** para restringir el acceso a la App.
-- [ ] Crear Middleware de autenticación en el Backend (JWT/Session).
-- [ ] Definir Perfiles de Usuario (Administrador/Lectura).
-- [ ] Asegurar que solo usuarios autorizados vean saldos y empleados.
+### Fase 10: Seguridad y Control de Acceso (COMPLETADA ✅)
+- [x] Implementar **Google Login** para restringir el acceso a la App.
+- [x] Crear Middleware de autenticación en el Backend (JWT/Session).
+- [x] Definir Perfiles de Usuario (Administrador/Lectura).
+- [x] Asegurar que solo usuarios autorizados vean saldos y empleados.
+
+> [!IMPORTANT]
+> **Acción Requerida:** El usuario debe configurar el `VITE_GOOGLE_CLIENT_ID` y `GOOGLE_CLIENT_ID` en las variables de entorno de Vercel/Render para que el login sea funcional al 100%. Por ahora se está usando un placeholder para el desarrollo.
 
 ### Fase 9: Infraestructura y Despliegue Cloud (COMPLETADA ✅)
 - [X] Crear Repositorio GitHub (Oficial)
