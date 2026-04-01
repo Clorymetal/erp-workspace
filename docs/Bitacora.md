@@ -185,24 +185,25 @@ El proyecto ya tiene una hoja de ruta clara para pasar de "Local" a "Cloud". Cua
 
 ---
 
-### Sesión 10: 01 de Abril de 2026 - Hotfix de Producción y Automatización
+### Sesión 11: 01 de Abril de 2026 - Seguridad: Google Auth e Implementación RBAC
 **Objetivos:**
-- Resolver errores 404 (Dashboard) y 500 (Proveedores) en entorno real.
-- Automatizar sincronización de esquema de base de datos en Render.
-- Garantizar datos maestros (Provincias, Cond. Fiscal) en fresh databases.
+- Asegurar la aplicación con un sistema de identificación obligatorio.
+- Implementar Google Login como única vía de acceso.
+- Definir roles de usuario (ADMIN/VIEWER) para control de permisos.
 
 **Acciones Realizadas:**
-- [x] **Frontend Fix:** Corrección de la ruta API en `DashboardPage.tsx` de `/kpis` a `/stats`.
-- [x] **Vercel routing:** Creación de `vercel.json` para evitar errores 404 al refrescar rutas SPA.
-- [x] **Backend Automation:** Refactorización del script `start` en `package.json` para ejecutar `prisma migrate deploy` antes de iniciar el servidor. Esto garantiza que la DB de Neon esté siempre al día (resuelve el error 500 de la columna faltante).
-- [x] **Database Sync:** Generación manual de la migración SQL `20260401184200_add_ctacte_to_provider`.
-- [x] **Master Seed:** Creación de `prisma/seed.ts` con todos los parámetros globales (Provincias y Condiciones Fiscales) necesarios para la operación.
-- [x] **Deploy:** Push sincronizado de todos los cambios a la rama `main` de GitHub, disparando el auto-despliegue en Vercel y Render.
+- [x] **Modelo de Usuarios:** Extensión del esquema Prisma con la tabla `Core_User` y tipos de roles.
+- [x] **Backend Auth:** Implementación de rutas `/api/auth/google` para verificación de tokens y `/api/auth/me` para sesiones persistentes. Configuración de Middleware JWT para proteger rutas sensibles.
+- [x] **Auth Migration:** Generada migración SQL manual `20260401185100_add_user_auth`.
+- [x] **Frontend Login:** Creación de una página de Login premium con integración a `@react-oauth/google` y animaciones de entrada.
+- [x] **Protected Routes:** Reestructuración de `App.tsx` para bloquear el acceso a cualquier ruta (Dashboard, Proveedores, Empleados) si no existe una sesión válida de Google.
+- [x] **Header Integration:** El Header ahora muestra el avatar, nombre y rol del usuario logueado, e incluye el botón de "Cerrar Sesión".
 
 **Estado Actual:**
-La infraestructura productiva está ahora en un estado estable y auto-mantenible. Las roturas de esquema se resuelven solas al desplegar y el dashboard ya es plenamente funcional. El sistema está listo para que el usuario opere directamente en la nube.
+La aplicación ha pasado de ser pública a ser un sistema privado y seguro. El acceso está restringido y el backend valida la identidad en cada petición. El sistema está listo para que el usuario configure sus credenciales finales de Google Cloud.
 
 ---
+_Nota: Al retomar el trabajo, leer siempre el último registro de estado y revisar `task.md`._
 _Nota: Al retomar el trabajo, leer siempre el último registro de estado y revisar `task.md`._
 
 ### Próximos pasos:
