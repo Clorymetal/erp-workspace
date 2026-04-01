@@ -41,7 +41,7 @@ export const googleLogin = async (req: Request, res: Response) => {
 
       await prisma.$executeRawUnsafe(
         `INSERT INTO "Core_User" ("id", "email", "name", "picture", "role", "isActive", "createdAt", "updatedAt")
-         VALUES ($1, $2, $3, $4, $5, true, $6, $7)`,
+         VALUES ($1, $2, $3, $4, $5::"UserRole", true, $6, $7)`,
         id, email, name ?? null, picture ?? null, role, now, now
       );
 
