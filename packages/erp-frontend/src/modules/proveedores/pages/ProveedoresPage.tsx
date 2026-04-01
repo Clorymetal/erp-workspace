@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Search, Filter, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2 } from 'lucide-react';
 import { Button, DataTable, Modal, ExportMenu } from '../../../core/components';
 import { AnimatePresence } from 'framer-motion';
 import { ProviderDetails } from '../components/ProviderDetails';
@@ -121,7 +121,7 @@ export const ProveedoresPage = () => {
       });
       if (res.ok) {
         setIsInvoiceModalOpen(false);
-        setRefreshInvoices(p => p + 1);
+        setRefreshInvoices(p => (p as number) + 1);
         fetchProviders();
       }
     } catch (e) { console.error(e); }
@@ -135,7 +135,7 @@ export const ProveedoresPage = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status })
       });
-      setRefreshInvoices(p => p + 1);
+      setRefreshInvoices(p => (p as number) + 1);
       fetchProviders();
     } catch (e) { console.error(e); }
   };
@@ -262,7 +262,7 @@ export const ProveedoresPage = () => {
           <ProviderDetails 
             provider={selectedProvider} onClose={() => setSelectedProvider(null)}
             onAddInvoice={() => { setSelectedInvoice(null); setIsInvoiceModalOpen(true); }}
-            onEditInvoice={(i) => { setSelectedInvoice(i); setIsInvoiceModalOpen(true); }}
+            onEditInvoice={(i : any) => { setSelectedInvoice(i); setIsInvoiceModalOpen(true); }}
             onStatusChange={handleStatusChange} refreshTrigger={refreshInvoices}
           />
         )}

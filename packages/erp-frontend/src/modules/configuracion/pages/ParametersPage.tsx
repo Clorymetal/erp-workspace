@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Search, Sliders } from 'lucide-react';
+import { Plus, Edit, Trash2, Sliders } from 'lucide-react';
 import { DataTable } from '../../../core/components/DataTable';
 import { Modal, Button } from '../../../core/components';
+import { API_BASE_URL } from '../../../core/config/apiConfig';
 
 interface Parameter {
   id: string;
@@ -37,7 +38,7 @@ export default function ParametersPage() {
   const fetchParams = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`http://localhost:4000/api/parametros?category=${selectedCategory}`);
+      const res = await fetch(`${API_BASE_URL}/parametros?category=${selectedCategory}`);
       if (res.ok) {
         const data = await res.json();
         setParams(data);
@@ -57,7 +58,7 @@ export default function ParametersPage() {
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      const url = editingParam ? `http://localhost:4000/api/parametros/${editingParam.id}` : 'http://localhost:4000/api/parametros';
+      const url = editingParam ? `${API_BASE_URL}/parametros/${editingParam.id}` : `${API_BASE_URL}/parametros`;
       const method = editingParam ? 'PATCH' : 'POST';
       
       const res = await fetch(url, {
@@ -82,7 +83,7 @@ export default function ParametersPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('¿Seguro que desea eliminar este parámetro?')) return;
     try {
-      const res = await fetch(`http://localhost:4000/api/parametros/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_BASE_URL}/parametros/${id}`, { method: 'DELETE' });
       if (res.ok) fetchParams();
     } catch (e) {
       console.error(e);
