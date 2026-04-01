@@ -185,6 +185,26 @@ El proyecto ya tiene una hoja de ruta clara para pasar de "Local" a "Cloud". Cua
 
 ---
 
+### Sesión 10: 01 de Abril de 2026 - Hotfix de Producción y Automatización
+**Objetivos:**
+- Resolver errores 404 (Dashboard) y 500 (Proveedores) en entorno real.
+- Automatizar sincronización de esquema de base de datos en Render.
+- Garantizar datos maestros (Provincias, Cond. Fiscal) en fresh databases.
+
+**Acciones Realizadas:**
+- [x] **Frontend Fix:** Corrección de la ruta API en `DashboardPage.tsx` de `/kpis` a `/stats`.
+- [x] **Vercel routing:** Creación de `vercel.json` para evitar errores 404 al refrescar rutas SPA.
+- [x] **Backend Automation:** Refactorización del script `start` en `package.json` para ejecutar `prisma migrate deploy` antes de iniciar el servidor. Esto garantiza que la DB de Neon esté siempre al día (resuelve el error 500 de la columna faltante).
+- [x] **Database Sync:** Generación manual de la migración SQL `20260401184200_add_ctacte_to_provider`.
+- [x] **Master Seed:** Creación de `prisma/seed.ts` con todos los parámetros globales (Provincias y Condiciones Fiscales) necesarios para la operación.
+- [x] **Deploy:** Push sincronizado de todos los cambios a la rama `main` de GitHub, disparando el auto-despliegue en Vercel y Render.
+
+**Estado Actual:**
+La infraestructura productiva está ahora en un estado estable y auto-mantenible. Las roturas de esquema se resuelven solas al desplegar y el dashboard ya es plenamente funcional. El sistema está listo para que el usuario opere directamente en la nube.
+
+---
+_Nota: Al retomar el trabajo, leer siempre el último registro de estado y revisar `task.md`._
+
 ### Próximos pasos:
 - **Git & GitHub:** Inicializar el repositorio y subir el código actual.
 - **Seteo Cloud:** Crear cuentas en Neon, Render y Vercel según `deployment_plan.md`.
