@@ -46,7 +46,7 @@ export const EmpleadosPage: React.FC = () => {
 
   const handleCreateAdvance = async (advanceData: any) => {
     try {
-      await fetch('http://localhost:4000/api/empleados/advance', {
+      await fetch(`${API_BASE_URL}/empleados/advance`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(advanceData)
@@ -60,7 +60,7 @@ export const EmpleadosPage: React.FC = () => {
   const handleDeleteAdvance = async (advanceId: number) => {
     if(!window.confirm('¿Seguro que deseas eliminar este adelanto? Paff, el saldo se recalculará automáticamente.')) return;
     try {
-      await fetch(`http://localhost:4000/api/empleados/advance/${advanceId}`, { method: 'DELETE' });
+      await fetch(`${API_BASE_URL}/empleados/advance/${advanceId}`, { method: 'DELETE' });
       await loadData();
     } catch(e) {
       alert("Error al eliminar anticipo");
@@ -69,7 +69,7 @@ export const EmpleadosPage: React.FC = () => {
 
   const handleUpdateSalary = async (periodId: number, salaryData: any) => {
     try {
-      await fetch(`http://localhost:4000/api/empleados/period/${periodId}/salary`, {
+      await fetch(`${API_BASE_URL}/empleados/period/${periodId}/salary`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(salaryData)

@@ -48,10 +48,15 @@
 - [x] **Vistas Generales:** Tarjeta por empleado desglosando base salarial, adelantos totales (Efectivo/Transf/Cheques) y saldo maestro.
 - [x] **Carga Interactiva:** Formulario rápido de "Adelanto" y baja destructiva de compensación matemática (recálculo en cascada temporal).
 - [x] **Exportación Inteligente:** PDF compreso (A4 Vertical denso), envíos WhatsApp de texto resumido y tabulación en CSV.
-## Fase 9: Infraestructura y Despliegue Cloud (En Curso)
-- [x] **Planificación:** Definir estrategia de CI/CD y arquitectura de servidores gratuitos (`deployment_plan.md`).
-- [ ] **Repositorio:** Inicializar Git en el workspace y conectar con GitHub.
-- [ ] **Base de Datos Cloud:** Configurar instancia de Neon.tech y ejecutar migraciones iniciales.
-- [ ] **Pipeline Backend:** Configurar Render.com para auto-despliegue del API con secretos.
-- [ ] **Pipeline Frontend:** Configurar Vercel para auto-despliegue de la UI con variables de entorno de producción.
-- [ ] **Certificación:** Validar acceso seguro (HTTPS) y sincronización de datos real/ficticio en la nube.
+
+### Fase 9: Infraestructura y Despliegue Cloud (COMPLETADA ✅)
+- [X] Crear Repositorio GitHub (Oficial)
+- [X] Configurar Base de Datos PostgreSQL en **Neon.tech**
+- [X] Desplegar Backend API en **Render.com**
+- [X] Refactorizar Frontend para URLs dinámicas (Desarrollo vs Producción)
+- [X] Desplegar Frontend en **Vercel.com**
+
+### Próximos Pasos (Fase 7 - Continuación):
+- [ ] Implementar Modal de Pago en Compras (Cta Cte)
+- [ ] Auditoría de Saldos en tiempo real
+- [ ] Módulo Inventario (Preliminar)
