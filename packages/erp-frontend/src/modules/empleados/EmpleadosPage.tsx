@@ -1,57 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ExportMenu } from '../../core/components/ExportMenu';
 import { EmployeeCard } from './components/EmployeeCard';
 import { AdvanceModal } from './components/AdvanceModal';
-import { API_BASE_URL } from '../../core/config/apiConfig';
+import { useEmployees } from './hooks/useEmployees';
 
 export const EmpleadosPage: React.FC = () => {
-  const [employees, setEmployees] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [selectedEmployeeForAdvance, setSelectedEmployeeForAdvance] = useState<any>(null);
-
   const [currentMonth, setCurrentMonth] = useState(3);
   const [currentYear] = useState(2026);
+  const [selectedEmployeeForAdvance, setSelectedEmployeeForAdvance] = useState<any>(null);
+
+  const {
+    employees,
+    isLoading,
+    createAdvance,
+    deleteAdvance,
+    updateSalary
+  } = useEmployees(currentYear, currentMonth);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(amount);
   };
 
-  const loadData = async () => {
-    setIsLoading(true);
-    try {
-      const res = await fetch(`${API_BASE_URL}/empleados/dashboard?year=${currentYear}&month=${currentMonth}`);
-      const data = await res.json();
-      
-      // Expandir los advances paralelos (mock para mantener los adelantos completos del endpoint detail si se requiere o hacer requests paralelos).
-      // En un app real podria traer el detail con el join de Prisma si usamos `getDetail` pero vamos a pedir todos con detail:
-      const fullData = await Promise.all(
-        data.data.map(async (emp: any) => {
-          const detailRes = await fetch(`${API_BASE_URL}/empleados/${emp.id}/detail?year=${currentYear}&month=${currentMonth}`);
-          const detailData = await detailRes.json();
-          return detailData.data;
-        })
-      );
-      
-      setEmployees(fullData);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadData();
-  }, [currentYear, currentMonth]);
-
   const handleCreateAdvance = async (advanceData: any) => {
     try {
-      await fetch(`${API_BASE_URL}/empleados/advance`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(advanceData)
-      });
-      await loadData(); // Reload optimista real
+      await createAdvance(advanceData);
     } catch(e) {
       alert("Error al guardar anticipo");
     }
@@ -60,8 +32,7 @@ export const EmpleadosPage: React.FC = () => {
   const handleDeleteAdvance = async (advanceId: number) => {
     if(!window.confirm('¿Seguro que deseas eliminar este adelanto? Paff, el saldo se recalculará automáticamente.')) return;
     try {
-      await fetch(`${API_BASE_URL}/empleados/advance/${advanceId}`, { method: 'DELETE' });
-      await loadData();
+      await deleteAdvance(advanceId);
     } catch(e) {
       alert("Error al eliminar anticipo");
     }
@@ -69,12 +40,7 @@ export const EmpleadosPage: React.FC = () => {
 
   const handleUpdateSalary = async (periodId: number, salaryData: any) => {
     try {
-      await fetch(`${API_BASE_URL}/empleados/period/${periodId}/salary`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(salaryData)
-      });
-      await loadData();
+      await updateSalary({ periodId, salaryData });
     } catch(e) {
       alert("Error al actualizar sueldo");
     }

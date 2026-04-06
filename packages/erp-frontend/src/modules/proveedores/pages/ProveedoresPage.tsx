@@ -1,37 +1,30 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Plus, Search, Pencil, Trash2 } from 'lucide-react';
 import { Button, DataTable, Modal, ExportMenu } from '../../../core/components';
 import { AnimatePresence } from 'framer-motion';
 import { ProviderDetails } from '../components/ProviderDetails';
 import { InvoiceModal } from '../components/InvoiceModal';
 import { API_BASE_URL } from '../../../core/config/apiConfig';
-
-interface Proveedor {
-  id: string;
-  razonSocial: string;
-  cuit: string;
-  email: string;
-  telefono: string;
-  provincia: string;
-  cp: string;
-  condFisc: string;
-  saldo: number;
-  isCtaCte: boolean;
-  estado: 'Activo' | 'Inactivo';
-}
+import { useProviders, type Proveedor } from '../hooks/useProviders';
 
 export const ProveedoresPage = () => {
-  const [providers, setProviders] = useState<Proveedor[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { 
+    providers, 
+    isLoading, 
+    provinces, 
+    taxConditions, 
+    saveProvider, 
+    isSubmitting: isSubmittingSave 
+  } = useProviders();
+
   const [searchTerm, setSearchTerm] = useState('');
   const [filterProvince, setFilterProvince] = useState('');
   const [filterBalanceStatus, setFilterBalanceStatus] = useState('all');
-  const [filterIsCtaCte, setFilterIsCtaCte] = useState('all'); // 'all', 'cta_cte', 'contado'
+  const [filterIsCtaCte, setFilterIsCtaCte] = useState('all'); 
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditingProvider, setIsEditingProvider] = useState(false);
   const [editingProviderId, setEditingProviderId] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const [formData, setFormData] = useState({ 
     razonSocial: '', cuit: '', telefono: '', email: '', provincia: '', cp: '', condFisc: '', isCtaCte: true 
@@ -41,70 +34,17 @@ export const ProveedoresPage = () => {
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
   const [refreshInvoices, setRefreshInvoices] = useState(0);
-  
-  const [provincias, setProvincias] = useState<any[]>([]);
-  const [condicionesFiscales, setCondicionesFiscales] = useState<any[]>([]);
-
-  const fetchParameters = async () => {
-    try {
-      const [rp, rc] = await Promise.all([
-        fetch(`${API_BASE_URL}/parametros?category=PROVINCIA`),
-        fetch(`${API_BASE_URL}/parametros?category=COND_FISCAL`)
-      ]);
-      if (rp.ok) setProvincias(await rp.json());
-      if (rc.ok) setCondicionesFiscales(await rc.json());
-    } catch (e) { console.error(e); }
-  };
-
-  const fetchProviders = async () => {
-    setIsLoading(true);
-    try {
-      const res = await fetch(`${API_BASE_URL}/proveedores`);
-      if (res.ok) {
-        const data = await res.json();
-        setProviders(data.map((p: any) => ({
-          id: String(p.id),
-          razonSocial: p.businessName,
-          cuit: p.taxId,
-          email: p.contacts?.[0]?.email || '',
-          telefono: p.contacts?.[0]?.phone || '',
-          provincia: p.province || '',
-          cp: p.postalCode || '',
-          condFisc: p.taxCondition || '',
-          isCtaCte: !!p.isCtaCte,
-          saldo: p.balance || 0,
-          estado: 'Activo'
-        })));
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProviders();
-    fetchParameters();
-  }, []);
 
   const handleSave = async () => {
     if (!formData.razonSocial || !formData.cuit) return alert("Razón Social y CUIT obligatorios");
-    setIsSubmitting(true);
     try {
-      const url = isEditingProvider ? `${API_BASE_URL}/proveedores/${editingProviderId}` : `${API_BASE_URL}/proveedores`;
-      const res = await fetch(url, {
-        method: isEditingProvider ? 'PATCH' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      if (res.ok) {
-        await fetchProviders();
-        setIsModalOpen(false);
-        setFormData({ razonSocial: '', cuit: '', telefono: '', email: '', provincia: '', cp: '', condFisc: '', isCtaCte: true });
-      }
-    } catch (e) { console.error(e); }
-    finally { setIsSubmitting(false); }
+      await saveProvider({ provider: formData, isEdit: isEditingProvider, id: editingProviderId || undefined });
+      setIsModalOpen(false);
+      setFormData({ razonSocial: '', cuit: '', telefono: '', email: '', provincia: '', cp: '', condFisc: '', isCtaCte: true });
+    } catch (e) {
+      console.error(e);
+      alert('Error guardando el proveedor');
+    }
   };
 
   const handleSaveInvoice = async (invoiceData: any) => {
@@ -121,8 +61,7 @@ export const ProveedoresPage = () => {
       });
       if (res.ok) {
         setIsInvoiceModalOpen(false);
-        setRefreshInvoices(p => (p as number) + 1);
-        fetchProviders();
+        setRefreshInvoices(p => p + 1);
       }
     } catch (e) { console.error(e); }
   };
@@ -135,8 +74,7 @@ export const ProveedoresPage = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status })
       });
-      setRefreshInvoices(p => (p as number) + 1);
-      fetchProviders();
+      setRefreshInvoices(p => p + 1);
     } catch (e) { console.error(e); }
   };
 
@@ -233,7 +171,7 @@ export const ProveedoresPage = () => {
             value={filterProvince} onChange={e => setFilterProvince(e.target.value)}
           >
             <option value="">Provincias</option>
-            {provincias.map(p => <option key={p.id} value={p.value}>{p.label}</option>)}
+            {provinces.map((p: any) => <option key={p.id} value={p.value}>{p.label}</option>)}
           </select>
           <select 
             className="px-4 py-2 bg-gray-50 dark:bg-dark-bg/50 border border-gray-100 dark:border-dark-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500"
@@ -277,7 +215,7 @@ export const ProveedoresPage = () => {
       <Modal 
         isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}
         title={isEditingProvider ? "Editar Proveedor" : "Nuevo Proveedor"}
-        footer={<><Button variant="ghost" onClick={() => setIsModalOpen(false)}>Cancelar</Button><Button variant="primary" onClick={handleSave} isLoading={isSubmitting}>Guardar</Button></>}
+        footer={<><Button variant="ghost" onClick={() => setIsModalOpen(false)}>Cancelar</Button><Button variant="primary" onClick={handleSave} isLoading={isSubmittingSave}>Guardar</Button></>}
       >
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
@@ -297,14 +235,14 @@ export const ProveedoresPage = () => {
               <label className="text-sm font-bold">Provincia</label>
               <select value={formData.provincia} onChange={e => setFormData({...formData, provincia: e.target.value})} className="w-full p-2 bg-gray-50 border rounded-lg">
                 <option value="">Seleccionar</option>
-                {provincias.map(p => <option key={p.id} value={p.value}>{p.label}</option>)}
+                {provinces.map((p: any) => <option key={p.id} value={p.value}>{p.label}</option>)}
               </select>
             </div>
             <div>
               <label className="text-sm font-bold">Cond. Fiscal</label>
               <select value={formData.condFisc} onChange={e => setFormData({...formData, condFisc: e.target.value})} className="w-full p-2 bg-gray-50 border rounded-lg">
                 <option value="">Seleccionar</option>
-                {condicionesFiscales.map(c => <option key={c.id} value={c.value}>{c.label}</option>)}
+                {taxConditions.map((c: any) => <option key={c.id} value={c.value}>{c.label}</option>)}
               </select>
             </div>
             <div className="col-span-2 mt-2 p-3 bg-primary-50 dark:bg-primary-900/10 rounded-xl border border-primary-100 dark:border-primary-800/30">
