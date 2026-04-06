@@ -34,6 +34,7 @@
 
 ## Fase 6: Módulo de Compras y Reportes Contables (Nivel Operativo)
 - [x] **Módulo de Compras:** Consulta global de facturas con filtros transversales.
+- [x] **Libro IVA Compras:** Interfaz interactiva de filtrado mensual, edición de número secuencial (`Rec`) y reportes impositivos. (Productivo ✅)
 - [x] **Exportación Contable:** Generación de reportes de 23 columnas (Excel/PDF) compatibles con AFIP/Contadora.
 - [x] **Lógica de Cta Cte:** Filtros precisos para diferenciar proveedores de contado vs deuda real.
 - [x] **Dashboard Real:** Panel de control con KPIs (Deuda total, Compras del mes, Alerta de vencimientos).
@@ -55,8 +56,13 @@
 - [x] Definir Perfiles de Usuario (Administrador/Lectura).
 - [x] Asegurar que solo usuarios autorizados vean saldos y empleados.
 
-> [!IMPORTANT]
 > **Acción Requerida:** El usuario debe configurar el `VITE_GOOGLE_CLIENT_ID` y `GOOGLE_CLIENT_ID` en las variables de entorno de Vercel/Render para que el login sea funcional al 100%. Por ahora se está usando un placeholder para el desarrollo.
+
+## Fase 11: Estabilización y Refactorización (MODO YOLO ✅)
+- [x] **Backend:** Middleware Global de Errores (estandarización JSON 500).
+- [x] **Frontend:** TanStack Query (React Query) para caché e in-memory states.
+- [x] **Hooks:** Centralización de lógica de Proveedores y Empleados en custom hooks.
+- [x] **Calidad:** Script de `lint` global para análisis estático de errores.
 
 ### Fase 9: Infraestructura y Despliegue Cloud (COMPLETADA ✅)
 - [X] Crear Repositorio GitHub (Oficial)
@@ -66,6 +72,7 @@
 - [X] Desplegar Frontend en **Vercel.com**
 
 ### Próximos Pasos (Próxima Sesión):
-- [ ] **Fase 10 (Seguridad)**: Google Auth e Identidad.
+- [x] **Fase 10 (Seguridad)**: Google Auth e Identidad.
 - [ ] **Fase 7 (Pagos)**: Modal de Pago en Compras (Cta Cte).
-- [ ] **Fase 8 (RRHH)**: Reportes de Cierre de Mes.
+- [ ] **Fase 12 (RRHH)**: Reportes de Cierre de Mes Avanzados e Históricos.
+- [ ] **Fase 13 (UI/UX)**: Pulido de los 58 errores de Lint detectados.

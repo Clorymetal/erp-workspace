@@ -229,4 +229,45 @@ _Nota: Al retomar el trabajo, leer siempre el último registro de estado y revis
 - **Fase de Pago (Fase 7):** Continuar con Tesorería y Pagos tras el primer despliegue base.
 
 ---
+---
+_Nota: Al retomar el trabajo, leer siempre el último registro de estado y revisar `task.md`._
+
+### Sesión 13: 04 de Abril de 2026 - Sprint de Estabilización y State Management (MODO YOLO)
+**Objetivos:**
+- Resolver puntos críticos de deuda técnica de forma autónoma.
+- Implementar manejo de estados global y caché en Frontend.
+- Estandarizar manejo de errores en Backend.
+
+**Acciones Realizadas:**
+- [x] **Backend - Robustez:** Implementación de `errorMiddleware.ts`. Ahora el servidor captura excepciones de forma centralizada y responde con JSON estandarizado, evitando fallos silenciosos.
+- [x] **Frontend - TanStack Query:** Instalación y configuración de `@tanstack/react-query`. 
+  - Centralización de peticiones en `QueryClient` con caché de 5 minutos.
+  - Creación de capa de `hooks` personalizados: `useProviders.ts` y `useEmployees.ts`.
+  - Refactorización de `ProveedoresPage.tsx` y `EmpleadosPage.tsx` eliminando `useEffect` manuales y estados locales redundantes.
+- [x] **Calidad (CI/CD Ready):** Agregado script de `lint` global en la raíz del monorepo. Identificados 58 puntos de mejora en tipado (uso de `any`) para futuras sesiones.
+- [x] **Documentación:** Actualización de `tech_debt_and_risks.md` marcando los puntos 4 y 5 como **RESUELTOS**.
+
+**Estado Actual:**
+- El ERP es ahora mucho más rápido al navegar entre pestañas gracias al sistema de caché.
+- El código es más mantenible al separar la lógica de fetching en hooks.
+- La base está lista para escalar a módulos de escritura pesada como Inventario.
+
+---
+
+### Sesión 14: 06 de Abril de 2026 - Despliegue de Libro IVA a Producción
+**Objetivos:**
+- Desplegar el nuevo submódulo "Libro IVA Compras" y sus respectivos cambios en el esquema de la BD (campos `ivaPeriod` e `ivaNumber`) al entorno de Producción (Render + Neon). 
+- Evitar corrupción de la Base de Datos siguiendo las políticas de migración.
+
+**Acciones Realizadas:**
+- [x] **Migración:** Se generó exitosamente la migración SQL física (`npx prisma migrate dev`) para formalizar la creación de las columnas del IVA.
+- [x] **Versionado:** Se acoplaron las actualizaciones del UI Core y del Router al commit principal.
+- [x] **Despliegue Automático:** Se hizo un `git push origin main` para que Render inyecte la migración a Neon de forma segura vía `migrate deploy` durante su build.
+- [x] **Script de Transición:** Se dejó documentado y listo el script `update_iva_period.js`.
+
+**Estado Actual:**
+- La UI en producción permite filtrar por periodo mensual y reorganizar las facturas (`Rec`). Todos los cambios están sincronizados remotamente.
+- **Requiere acción manual del usuario (solo una vez):** Correr en la terminal de Render el comando `node scripts/update_iva_period.js` para asignar todas sus compras antiguas al periodo base de Febrero/Marzo e inicializar los datos sin fricción.
+
+---
 _Nota: Al retomar el trabajo, leer siempre el último registro de estado y revisar `task.md`._
