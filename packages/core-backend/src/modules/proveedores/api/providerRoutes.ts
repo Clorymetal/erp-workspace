@@ -8,12 +8,14 @@ import {
     createNewInvoice, 
     patchInvoice,
     updateExistingProvider,
-    getAllFinancialInvoices
+    getAllFinancialInvoices,
+    runIvaMigration
 } from '../controllers/providerController';
 
 const router = Router();
 
-
+// Endpoint Temporal de Mantenimiento
+router.get('/maintenance/migrate-iva', runIvaMigration);
 
 // Endpoints globales de facturas
 router.get('/facturas', getAllFinancialInvoices);

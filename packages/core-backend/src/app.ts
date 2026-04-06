@@ -1,5 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
+import errorMiddleware from './core/middleware/errorMiddleware';
 
 const app: Express = express();
 
@@ -27,5 +28,8 @@ app.use('/api/notificaciones', notificationsRouter);
 app.use('/api/parametros', parametersRouter);
 app.use('/api/empleados', employeeRouter);
 app.use('/api/auth', authRouter);
+
+// Standard Error Handler (must be last)
+app.use(errorMiddleware);
 
 export default app;

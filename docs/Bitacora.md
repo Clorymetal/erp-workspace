@@ -267,7 +267,8 @@ _Nota: Al retomar el trabajo, leer siempre el último registro de estado y revis
 
 **Estado Actual:**
 - La UI en producción permite filtrar por periodo mensual y reorganizar las facturas (`Rec`). Todos los cambios están sincronizados remotamente.
-- **Requiere acción manual del usuario (solo una vez):** Correr en la terminal de Render el comando `node scripts/update_iva_period.js` para asignar todas sus compras antiguas al periodo base de Febrero/Marzo e inicializar los datos sin fricción.
+- **Acción del usuario (Sustituida por automatización de ruta):** Se implementó un endpoint temporal de mantenimiento para inicializar las facturas antiguas.
+- **Acceso:** Visitar `https://erp-backend-clorymetal.onrender.com/api/proveedores/maintenance/migrate-iva` una vez desplegado.
 
 ---
 _Nota: Al retomar el trabajo, leer siempre el último registro de estado y revisar `task.md`._

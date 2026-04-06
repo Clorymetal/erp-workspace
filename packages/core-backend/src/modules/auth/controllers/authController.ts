@@ -22,40 +22,31 @@ export const googleLogin = async (req: Request, res: Response) => {
 
     const { email, name, picture } = payload;
 
-    // Buscar usuario usando SQL directo (evita dependencia del Prisma client generado)
-    const existingUsers = await prisma.$queryRawUnsafe<any[]>(
-      `SELECT * FROM "Core_User" WHERE "email" = $1 LIMIT 1`, email
-    );
-
-    let user = existingUsers[0] || null;
+    let user = await prisma.core_User.findUnique({
+      where: { email }
+    });
 
     if (!user) {
-      // Verificar si es el primer usuario para asignarle rol ADMIN
-      const countResult = await prisma.$queryRawUnsafe<any[]>(
-        `SELECT COUNT(*) as count FROM "Core_User"`
-      );
-      const isFirstUser = parseInt(countResult[0]?.count || '0') === 0;
+      const userCount = await prisma.core_User.count();
+      const isFirstUser = userCount === 0;
       const role = isFirstUser ? 'ADMIN' : 'VIEWER';
-      const id = crypto.randomUUID();
-      const now = new Date().toISOString();
 
-      await prisma.$executeRawUnsafe(
-        `INSERT INTO "Core_User" ("id", "email", "name", "picture", "role", "isActive", "createdAt", "updatedAt")
-         VALUES ($1, $2, $3, $4, $5::"UserRole", true, $6::timestamp, $7::timestamp)`,
-        id, email, name ?? null, picture ?? null, role, now, now
-      );
-
-      const newUsers = await prisma.$queryRawUnsafe<any[]>(
-        `SELECT * FROM "Core_User" WHERE "id" = $1`, id
-      );
-      user = newUsers[0];
+      user = await prisma.core_User.create({
+        data: {
+          email,
+          name: name ?? null,
+          picture: picture ?? null,
+          role,
+          isActive: true
+        }
+      });
     }
 
     // Actualizar último login
-    await prisma.$executeRawUnsafe(
-      `UPDATE "Core_User" SET "lastLogin" = $1::timestamp WHERE "id" = $2`,
-      new Date().toISOString(), user.id
-    );
+    user = await prisma.core_User.update({
+      where: { id: user.id },
+      data: { lastLogin: new Date() }
+    });
 
     // Generar JWT
     const token = jwt.sign(

@@ -1,13 +1,23 @@
-import { Request, Response } from 'express';
-import { 
-    createProvider, 
-    updateProvider, 
-    getSupplierBalance, 
+    updateInvoice,
     getAllInvoices,
     createInvoice,
-    updateInvoice
+    updateProvider,
+    getSupplierBalance,
+    createProvider
 } from '../services/providerService';
 import { prisma } from '../../../db';
+
+export const runIvaMigration = async (req: Request, res: Response) => {
+    try {
+        const result = await prisma.prov_Invoice.updateMany({
+            where: { ivaPeriod: null },
+            data: { ivaPeriod: '2026-03' }
+        });
+        res.json({ message: `Successfully updated ${result.count} invoices to 2026-03.` });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+};
 
 export const getAllProviders = async (req: Request, res: Response) => {
     try {

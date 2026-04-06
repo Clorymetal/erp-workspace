@@ -15,8 +15,10 @@ interface AuthContextType {
   token: string | null;
   login: (credential: string) => Promise<void>;
   logout: () => void;
+  mockLogin: () => void;
   isLoading: boolean;
 }
+
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -27,6 +29,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const navigate = useNavigate();
 
   const verifyToken = async (savedToken: string) => {
+    if (savedToken === 'mock-token') {
+      const mockUser: User = { 
+        id: 'mock-id', 
+        email: 'dev@clorymetal.com', 
+        name: 'Developer Mode', 
+        picture: '', 
+        role: 'ADMIN' 
+      };
+      setUser(mockUser);
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const res = await fetch(`${API_BASE_URL}/auth/me`, {
         headers: { Authorization: `Bearer ${savedToken}` },
@@ -85,8 +100,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     navigate('/login');
   };
 
+  const mockLogin = () => {
+    const mockUser: User = { 
+      id: 'mock-id', 
+      email: 'dev@clorymetal.com', 
+      name: 'Developer Mode', 
+      picture: '', 
+      role: 'ADMIN' 
+    };
+    setUser(mockUser);
+    setToken('mock-token');
+    localStorage.setItem('token', 'mock-token');
+    navigate('/');
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, token, login, logout, mockLogin, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
