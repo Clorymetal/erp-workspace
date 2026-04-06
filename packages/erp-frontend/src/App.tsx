@@ -3,10 +3,22 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Layout } from './core/layout/Layout';
 import { AuthProvider, useAuth } from './core/contexts/AuthContext';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+      staleTime: 1000 * 60 * 5, // 5 minutes cache
+    },
+  },
+});
 
 import { DashboardPage } from './modules/dashboard/pages/DashboardPage';
 import { ProveedoresPage } from './modules/proveedores/pages/ProveedoresPage';
 import { ComprasPage } from './modules/proveedores/pages/ComprasPage';
+import { LibroIvaComprasPage } from './modules/proveedores/pages/LibroIvaComprasPage';
 import ParametersPage from './modules/configuracion/pages/ParametersPage';
 import { EmpleadosPage } from './modules/empleados/EmpleadosPage';
 import { LoginPage } from './modules/auth/pages/LoginPage';
@@ -43,25 +55,28 @@ function App() {
 
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <BrowserRouter>
-        <AuthProvider>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            
-            <Route element={<ProtectedRoute />}>
-              <Route path="/" element={<Layout />}>
-                <Route index element={<DashboardPage />} />
-                <Route path="proveedores" element={<ProveedoresPage />} />
-                <Route path="compras" element={<ComprasPage />} />
-                <Route path="parametros" element={<ParametersPage />} />
-                <Route path="empleados" element={<EmpleadosPage />} />
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <AuthProvider>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              
+              <Route element={<ProtectedRoute />}>
+                <Route path="/" element={<Layout />}>
+                  <Route index element={<DashboardPage />} />
+                  <Route path="proveedores" element={<ProveedoresPage />} />
+                  <Route path="compras" element={<ComprasPage />} />
+                  <Route path="libro-iva" element={<LibroIvaComprasPage />} />
+                  <Route path="parametros" element={<ParametersPage />} />
+                  <Route path="empleados" element={<EmpleadosPage />} />
+                </Route>
               </Route>
-            </Route>
 
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </AuthProvider>
-      </BrowserRouter>
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </AuthProvider>
+        </BrowserRouter>
+      </QueryClientProvider>
     </GoogleOAuthProvider>
   );
 }

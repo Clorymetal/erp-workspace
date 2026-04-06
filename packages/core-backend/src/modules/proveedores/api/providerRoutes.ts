@@ -15,6 +15,8 @@ const router = Router();
 
 // Endpoints globales de facturas
 router.get('/facturas', getAllFinancialInvoices);
+router.patch('/facturas/:invoiceId', patchInvoice);
+
 
 // Endpoints principales de proveedores
 router.get('/', getAllProviders);

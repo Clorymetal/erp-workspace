@@ -21,7 +21,9 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData }: InvoiceMo
     perceptionAmount: '',
     nonTaxedAmount: '',
     isCtaCte: true,
-    status: 'PENDIENTE'
+    status: 'PENDIENTE',
+    ivaPeriod: '',
+    ivaNumber: ''
   });
 
   useEffect(() => {
@@ -35,6 +37,8 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData }: InvoiceMo
         taxAmount: initialData.taxAmount?.toString() || '',
         perceptionAmount: initialData.perceptionAmount?.toString() || '',
         nonTaxedAmount: initialData.nonTaxedAmount?.toString() || '',
+        ivaPeriod: initialData.ivaPeriod || '',
+        ivaNumber: initialData.ivaNumber?.toString() || '',
       });
     }
   }, [initialData, isOpen]);
@@ -174,17 +178,54 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData }: InvoiceMo
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-           <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Estado:</label>
-           <select 
-             value={formData.status}
-             onChange={e => setFormData({...formData, status: e.target.value})}
-             className="text-sm p-1.5 bg-gray-50 dark:bg-gray-800 border rounded-lg dark:border-gray-700"
-           >
-             <option value="PENDIENTE">PENDIENTE</option>
-             <option value="PAGADA">PAGADA</option>
-             <option value="VENCIDA">VENCIDA</option>
-           </select>
+        <div className="flex items-center gap-4">
+           <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Estado:</label>
+            <select 
+              value={formData.status}
+              onChange={e => setFormData({...formData, status: e.target.value})}
+              className="text-sm p-1.5 bg-gray-50 dark:bg-gray-800 border rounded-lg dark:border-gray-700"
+            >
+              <option value="PENDIENTE">PENDIENTE</option>
+              <option value="PAGADA">PAGADA</option>
+              <option value="VENCIDA">VENCIDA</option>
+            </select>
+           </div>
+           
+           <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 italic">Cta Cte:</label>
+            <input 
+              type="checkbox" 
+              checked={formData.isCtaCte} 
+              onChange={e => setFormData({...formData, isCtaCte: e.target.checked})}
+              className="w-4 h-4 rounded text-primary-500"
+            />
+           </div>
+        </div>
+
+        <div className="border-t border-gray-100 dark:border-dark-border pt-4 mt-2">
+          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Información Libro IVA (Contabilidad)</p>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300">Período (YYYY-MM)</label>
+              <input
+                type="month"
+                value={formData.ivaPeriod}
+                onChange={e => setFormData({ ...formData, ivaPeriod: e.target.value })}
+                className="mt-1 w-full p-2 bg-gray-50 dark:bg-gray-800 border rounded-lg dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300">N° Orden (Rec)</label>
+              <input
+                type="number"
+                value={formData.ivaNumber}
+                onChange={e => setFormData({ ...formData, ivaNumber: e.target.value })}
+                className="mt-1 w-full p-2 bg-gray-50 dark:bg-gray-800 border rounded-lg dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm"
+                placeholder="1, 2, 3..."
+              />
+            </div>
+          </div>
         </div>
 
         <div className="flex justify-end gap-3 mt-6">

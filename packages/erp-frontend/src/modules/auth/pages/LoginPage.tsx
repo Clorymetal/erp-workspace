@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldCheck, LayoutDashboard, AlertTriangle, Loader2 } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
-  const { login } = useAuth();
+  const { login, mockLogin } = useAuth();
   const [error, setError] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -81,6 +81,21 @@ export const LoginPage: React.FC = () => {
               text="signin_with"
             />
           )}
+
+          <button 
+            onClick={() => {
+              const pin = window.prompt('Ingresá el PIN de acceso:');
+              if (pin === '8300237') {
+                mockLogin();
+              } else if (pin !== null) {
+                setError('PIN incorrecto. Acceso denegado.');
+              }
+            }}
+            className="mt-4 text-[10px] text-gray-400 hover:text-primary-500 transition-colors uppercase tracking-widest font-bold border-t border-gray-100 dark:border-dark-border pt-4 w-full"
+          >
+            Acceso Alternativo
+          </button>
+          
           <p className="text-[10px] text-gray-400 mt-2 uppercase tracking-widest font-bold">Powered by Antigravity AI</p>
         </div>
       </motion.div>

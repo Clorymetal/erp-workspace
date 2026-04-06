@@ -60,7 +60,9 @@ export const createInvoice = async (providerId: string, data: any) => {
       nonTaxedAmount: Number(data.nonTaxedAmount || 0),
       totalAmount: Number(data.totalAmount || 0),
       isCtaCte: data.isCtaCte ?? true,
-      status: data.status || 'PENDIENTE'
+      status: data.status || 'PENDIENTE',
+      ivaPeriod: data.ivaPeriod || `${new Date(data.issueDate).getFullYear()}-${String(new Date(data.issueDate).getMonth() + 1).padStart(2, '0')}`,
+      ivaNumber: data.ivaNumber ? Number(data.ivaNumber) : null
     }
   });
 };
@@ -80,7 +82,9 @@ export const updateInvoice = async (invoiceId: string, data: any) => {
       nonTaxedAmount: data.nonTaxedAmount !== undefined ? Number(data.nonTaxedAmount) : undefined,
       totalAmount: data.totalAmount !== undefined ? Number(data.totalAmount) : undefined,
       status: data.status,
-      isCtaCte: data.isCtaCte
+      isCtaCte: data.isCtaCte,
+      ivaPeriod: data.ivaPeriod,
+      ivaNumber: data.ivaNumber !== undefined ? (data.ivaNumber === null ? null : Number(data.ivaNumber)) : undefined
     }
   });
 };
@@ -133,7 +137,7 @@ export const createProvider = async (data: any) => {
 };
 
 export const getAllInvoices = async (filters: any) => {
-  const { startDate, endDate, status, isCtaCte, province, providerId } = filters;
+  const { startDate, endDate, status, isCtaCte, province, providerId, ivaPeriod } = filters;
   
   const where: any = {};
   
@@ -150,6 +154,10 @@ export const getAllInvoices = async (filters: any) => {
   
   if (province && province !== 'ALL') {
     where.provider = { province };
+  }
+
+  if (ivaPeriod && ivaPeriod !== 'ALL') {
+    where.ivaPeriod = ivaPeriod;
   }
 
   return await prisma.prov_Invoice.findMany({
