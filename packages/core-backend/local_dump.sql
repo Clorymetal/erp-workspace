@@ -1,0 +1,240 @@
+--
+-- PostgreSQL database dump
+--
+
+\restrict KRX1E0S9aZiYNDksvrUBJV2U8ViAdcbhUKjZgVllFx9KHHSvePMpcWq3k0WvLCR
+
+-- Dumped from database version 15.17
+-- Dumped by pg_dump version 15.17
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Data for Name: Core_Notification; Type: TABLE DATA; Schema: public; Owner: erp_admin
+--
+
+
+
+--
+-- Data for Name: Core_Parameter; Type: TABLE DATA; Schema: public; Owner: erp_admin
+--
+
+INSERT INTO public."Core_Parameter" VALUES ('be43486d-cbbe-465a-b1ff-6610636c460e', 'PROVINCIA', 'CHACO', 'Chaco', 'Chaco', true, '2026-03-20 20:40:19.643', '2026-03-20 20:40:19.643');
+INSERT INTO public."Core_Parameter" VALUES ('43271ff8-783e-4ffc-adaf-2004deefafcf', 'PROVINCIA', 'S_FE', 'Santa Fe', 'Santa Fe', true, '2026-03-20 20:40:19.663', '2026-03-20 20:40:19.663');
+INSERT INTO public."Core_Parameter" VALUES ('75193766-ef0e-40a5-afc6-79a0e7dd6b11', 'PROVINCIA', 'CBA', 'Córdoba', 'Córdoba', true, '2026-03-20 20:40:19.672', '2026-03-20 20:40:19.672');
+INSERT INTO public."Core_Parameter" VALUES ('1fdfcb7b-3cba-410b-923a-319104c532cf', 'PROVINCIA', 'BSAS', 'Bs. As.', 'Buenos Aires', true, '2026-03-20 20:40:19.678', '2026-03-20 20:40:19.678');
+INSERT INTO public."Core_Parameter" VALUES ('2c3d6922-af35-412c-aedb-349cfd0ff74a', 'PROVINCIA', 'S_CRUZ', 'Santa Cruz', 'Santa Cruz', true, '2026-03-20 20:40:19.684', '2026-03-20 20:40:19.684');
+INSERT INTO public."Core_Parameter" VALUES ('738602e4-08da-46c4-b400-752dcadcca6e', 'COND_FISCAL', 'RI', 'Responsable Inscripto', 'Resp. Inscrito', true, '2026-03-20 20:40:19.69', '2026-03-20 20:40:19.69');
+INSERT INTO public."Core_Parameter" VALUES ('7c83010f-36b3-4b67-b66b-579401fcf3a3', 'COND_FISCAL', 'MT', 'Monotributo', 'Monotributo', true, '2026-03-20 20:40:19.696', '2026-03-20 20:40:19.696');
+INSERT INTO public."Core_Parameter" VALUES ('87b0a27f-bda8-4fbf-8a99-52552a58613c', 'COND_FISCAL', 'EX', 'Exento', 'Exento', true, '2026-03-20 20:40:19.701', '2026-03-20 20:40:19.701');
+INSERT INTO public."Core_Parameter" VALUES ('cfdcafda-b22e-4fc6-b75f-bf68a0aeaaf8', 'COND_FISCAL', 'CF', 'Consumidor Final', 'Cons. Final', true, '2026-03-20 20:40:19.707', '2026-03-20 20:40:19.707');
+INSERT INTO public."Core_Parameter" VALUES ('a95d8e7c-2992-44a5-84ed-2869ffc3a6c1', 'FACTO_TYPE', 'FACTURA_A', 'Factura A', 'Factura A', true, '2026-03-20 20:40:19.712', '2026-03-20 20:40:19.712');
+INSERT INTO public."Core_Parameter" VALUES ('342142c0-7a7a-446a-a820-c56cb4347424', 'FACTO_TYPE', 'FACTURA_B', 'Factura B', 'Factura B', true, '2026-03-20 20:40:19.719', '2026-03-20 20:40:19.719');
+INSERT INTO public."Core_Parameter" VALUES ('9ebc654e-9617-4ade-9510-207692433be5', 'FACTO_TYPE', 'NOTA_CREDITO', 'Nota de Crédito', 'N. Crédito', true, '2026-03-20 20:40:19.725', '2026-03-20 20:40:19.725');
+
+
+--
+-- Data for Name: Emp_Employee; Type: TABLE DATA; Schema: public; Owner: erp_admin
+--
+
+INSERT INTO public."Emp_Employee" VALUES (1, 'Jorge', 'MONTHLY', 903681, true, '2026-03-27 13:33:39.318', '2026-03-27 13:33:39.318');
+INSERT INTO public."Emp_Employee" VALUES (2, 'Alfredo', 'MONTHLY', 802899, true, '2026-03-27 13:33:39.358', '2026-03-27 13:33:39.358');
+INSERT INTO public."Emp_Employee" VALUES (3, 'Antonio', 'MONTHLY', 802899, true, '2026-03-27 13:33:39.375', '2026-03-27 13:33:39.375');
+INSERT INTO public."Emp_Employee" VALUES (4, 'Gabriel', 'MONTHLY', 1500000, true, '2026-03-27 13:33:39.386', '2026-03-27 13:33:39.386');
+INSERT INTO public."Emp_Employee" VALUES (6, 'Nestor', 'BIWEEKLY', 1236116, true, '2026-03-27 13:33:39.42', '2026-03-27 13:33:39.42');
+INSERT INTO public."Emp_Employee" VALUES (7, 'Nino', 'BIWEEKLY', 870969, true, '2026-03-27 13:33:39.431', '2026-03-27 13:33:39.431');
+INSERT INTO public."Emp_Employee" VALUES (5, 'Jose', 'BIWEEKLY', 1023268, true, '2026-03-27 13:33:39.408', '2026-03-31 19:27:20.46');
+
+
+--
+-- Data for Name: Emp_SalaryPeriod; Type: TABLE DATA; Schema: public; Owner: erp_admin
+--
+
+INSERT INTO public."Emp_SalaryPeriod" VALUES (4, 4, 2026, 3, 1500000, NULL, NULL, 1500000, 0, false, '2026-03-27 13:33:39.39', '2026-03-31 18:56:38.952');
+INSERT INTO public."Emp_SalaryPeriod" VALUES (8, 2, 2026, 4, 802899, NULL, NULL, 0, 802899, false, '2026-03-31 19:16:54.607', '2026-03-31 19:16:54.607');
+INSERT INTO public."Emp_SalaryPeriod" VALUES (9, 3, 2026, 4, 802899, NULL, NULL, 0, 802899, false, '2026-03-31 19:16:54.618', '2026-03-31 19:16:54.618');
+INSERT INTO public."Emp_SalaryPeriod" VALUES (10, 4, 2026, 4, 1500000, NULL, NULL, 0, 1500000, false, '2026-03-31 19:16:54.623', '2026-03-31 19:16:54.623');
+INSERT INTO public."Emp_SalaryPeriod" VALUES (11, 1, 2026, 4, 903681, NULL, NULL, 0, 903681, false, '2026-03-31 19:16:54.628', '2026-03-31 19:16:54.628');
+INSERT INTO public."Emp_SalaryPeriod" VALUES (13, 6, 2026, 4, 1236116, 618058, 618058, 0, 1236116, false, '2026-03-31 19:16:54.638', '2026-03-31 19:16:54.638');
+INSERT INTO public."Emp_SalaryPeriod" VALUES (14, 7, 2026, 4, 870969, 435485, 435484, 0, 870969, false, '2026-03-31 19:16:54.643', '2026-03-31 19:16:54.643');
+INSERT INTO public."Emp_SalaryPeriod" VALUES (1, 1, 2026, 3, 903681, NULL, NULL, 450000, 453681, false, '2026-03-27 13:33:39.34', '2026-03-31 19:17:33.484');
+INSERT INTO public."Emp_SalaryPeriod" VALUES (5, 5, 2026, 3, 1023268, 509179, 514089, 509179, 514089, false, '2026-03-27 13:33:39.412', '2026-03-31 19:18:09.086');
+INSERT INTO public."Emp_SalaryPeriod" VALUES (2, 2, 2026, 3, 802899, NULL, NULL, 552640, 250259, false, '2026-03-27 13:33:39.362', '2026-03-31 19:18:37.032');
+INSERT INTO public."Emp_SalaryPeriod" VALUES (6, 6, 2026, 3, 1236116, 517809, 718307, 517810, 718306, false, '2026-03-27 13:33:39.424', '2026-03-31 19:19:03.462');
+INSERT INTO public."Emp_SalaryPeriod" VALUES (3, 3, 2026, 3, 802899, NULL, NULL, 400000, 402899, false, '2026-03-27 13:33:39.378', '2026-03-31 19:19:24.195');
+INSERT INTO public."Emp_SalaryPeriod" VALUES (7, 7, 2026, 3, 870969, 432743, 438226, 432743, 438226, false, '2026-03-27 13:33:39.436', '2026-03-31 19:20:01.056');
+INSERT INTO public."Emp_SalaryPeriod" VALUES (12, 5, 2026, 4, 1023268, 511634, 511634, 0, 1023268, false, '2026-03-31 19:16:54.633', '2026-03-31 19:27:20.476');
+
+
+--
+-- Data for Name: Emp_Advance; Type: TABLE DATA; Schema: public; Owner: erp_admin
+--
+
+INSERT INTO public."Emp_Advance" VALUES (5, 4, 4, '2026-02-28 03:00:00', 64300, 0, 0, 64300, 64300, 1435700, NULL, '2026-03-27 13:33:39.393');
+INSERT INTO public."Emp_Advance" VALUES (6, 4, 4, '2026-03-07 03:00:00', 200000, 0, 200000, 400000, 464300, 1035700, NULL, '2026-03-27 13:33:39.397');
+INSERT INTO public."Emp_Advance" VALUES (7, 4, 4, '2026-03-11 03:00:00', 200000, 0, 200000, 400000, 864300, 635700, NULL, '2026-03-27 13:33:39.401');
+INSERT INTO public."Emp_Advance" VALUES (8, 4, 4, '2026-03-21 03:00:00', 250000, 0, 0, 250000, 1114300, 385700, NULL, '2026-03-27 13:33:39.405');
+INSERT INTO public."Emp_Advance" VALUES (14, 4, 4, '2026-03-27 00:00:00', 185700, 0, 200000, 385700, 1500000, 0, '', '2026-03-31 18:56:38.887');
+INSERT INTO public."Emp_Advance" VALUES (1, 1, 1, '2026-03-21 03:00:00', 200000, 0, 0, 200000, 200000, 703681, NULL, '2026-03-27 13:33:39.351');
+INSERT INTO public."Emp_Advance" VALUES (15, 1, 1, '2026-03-28 00:00:00', 100000, 150000, 0, 250000, 450000, 453681, '', '2026-03-31 19:17:33.457');
+INSERT INTO public."Emp_Advance" VALUES (9, 5, 5, '2026-03-21 03:00:00', 250000, 0, 0, 250000, 250000, 773268, NULL, '2026-03-27 13:33:39.416');
+INSERT INTO public."Emp_Advance" VALUES (16, 5, 5, '2026-03-28 00:00:00', 100000, 159179, 0, 259179, 509179, 514089, '', '2026-03-31 19:18:09.061');
+INSERT INTO public."Emp_Advance" VALUES (2, 2, 2, '2026-03-14 03:00:00', 152640, 0, 0, 152640, 152640, 650259, NULL, '2026-03-27 13:33:39.367');
+INSERT INTO public."Emp_Advance" VALUES (3, 2, 2, '2026-03-21 03:00:00', 200000, 0, 0, 200000, 352640, 450259, NULL, '2026-03-27 13:33:39.371');
+INSERT INTO public."Emp_Advance" VALUES (17, 2, 2, '2026-03-28 00:00:00', 100000, 100000, 0, 200000, 552640, 250259, '', '2026-03-31 19:18:37.005');
+INSERT INTO public."Emp_Advance" VALUES (10, 6, 6, '2026-03-21 03:00:00', 250000, 0, 0, 250000, 250000, 986116, NULL, '2026-03-27 13:33:39.428');
+INSERT INTO public."Emp_Advance" VALUES (18, 6, 6, '2026-03-28 00:00:00', 100000, 167810, 0, 267810, 517810, 718306, '', '2026-03-31 19:19:03.445');
+INSERT INTO public."Emp_Advance" VALUES (4, 3, 3, '2026-03-21 03:00:00', 200000, 0, 0, 200000, 200000, 602899, NULL, '2026-03-27 13:33:39.382');
+INSERT INTO public."Emp_Advance" VALUES (19, 3, 3, '2026-03-28 00:00:00', 100000, 100000, 0, 200000, 400000, 402899, '', '2026-03-31 19:19:24.168');
+INSERT INTO public."Emp_Advance" VALUES (11, 7, 7, '2026-03-21 03:00:00', 200000, 0, 0, 200000, 200000, 670969, NULL, '2026-03-27 13:33:39.44');
+INSERT INTO public."Emp_Advance" VALUES (20, 7, 7, '2026-03-28 00:00:00', 100000, 132743, 0, 232743, 432743, 438226, '', '2026-03-31 19:20:01.037');
+
+
+--
+-- Data for Name: Prov_Category; Type: TABLE DATA; Schema: public; Owner: erp_admin
+--
+
+
+
+--
+-- Data for Name: Prov_Provider; Type: TABLE DATA; Schema: public; Owner: erp_admin
+--
+
+INSERT INTO public."Prov_Provider" VALUES ('3066e0ea-07ba-43bc-8275-fb43d14e4327', 'LUIS A CUADRADO', '20079145514', 'J. D. PERON 445', 0, NULL, '2026-03-20 20:39:09.245', '2026-03-20 21:07:14.59', '3500', 'Chaco', 'RI', false);
+INSERT INTO public."Prov_Provider" VALUES ('3655e750-afb6-413a-a0bd-26239bad7d51', 'LUMINUM SRL', '30714714984', 'AV SARMIENTO 1798', 0, NULL, '2026-03-20 20:39:09.249', '2026-03-20 21:07:14.595', '3500', 'Chaco', 'RI', false);
+INSERT INTO public."Prov_Provider" VALUES ('4eb6761b-822d-463d-b4a9-d75bf94132a3', 'HIGINIO BERTONI Y CIA SA', '30633006004', 'SANTIAGO DEL ESTERO 2415', 0, NULL, '2026-03-20 20:39:09.242', '2026-03-20 21:09:22.668', '3500', 'Chaco', 'RI', false);
+INSERT INTO public."Prov_Provider" VALUES ('5ea458d3-2f44-4dec-a2d0-8d96a6b9406f', 'PITTERI COMERCIAL', '30670195739', '25 DE MAYO 1171', 0, NULL, '2026-03-20 20:39:09.174', '2026-03-20 21:07:14.518', '3500', 'Chaco', 'RI', false);
+INSERT INTO public."Prov_Provider" VALUES ('63ee6684-d075-42ff-89e7-5771965e2de8', 'FACTORIA AUTOPARTISTA SA', '30708925949', 'DE LA PALA TL 26 OA', 0, NULL, '2026-03-20 20:39:09.179', '2026-03-20 21:07:14.523', '1771', 'Bs. As.', 'RI', true);
+INSERT INTO public."Prov_Provider" VALUES ('bbfd2027-16a0-49f0-91ac-089f7a7b627a', 'FRECAM', '23243507839', 'PASAJE CERES 3216', 0, NULL, '2026-03-20 20:39:09.185', '2026-03-20 21:07:14.526', '2000', 'Santa Fé', 'RI', true);
+INSERT INTO public."Prov_Provider" VALUES ('4b5f39b9-5307-43c1-bd80-ed14e7ceb51d', 'KISZKA JANNICK', '20448013570', '25 DE MAYO 3801', 0, NULL, '2026-03-20 20:39:09.19', '2026-03-20 21:07:14.53', '3514', 'Chaco', 'RI', false);
+INSERT INTO public."Prov_Provider" VALUES ('860cd975-cb80-4276-ac2b-25da169c868d', 'SPEED BUSINESS SA', '30686978350', 'FREY CAPELLI 60', 0, NULL, '2026-03-20 20:39:09.194', '2026-03-20 21:07:14.534', '3500', 'Chaco', 'RI', false);
+INSERT INTO public."Prov_Provider" VALUES ('c215ebf8-3136-42ae-b82f-f7871ea7d761', 'PETROAVELLANEDA SRL', '30670214644', 'RUTA N AVELLANEDA  Y AV VELEZ  S', 0, NULL, '2026-03-20 20:39:09.199', '2026-03-20 21:07:14.538', '3500', 'Chaco', 'RI', false);
+INSERT INTO public."Prov_Provider" VALUES ('19e4f941-1f29-45ab-8408-f6a8b7457acd', 'RG COMERCIAL SA', '30715315544', 'LUIS FONTI 35', 0, NULL, '2026-03-20 20:39:09.203', '2026-03-20 21:07:14.542', '2300', 'Bs. As.', 'RI', true);
+INSERT INTO public."Prov_Provider" VALUES ('12ecb42b-2ca2-4b62-881b-402b07571178', 'FRECOM SRL', '30555422659', 'LAFERRERE GREGORIO D 2651', 0, NULL, '2026-03-20 20:39:09.207', '2026-03-20 21:07:14.545', '1604', 'Bs. As.', 'RI', true);
+INSERT INTO public."Prov_Provider" VALUES ('8e404a67-8fc9-4f83-965f-c28405ffa320', 'Wolse SRL', '30621532983', 'AV. MEDRANO 362', 0, NULL, '2026-03-20 20:39:09.129', '2026-03-20 21:07:14.478', '1179', 'Bs. As.', 'RI', true);
+INSERT INTO public."Prov_Provider" VALUES ('74a5cf54-8f87-405c-8f60-31d659a4a1d6', 'CORRADINI SRL', '30709244961', 'LISANDRO DE LA TORRE 3041', 0, NULL, '2026-03-20 20:39:09.14', '2026-03-20 21:07:14.49', '1678', 'Bs. As.', 'RI', true);
+INSERT INTO public."Prov_Provider" VALUES ('cc0fe0a7-662c-4509-88a1-59f8e284d319', 'CHACO RODAMIENTOS SA', '33615447639', 'RUTA 11 KM 1006,5', 0, NULL, '2026-03-20 20:39:09.146', '2026-03-20 21:07:14.495', '3500', 'Chaco', 'RI', false);
+INSERT INTO public."Prov_Provider" VALUES ('0505c151-3246-4417-990b-75f9ac402717', 'BELLINI ELECTRICIDAD SRL', '30624289494', 'AV 25 DE MAYO 1085', 0, NULL, '2026-03-20 20:39:09.152', '2026-03-20 21:07:14.499', '3500', 'Chaco', 'RI', false);
+INSERT INTO public."Prov_Provider" VALUES ('58e118e2-0241-4324-ad17-ee241017a81b', 'DIESEL FRENOS SRL', '30584462120', 'DEL BARCO CENTENERO 2969', 0, NULL, '2026-03-20 20:39:09.158', '2026-03-20 21:07:14.505', '1437', 'Bs. As.', 'RI', true);
+INSERT INTO public."Prov_Provider" VALUES ('2d7661be-443d-46b5-abba-7ebd5e7a9ecb', 'HIJOS DE ROBERTO CANCIO DEMONTE SA', '33578089239', 'RUTA 12 KM 1026', 0, NULL, '2026-03-20 20:39:09.164', '2026-03-20 21:07:14.51', '3400', 'Corrientes', 'RI', true);
+INSERT INTO public."Prov_Provider" VALUES ('9d1b0bfd-b31c-48b7-ad58-dfc9f5e05a98', 'FRAS LE ARGENTINA SA', '30636456248', 'COL OESTE RUTA PANAMERICANA', 0, NULL, '2026-03-20 20:39:09.168', '2026-03-20 21:07:14.514', '1619', 'Bs. As.', 'RI', true);
+INSERT INTO public."Prov_Provider" VALUES ('3c83fef4-071c-4493-9835-a5ce3c02704f', 'BULONERA LUCCA SRL', '33710568699', '25 DE MAYO 1775', 0, NULL, '2026-03-20 20:39:09.211', '2026-03-20 21:07:14.548', '3500', 'Chaco', 'RI', false);
+INSERT INTO public."Prov_Provider" VALUES ('f3a50d2e-f58e-4a88-bb5c-939b689ded65', 'BERTONI JUAN IGNACIO', '20249087638', 'A 25 DE MAYO 1495', 0, NULL, '2026-03-20 20:39:09.214', '2026-03-20 21:07:14.553', '3500', 'Chaco', 'RI', false);
+INSERT INTO public."Prov_Provider" VALUES ('4a9899f9-fa6b-4750-832b-d5a4caffdcff', 'EDITORIAL CHACO SA', '30570948012', 'PELLEGRINI 744', 0, NULL, '2026-03-20 20:39:09.218', '2026-03-20 21:07:14.557', '3500', 'Chaco', 'RI', false);
+INSERT INTO public."Prov_Provider" VALUES ('c94047c2-a368-4a4d-b337-01b9c679c494', 'FRIOMEC SRL', '30710451571', 'JD PERON 936', 0, NULL, '2026-03-20 20:39:09.222', '2026-03-20 21:07:14.562', '3500', 'Chaco', 'RI', false);
+INSERT INTO public."Prov_Provider" VALUES ('faca19c8-9156-4a21-aef1-331415c22b9c', 'RUVIRA SERVICIOS SA', '30711522863', 'BARUC 2666', 0, NULL, '2026-03-20 20:39:09.226', '2026-03-20 21:07:14.565', '3500', 'Chaco', 'RI', false);
+INSERT INTO public."Prov_Provider" VALUES ('70ce740a-f4ef-4b76-991e-91866fd75e5f', 'POSNET SOCIEDAD DE RESONSABILIDAD LIMITADA', '30620177497', 'PERU 143 PISO;2 B°MONSERRAT', 0, NULL, '2026-03-20 20:39:09.23', '2026-03-20 21:07:14.57', '1067', 'Bs. As.', 'RI', true);
+INSERT INTO public."Prov_Provider" VALUES ('f7dd0777-54ea-4151-8b31-cc2bcb56121c', 'FARLOC ARGENTINA SAICYF', '30503606204', 'COL OESTE RUTA PANAMERICANA 194', 0, NULL, '2026-03-20 20:39:09.234', '2026-03-20 21:07:14.574', '1619', 'Bs. As.', 'RI', true);
+INSERT INTO public."Prov_Provider" VALUES ('7460d94e-035d-4a7c-8ce9-fce2d1785181', 'FREPILCO SA', '30505079333', 'PILCOMAYO 1023', 0, NULL, '2026-03-20 20:39:09.238', '2026-03-20 21:07:14.58', '1823', 'Bs. As.', 'RI', true);
+
+
+--
+-- Data for Name: Prov_BankAccount; Type: TABLE DATA; Schema: public; Owner: erp_admin
+--
+
+
+
+--
+-- Data for Name: Prov_Payment; Type: TABLE DATA; Schema: public; Owner: erp_admin
+--
+
+
+
+--
+-- Data for Name: Prov_Check; Type: TABLE DATA; Schema: public; Owner: erp_admin
+--
+
+
+
+--
+-- Data for Name: Prov_Contact; Type: TABLE DATA; Schema: public; Owner: erp_admin
+--
+
+
+
+--
+-- Data for Name: Prov_Invoice; Type: TABLE DATA; Schema: public; Owner: erp_admin
+--
+
+INSERT INTO public."Prov_Invoice" VALUES ('3d3c44d6-25d4-4bc9-ae7d-747e1547d6df', 'FACTURA_A', '0004', '00016928', '2026-03-03 03:00:40', '2026-04-02 03:00:40', 0, 0, 0, 3861.35, 'PENDIENTE', '8e404a67-8fc9-4f83-965f-c28405ffa320', '2026-03-20 20:39:09.29', '2026-03-20 21:07:14.636', true, 0, '2026-03-03 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('3491bc99-ed65-4d8a-8860-a2f18bffb5dd', 'FACTURA_A', '0006', '01762483', '2026-03-03 03:00:40', '2026-04-02 03:00:40', 0, 0, 0, 26363.35, 'PENDIENTE', '2d7661be-443d-46b5-abba-7ebd5e7a9ecb', '2026-03-20 20:39:09.301', '2026-03-20 21:07:14.646', true, 0, '2026-03-03 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('23e23e29-e31e-41c4-b777-c7725c2564a6', 'FACTURA_A', '0006', '00250753', '2026-03-04 03:00:40', '2026-04-03 03:00:40', 0, 0, 0, 819799.2, 'PENDIENTE', '63ee6684-d075-42ff-89e7-5771965e2de8', '2026-03-20 20:39:09.311', '2026-03-20 21:07:14.656', true, 0, '2026-03-04 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('c3161435-c2e0-4f85-afa0-294b5dfa995e', 'FACTURA_A', '0006', '00055986', '2026-03-04 03:00:40', '2026-04-03 03:00:40', 0, 0, 0, 4135225.97, 'PENDIENTE', '9d1b0bfd-b31c-48b7-ad58-dfc9f5e05a98', '2026-03-20 20:39:09.317', '2026-03-20 21:07:14.661', true, 0, '2026-03-04 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('ab46ff50-4537-4050-81c8-ccceef552d41', 'FACTURA_A', '0016', '00018396', '2026-03-03 00:00:00', '2026-04-02 00:00:00', 0, 0, 0, 6300, 'PAGADA', '3c83fef4-071c-4493-9835-a5ce3c02704f', '2026-03-20 20:39:09.306', '2026-03-20 21:12:52.73', false, 0, '2026-03-03 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('e878fcf5-e95f-4302-9f47-a13aa76a5529', 'FACTURA_A', '0008', '00012454', '2026-03-05 03:00:40', '2026-04-04 03:00:40', 0, 0, 0, 227684.71, 'PAGADA', '12ecb42b-2ca2-4b62-881b-402b07571178', '2026-03-20 20:39:09.328', '2026-03-20 21:07:14.671', true, 0, '2026-03-05 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('f8b27417-a810-4682-90d7-e0002d206d4c', 'FACTURA_A', '0112', '00002745', '2026-03-05 03:00:40', '2026-04-04 03:00:40', 0, 0, 0, 245418.32, 'PENDIENTE', 'f7dd0777-54ea-4151-8b31-cc2bcb56121c', '2026-03-20 20:39:09.333', '2026-03-20 21:07:14.676', true, 0, '2026-03-05 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('a978c6ae-5727-41c2-a815-1c81bed24516', 'FACTURA_A', '0008', '00012463', '2026-03-05 03:00:40', '2026-04-04 03:00:40', 0, 0, 0, 767311.81, 'PAGADA', '12ecb42b-2ca2-4b62-881b-402b07571178', '2026-03-20 20:39:09.338', '2026-03-20 21:07:14.68', true, 0, '2026-03-05 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('53525faf-717d-4866-a02b-8b121d2fe9cb', 'FACTURA_A', '0013', '00059448', '2026-03-02 00:00:00', '2026-04-01 00:00:00', 0, 0, 0, 4479.98, 'PAGADA', '4eb6761b-822d-463d-b4a9-d75bf94132a3', '2026-03-20 20:39:09.274', '2026-03-20 21:12:57.101', false, 0, '2026-03-02 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('9b56c6f9-4674-4a51-a3eb-c98a4d4a8dd9', 'FACTURA_A', '5000', '00001258', '2026-03-04 00:00:00', '2026-04-03 00:00:00', 0, 0, 0, 23297.87, 'PAGADA', '860cd975-cb80-4276-ac2b-25da169c868d', '2026-03-20 20:39:09.322', '2026-03-20 21:12:20.212', false, 0, '2026-03-04 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('4e1a65a5-cc78-488d-9b96-ec7cd6c96776', 'FACTURA_A', '0006', '01763796', '2026-03-05 03:00:40', '2026-04-04 03:00:40', 0, 0, 0, 27272.2, 'PENDIENTE', '2d7661be-443d-46b5-abba-7ebd5e7a9ecb', '2026-03-20 20:39:09.355', '2026-03-20 21:07:14.696', true, 0, '2026-03-05 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('f0c203a9-be25-4364-a487-ba2c86bedeff', 'FACTURA_A', '0006', '01763641', '2026-03-05 03:00:40', '2026-04-04 03:00:40', 0, 0, 0, 21665.13, 'PENDIENTE', '2d7661be-443d-46b5-abba-7ebd5e7a9ecb', '2026-03-20 20:39:09.361', '2026-03-20 21:07:14.7', true, 0, '2026-03-05 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('4905dbfd-7029-4240-a74a-742edf3fb4e1', 'FACTURA_A', '0046', '00001323', '2026-03-05 00:00:00', '2026-04-04 00:00:00', 0, 0, 0, 70000, 'PAGADA', '3066e0ea-07ba-43bc-8275-fb43d14e4327', '2026-03-20 20:39:09.343', '2026-03-20 21:12:37.186', false, 0, '2026-03-05 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('5ee39199-59ad-4e24-9720-c8d7c730bada', 'FACTURA_A', '0003', '00015753', '2026-03-06 03:00:40', '2026-04-05 03:00:40', 0, 0, 0, 994785.9199999999, 'PENDIENTE', '74a5cf54-8f87-405c-8f60-31d659a4a1d6', '2026-03-20 20:39:09.373', '2026-03-20 21:07:14.711', true, 0, '2026-03-06 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('a3707029-3314-447c-afb6-9583fe27f47a', 'FACTURA_A', '0006', '01765164', '2026-03-07 03:00:40', '2026-04-06 03:00:40', 0, 0, 0, 33191.95, 'PENDIENTE', '2d7661be-443d-46b5-abba-7ebd5e7a9ecb', '2026-03-20 20:39:09.378', '2026-03-20 21:07:14.716', true, 0, '2026-03-07 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('ec7e850a-b566-4a9e-a502-d6214abdaae3', 'FACTURA_A', '0013', '00000579', '2026-03-09 03:00:40', '2026-04-08 03:00:40', 0, 0, 0, 829662.02, 'PENDIENTE', '9d1b0bfd-b31c-48b7-ad58-dfc9f5e05a98', '2026-03-20 20:39:09.383', '2026-03-20 21:07:14.723', true, 0, '2026-03-09 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('2a057cf6-60db-4921-a864-5c3e375865cf', 'FACTURA_A', '0046', '00001324', '2026-03-05 00:00:00', '2026-04-04 00:00:00', 0, 0, 0, 16847.53, 'PAGADA', '3066e0ea-07ba-43bc-8275-fb43d14e4327', '2026-03-20 20:39:09.35', '2026-03-20 21:11:57.613', false, 0, '2026-03-05 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('7545b003-6ddb-476c-947f-9339ca858c0e', 'FACTURA_A', '0006', '01765896', '2026-03-10 03:00:40', '2026-04-09 03:00:40', 0, 0, 0, 26243.36, 'PENDIENTE', '2d7661be-443d-46b5-abba-7ebd5e7a9ecb', '2026-03-20 20:39:09.393', '2026-03-20 21:07:14.734', true, 0, '2026-03-10 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('cf2fb089-1002-47ba-b66c-19f294901ab3', 'FACTURA_A', '0004', '00016967', '2026-03-11 03:00:40', '2026-04-10 03:00:40', 0, 0, 0, 210855.31, 'PENDIENTE', '8e404a67-8fc9-4f83-965f-c28405ffa320', '2026-03-20 20:39:09.398', '2026-03-20 21:07:14.74', true, 0, '2026-03-11 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('63dec66e-89f0-49c8-9096-74cff25b632d', 'FACTURA_A', '5000', '00001298', '2026-03-05 00:00:00', '2026-04-04 00:00:00', 0, 0, 0, 23297.87, 'PAGADA', '860cd975-cb80-4276-ac2b-25da169c868d', '2026-03-20 20:39:09.367', '2026-03-20 21:12:10.576', false, 0, '2026-03-05 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('39eac210-5151-4f49-b861-a49686269248', 'FACTURA_A', '0006', '01766556', '2026-03-11 03:00:40', '2026-04-10 03:00:40', 0, 0, 0, 21646.3, 'PENDIENTE', '2d7661be-443d-46b5-abba-7ebd5e7a9ecb', '2026-03-20 20:39:09.407', '2026-03-20 21:07:14.751', true, 0, '2026-03-11 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('e457652c-4a08-4155-8a99-1b8633662a9e', 'FACTURA_A', '0006', '01767052', '2026-03-12 03:00:40', '2026-04-11 03:00:40', 0, 0, 0, 12687.94, 'PENDIENTE', '2d7661be-443d-46b5-abba-7ebd5e7a9ecb', '2026-03-20 20:39:09.412', '2026-03-20 21:07:14.757', true, 0, '2026-03-12 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('48edb5eb-0d9f-4e54-85c2-448a78ccc027', 'FACTURA_A', '0017', '00019357', '2026-03-11 00:00:00', '2026-04-10 00:00:00', 0, 0, 0, 9530.21, 'PAGADA', '3655e750-afb6-413a-a0bd-26239bad7d51', '2026-03-20 20:39:09.402', '2026-03-20 21:11:35.16', false, 9530.210000000001, '2026-03-11 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('c030bcb8-f7e7-4f3a-a050-ee16f95813a9', 'FACTURA_A', '0011', '00004671', '2026-03-17 00:00:00', '2026-04-16 00:00:00', 0, 0, 0, 356.94, 'PAGADA', 'cc0fe0a7-662c-4509-88a1-59f8e284d319', '2026-03-20 20:39:09.418', '2026-03-20 21:11:26.417', false, 356.94, '2026-03-17 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('915fc51f-c809-45da-9948-267a7e3ef4b1', 'FACTURA_A', '0011', '00004565', '2026-03-09 00:00:00', '2026-04-08 00:00:00', 0, 0, 0, 2574.66, 'PAGADA', 'cc0fe0a7-662c-4509-88a1-59f8e284d319', '2026-03-20 20:39:09.388', '2026-03-20 21:11:46.052', false, 2574.66, '2026-03-09 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('ed2f95a5-e42d-48d9-9fea-cfaeba7afbbd', 'FACTURA_A', '0006', '01760416', '2026-02-26 03:00:40', '2026-03-28 03:00:40', 0, 0, 0, 28186.51, 'PENDIENTE', '2d7661be-443d-46b5-abba-7ebd5e7a9ecb', '2026-03-20 20:39:09.259', '2026-03-20 21:07:14.606', true, 0, '2026-02-26 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('862ea9d8-c009-4eff-8da2-800c40fdfd99', 'FACTURA_A', '0003', '00004687', '2026-02-27 03:00:40', '2026-03-29 03:00:40', 0, 0, 0, 1234805, 'PENDIENTE', '7460d94e-035d-4a7c-8ce9-fce2d1785181', '2026-03-20 20:39:09.269', '2026-03-20 21:07:14.614', true, 0, '2026-02-27 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('2cca1a26-56b6-4320-910b-e9f13b24bd39', 'FACTURA_A', '0004', '00016926', '2026-03-03 03:00:40', '2026-04-02 03:00:40', 0, 0, 0, 590629.03, 'PENDIENTE', '8e404a67-8fc9-4f83-965f-c28405ffa320', '2026-03-20 20:39:09.28', '2026-03-20 21:07:14.626', true, 0, '2026-03-03 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('e9948701-61c1-497a-aef0-f98d043f667a', 'FACTURA_A', '0004', '00016924', '2026-03-03 03:00:40', '2026-04-02 03:00:40', 0, 0, 0, 613830.75, 'PENDIENTE', '8e404a67-8fc9-4f83-965f-c28405ffa320', '2026-03-20 20:39:09.286', '2026-03-20 21:07:14.631', true, 0, '2026-03-03 03:00:40');
+INSERT INTO public."Prov_Invoice" VALUES ('0b249ca9-72c0-451c-b809-8ab41d63d5d4', 'FACTURA_A', '0001', '00103179', '2026-03-03 03:00:40', '2026-04-02 03:00:40', 0, 0, 0, 1210690.52, 'PAGADA', '19e4f941-1f29-45ab-8408-f6a8b7457acd', '2026-03-20 20:39:09.296', '2026-03-20 21:07:14.641', true, 0, '2026-03-03 03:00:40');
+
+
+--
+-- Data for Name: Prov_PaymentItem; Type: TABLE DATA; Schema: public; Owner: erp_admin
+--
+
+
+
+--
+-- Data for Name: _prisma_migrations; Type: TABLE DATA; Schema: public; Owner: erp_admin
+--
+
+INSERT INTO public._prisma_migrations VALUES ('b5f4ed7a-99b4-4620-b10e-d4671295ae07', '6d30eca604b7ffe408a43d4ccf6c133cd3450bec904423aca032dd91a64fcdc1', '2026-03-20 20:37:48.649859+00', '20260317220142_init_proveedores', NULL, NULL, '2026-03-20 20:37:48.468442+00', 1);
+INSERT INTO public._prisma_migrations VALUES ('4d2d0288-bbe4-4a77-925b-26ec9d518709', '07d85d4a3d415a55814e7216bcab71e21ce9704574f9a584ee3aedf7d06c8a5d', '2026-03-20 20:37:50.012083+00', '20260320203749_add_parameters_model', NULL, NULL, '2026-03-20 20:37:49.929413+00', 1);
+
+
+--
+-- Name: Emp_Advance_id_seq; Type: SEQUENCE SET; Schema: public; Owner: erp_admin
+--
+
+SELECT pg_catalog.setval('public."Emp_Advance_id_seq"', 20, true);
+
+
+--
+-- Name: Emp_Employee_id_seq; Type: SEQUENCE SET; Schema: public; Owner: erp_admin
+--
+
+SELECT pg_catalog.setval('public."Emp_Employee_id_seq"', 7, true);
+
+
+--
+-- Name: Emp_SalaryPeriod_id_seq; Type: SEQUENCE SET; Schema: public; Owner: erp_admin
+--
+
+SELECT pg_catalog.setval('public."Emp_SalaryPeriod_id_seq"', 14, true);
+
+
+--
+-- PostgreSQL database dump complete
+--
+
+\unrestrict KRX1E0S9aZiYNDksvrUBJV2U8ViAdcbhUKjZgVllFx9KHHSvePMpcWq3k0WvLCR
+

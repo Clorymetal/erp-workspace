@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Search, Download, Filter, Save, Calendar } from 'lucide-react';
-import { Button, DataTable, ExportMenu } from '../../../core/components';
+// Se eliminaron 'Download' y 'Save' que no se usaban
+import { Search, Filter, Calendar } from 'lucide-react';
+// Se eliminó 'Button' que no se usaba
+import { DataTable, ExportMenu } from '../../../core/components';
 import { API_BASE_URL } from '../../../core/config/apiConfig';
 
 export const LibroIvaComprasPage = () => {
   const [invoices, setInvoices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   // Default to current month
   const now = new Date();
   const currentPeriod = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -60,13 +62,13 @@ export const LibroIvaComprasPage = () => {
   };
 
   const columns = [
-    { 
-      key: 'ivaNumber', 
+    {
+      key: 'ivaNumber',
       header: 'Rec',
       render: (row: any) => (
-        <input 
-          type="number" 
-          defaultValue={row.ivaNumber || ''} 
+        <input
+          type="number"
+          defaultValue={row.ivaNumber || ''}
           onBlur={(e) => {
             const val = e.target.value === '' ? null : Number(e.target.value);
             if (val !== row.ivaNumber) handleUpdateIvaNumber(row.id, val);
@@ -76,27 +78,27 @@ export const LibroIvaComprasPage = () => {
         />
       )
     },
-    { 
-      key: 'issueDate', 
+    {
+      key: 'issueDate',
       header: 'Fecha',
       render: (row: any) => new Date(row.issueDate).toLocaleDateString()
     },
-    { 
-      key: 'invoiceType', 
+    {
+      key: 'invoiceType',
       header: 'Tipo',
       render: (row: any) => (
         <span className="text-[10px] font-black text-gray-400">
-           {row.invoiceType.replace('FACTURA_', '')}
+          {row.invoiceType.replace('FACTURA_', '')}
         </span>
       )
     },
-    { 
-      key: 'invoiceNumber', 
+    {
+      key: 'invoiceNumber',
       header: 'P.V. / Nro',
       render: (row: any) => `${row.pointOfSale}-${row.invoiceNumber}`
     },
-    { 
-      key: 'provider', 
+    {
+      key: 'provider',
       header: 'Proveedor',
       render: (row: any) => (
         <div className="flex flex-col max-w-[200px]">
@@ -105,17 +107,17 @@ export const LibroIvaComprasPage = () => {
         </div>
       )
     },
-    { 
-      key: 'netAmount', 
+    {
+      key: 'netAmount',
       header: 'Neto Grab.',
       render: (row: any) => (
-         <span className="font-medium text-gray-600">
-            {new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(row.netAmount)}
-         </span>
+        <span className="font-medium text-gray-600">
+          {new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(row.netAmount)}
+        </span>
       )
     },
-    { 
-      key: 'taxAmount', 
+    {
+      key: 'taxAmount',
       header: 'IVA',
       render: (row: any) => (
         <span className="font-medium text-gray-600">
@@ -123,8 +125,8 @@ export const LibroIvaComprasPage = () => {
         </span>
       )
     },
-    { 
-      key: 'perceptionAmount', 
+    {
+      key: 'perceptionAmount',
       header: 'Percep.',
       render: (row: any) => (
         <span className="font-medium text-gray-600">
@@ -132,8 +134,8 @@ export const LibroIvaComprasPage = () => {
         </span>
       )
     },
-    { 
-      key: 'nonTaxedAmount', 
+    {
+      key: 'nonTaxedAmount',
       header: 'No Grab.',
       render: (row: any) => (
         <span className="font-medium text-gray-600">
@@ -141,8 +143,8 @@ export const LibroIvaComprasPage = () => {
         </span>
       )
     },
-    { 
-      key: 'totalAmount', 
+    {
+      key: 'totalAmount',
       header: 'Total',
       render: (row: any) => (
         <span className="font-black text-gray-900">
@@ -187,9 +189,9 @@ export const LibroIvaComprasPage = () => {
           <p className="text-sm text-gray-500">Módulo de consulta impositiva y ordenamiento de registros.</p>
         </div>
         <div className="flex gap-2">
-           <ExportMenu 
-            data={exportData} 
-            filename={`Libro_IVA_Compras_${period}`} 
+          <ExportMenu
+            data={exportData}
+            filename={`Libro_IVA_Compras_${period}`}
             columnsToExport={columnsToExport}
           />
         </div>
@@ -199,8 +201,8 @@ export const LibroIvaComprasPage = () => {
         {/* Period Selector */}
         <div className="flex flex-col gap-1">
           <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest pl-1">Período Fiscal</label>
-          <input 
-            type="month" 
+          <input
+            type="month"
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
             className="w-full px-4 py-2 bg-gray-50 dark:bg-dark-background border-none rounded-xl text-sm outline-none ring-1 ring-gray-100 dark:ring-dark-border focus:ring-2 focus:ring-primary-500 transition-all"
@@ -212,7 +214,7 @@ export const LibroIvaComprasPage = () => {
           <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest pl-1">Búsqueda rápida</label>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-            <input 
+            <input
               className="w-full bg-gray-50 dark:bg-dark-background border-none rounded-xl py-2 pl-10 text-sm outline-none ring-1 ring-gray-100 dark:ring-dark-border focus:ring-2 focus:ring-primary-500 transition-all"
               placeholder="Buscar por proveedor, CUIT o factura..."
               value={searchTerm}
@@ -222,9 +224,9 @@ export const LibroIvaComprasPage = () => {
         </div>
 
         <div className="flex items-end pb-1">
-            <div className="px-4 py-2 bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 rounded-xl text-xs font-bold w-full text-center">
-              {invoices.length} Registros en {period}
-            </div>
+          <div className="px-4 py-2 bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 rounded-xl text-xs font-bold w-full text-center">
+            {invoices.length} Registros en {period}
+          </div>
         </div>
       </div>
 
@@ -235,7 +237,7 @@ export const LibroIvaComprasPage = () => {
       ) : (
         <DataTable data={invoices} columns={columns} />
       )}
-      
+
       <div className="bg-blue-50 dark:bg-blue-900/10 p-4 rounded-xl border border-blue-100 dark:border-blue-800 text-sm text-blue-700 dark:text-blue-300 flex gap-3">
         <div className="p-2 bg-blue-100 dark:bg-blue-800 rounded-lg h-fit text-blue-600 dark:text-blue-400">
           <Filter size={20} />
