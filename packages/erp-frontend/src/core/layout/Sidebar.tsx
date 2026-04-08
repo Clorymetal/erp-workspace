@@ -17,6 +17,7 @@ const MENU_ITEMS = [
   { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
   { name: 'Proveedores', icon: Building2, path: '/proveedores' },
   { name: 'Compras', icon: FileText, path: '/compras' },
+  { name: 'Resumen Deuda', icon: FileText, path: '/resumen-deuda' },
   { name: 'Libro IVA', icon: FileText, path: '/libro-iva' },
   { name: 'Parámetros', icon: Sliders, path: '/parametros' },
 

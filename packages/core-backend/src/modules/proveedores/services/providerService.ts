@@ -137,7 +137,7 @@ export const createProvider = async (data: any) => {
 };
 
 export const getAllInvoices = async (filters: any) => {
-  const { startDate, endDate, status, isCtaCte, province, providerId, ivaPeriod } = filters;
+  const { startDate, endDate, status, isCtaCte, province, providerId, ivaPeriod, search } = filters;
   
   const where: any = {};
   
@@ -158,6 +158,14 @@ export const getAllInvoices = async (filters: any) => {
 
   if (ivaPeriod && ivaPeriod !== 'ALL') {
     where.ivaPeriod = ivaPeriod;
+  }
+
+  if (search) {
+    where.OR = [
+      { provider: { businessName: { contains: search, mode: 'insensitive' } } },
+      { provider: { taxId: { contains: search, mode: 'insensitive' } } },
+      { invoiceNumber: { contains: search, mode: 'insensitive' } }
+    ];
   }
 
   return await prisma.prov_Invoice.findMany({

@@ -19,6 +19,7 @@ import { DashboardPage } from './modules/dashboard/pages/DashboardPage';
 import { ProveedoresPage } from './modules/proveedores/pages/ProveedoresPage';
 import { ComprasPage } from './modules/proveedores/pages/ComprasPage';
 import { LibroIvaComprasPage } from './modules/proveedores/pages/LibroIvaComprasPage';
+import { ResumenDeudaPage } from './modules/proveedores/pages/ResumenDeudaPage';
 import ParametersPage from './modules/configuracion/pages/ParametersPage';
 import { EmpleadosPage } from './modules/empleados/EmpleadosPage';
 import { LoginPage } from './modules/auth/pages/LoginPage';
@@ -66,6 +67,7 @@ function App() {
                   <Route index element={<DashboardPage />} />
                   <Route path="proveedores" element={<ProveedoresPage />} />
                   <Route path="compras" element={<ComprasPage />} />
+                  <Route path="resumen-deuda" element={<ResumenDeudaPage />} />
                   <Route path="libro-iva" element={<LibroIvaComprasPage />} />
                   <Route path="parametros" element={<ParametersPage />} />
                   <Route path="empleados" element={<EmpleadosPage />} />
