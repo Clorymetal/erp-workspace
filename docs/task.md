@@ -39,10 +39,12 @@
 - [x] **Lógica de Cta Cte:** Filtros precisos para diferenciar proveedores de contado vs deuda real.
 - [x] **Dashboard Real:** Panel de control con KPIs (Deuda total, Compras del mes, Alerta de vencimientos).
 
-## Fase 7: Gestión de Pagos e Imputación (Próximo)
-- [ ] **Registrar Pago:** Formulario para procesar pagos a proveedores (Efectivo/Cheque/Transferencia).
-- [ ] **Imputación Automática:** Vincular pagos a facturas pendientes para descontar saldos.
-- [ ] **Cartera de Tesorería:** Visualización de cheques emitidos y estados de cuentas bancarias.
+## Fase 7: Gestión de Pagos e Imputación (Completada ✅)
+- [x] **Registrar Pago:** Formulario para procesar pagos a proveedores (Efectivo/Cheque/Transferencia).
+- [x] **Imputación Automática:** Vincular pagos a facturas pendientes para descontar saldos.
+- [x] **Historial Ledger:** Vista de Cuenta Corriente por proveedor con saldo acumulado.
+- [x] **Trazabilidad:** Poder ver qué facturas cubrió un pago y viceversa.
+- [ ] **Cartera de Tesorería:** Visualización de cheques emitidos y estados de cuentas bancarias. (Pendiente)
 
 ## Fase 8: Módulo de Empleados y RRHH (Completado)
 - [x] **Base de Datos:** Estructura que separa Períodos Mensuales de Adelantos continuos.
@@ -72,7 +74,7 @@
 - [X] Desplegar Frontend en **Vercel.com**
 
 ### Próximos Pasos (Próxima Sesión):
-- [x] **Fase 10 (Seguridad)**: Google Auth e Identidad.
-- [ ] **Fase 7 (Pagos)**: Modal de Pago en Compras (Cta Cte).
+- [ ] **Deploy Cta Cte**: Realizar el merge a `main` y ejecutar migraciones en producción.
 - [ ] **Fase 12 (RRHH)**: Reportes de Cierre de Mes Avanzados e Históricos.
+- [ ] **Fase 7 (Tesorería)**: Reporte global de cheques emitidos.
 - [ ] **Fase 13 (UI/UX)**: Pulido de los 58 errores de Lint detectados.

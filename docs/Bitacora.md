@@ -295,4 +295,25 @@ _Nota: Al retomar el trabajo, leer siempre el último registro de estado y revis
 - **Reportes:** El usuario ya puede generar reportes de deudas con el formato exacto solicitado por su administración.
 
 ---
+---
+### Sesión 16: 08 de Abril de 2026 - Módulo de Cuenta Corriente Profesional y Pagos
+**Objetivos:**
+- Estructurar la Cuenta Corriente de proveedores (Débitos y Créditos).
+- Implementar el "Asistente de Pago" (Orden de Pago) con imputaciones parciales y saldos a favor.
+- Habilitar la trazabilidad de pagos y anulaciones seguras.
+- Preparar el despliegue a producción en una rama segura (`feat/cta-cte`).
+
+**Acciones Realizadas:**
+- [x] **Esquema de Base de Datos**: Actualización de Prisma con `NOTA_DEBITO`, estados de pago (`BORRADOR`, `CONFIRMADO`, `ANULADO`) y ajustes de descuento.
+- [x] **Backend**: Implementación de `ctaCteService.ts` con lógica de Libro Mayor y motor de imputación por transacciones.
+- [x] **Frontend**: 
+  - Nueva página `ProviderCtaCtePage` con historial Ledger enriquecido.
+  - Implementación de `PaymentWizard` (Asistente de 3 pasos) para pagos complejos (Efectivo/Transferencia/Cheque).
+  - Modal de trazabilidad de pagos (`PaymentDetailsModal`) para ver facturas cubiertas.
+- [x] **Git**: Consolidación de todos los cambios en la rama `feat/cta-cte`.
+- [x] **Documentación**: Creación de `deployment_plan_cta_cte.md` para guiar el paso a producción en la próxima sesión.
+
+**Estado Actual:**
+Módulo de Cuenta Corriente finalizado y listo para ser desplegado a producción. El sistema permite una gestión financiera profesional de proveedores, superando la simple carga de facturas.
+
 _Nota: Al retomar el trabajo, leer siempre el último registro de estado y revisar `task.md`._
