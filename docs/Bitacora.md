@@ -271,4 +271,28 @@ _Nota: Al retomar el trabajo, leer siempre el último registro de estado y revis
 - **Acceso:** Visitar `https://erp-backend-clorymetal.onrender.com/api/proveedores/maintenance/migrate-iva` una vez desplegado.
 
 ---
+### Sesión 15: 08 de Abril de 2026 - Sincronización Total y Módulo de Deudas (MODO YOLO)
+
+**Objetivos:**
+- Establecer `docs/Compras.xlsx` como la fuente única de verdad para el módulo de compras.
+- Sincronizar todos los datos (Proveedores y Facturas) sin afectar el módulo de Empleados.
+- Implementar reporte de Resumen de Deuda (Cuenta Corriente) agrupado por proveedor.
+- Corregir fallos críticos en el motor de búsqueda y procesamiento de fechas de Excel.
+
+**Acciones Realizadas:**
+- [x] **Script Maestro de Sincronización:** Creación de `syncFromExcel.ts` que realiza una limpieza profunda de las tablas de compras e inyecta los datos del Excel. 
+- [x] **Fix de Datos (Fechas):** Se corrigió la interpretación de fechas de Excel (números de serie) que se guardaban erróneamente como año 1970.
+- [x] **Fix de Datos (Montos):** Refactorizado el mapeo de columnas para ser robusto frente a espacios y nombres variables en el Excel (Neto, IVA, Percepciones, No Gravado).
+- [x] **Backend - Buscador:** Implementada la lógica de filtrado `OR` en `providerService.ts` para que la búsqueda por nombre, CUIT o número de factura funcione realmente.
+- [x] **Reporte Resumen de Deuda:**
+  - Desarrollo de `ResumenDeudaPage.tsx` con agrupamiento por proveedor y subtotales dinámicos.
+  - Implementación de **Exportación a Excel** y **Modo de Impresión PDF** optimizado (Landscape + Layout contable).
+- [x] **Sincronización Multi-Ambiente:** El script `npm run sync:excel` fue ejecutado exitosamente tanto en Local (Docker) como en Producción (Neon).
+
+**Estado Actual:**
+- **Datos:** Los datos en la App son idénticos al Excel `Registros`. El Libro de IVA y el Resumen de Deuda muestran importes y períodos correctos (2026).
+- **Funcionalidad:** Los filtros de búsqueda y períodos son ahora eficaces.
+- **Reportes:** El usuario ya puede generar reportes de deudas con el formato exacto solicitado por su administración.
+
+---
 _Nota: Al retomar el trabajo, leer siempre el último registro de estado y revisar `task.md`._
