@@ -7,6 +7,13 @@ import {
     getSupplierBalance,
     createProvider
 } from '../services/providerService';
+import { 
+    getMovementHistory, 
+    getPendingItems, 
+    registerPayment, 
+    cancelPayment, 
+    getImputationDetails 
+} from '../services/ctaCteService';
 import { prisma } from '../../../db';
 
 export const runIvaMigration = async (req: Request, res: Response) => {
@@ -132,4 +139,54 @@ export const getAllFinancialInvoices = async (req: Request, res: Response) => {
 export const getReportCSV = async (req: Request, res: Response) => {
     // Stub
     res.send('CSV Report Generic');
+};
+
+// --- CUENTA CORRIENTE ---
+
+export const getProviderCtaCte = async (req: Request, res: Response) => {
+    try {
+        const history = await getMovementHistory(req.params.id);
+        res.json(history);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const getProviderPendingItems = async (req: Request, res: Response) => {
+    try {
+        const items = await getPendingItems(req.params.id);
+        res.json(items);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const createNewPayment = async (req: Request, res: Response) => {
+    try {
+        const payment = await registerPayment({ 
+            ...req.body, 
+            providerId: req.params.id 
+        });
+        res.status(201).json(payment);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const annulPayment = async (req: Request, res: Response) => {
+    try {
+        const result = await cancelPayment(req.params.paymentId);
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const getPaymentTraceability = async (req: Request, res: Response) => {
+    try {
+        const details = await getImputationDetails(req.params.paymentId);
+        res.json(details);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
 };

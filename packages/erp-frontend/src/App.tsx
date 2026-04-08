@@ -23,6 +23,7 @@ import { ResumenDeudaPage } from './modules/proveedores/pages/ResumenDeudaPage';
 import ParametersPage from './modules/configuracion/pages/ParametersPage';
 import { EmpleadosPage } from './modules/empleados/EmpleadosPage';
 import { LoginPage } from './modules/auth/pages/LoginPage';
+import { ProviderCtaCtePage } from './modules/proveedores/pages/ProviderCtaCtePage';
 
 // Recuperar Client ID de las variables de entorno de Vite
 // Si no existe, usamos uno de prueba (debe ser cambiado tras el setup en Google Cloud Console)
@@ -66,6 +67,7 @@ function App() {
                 <Route path="/" element={<Layout />}>
                   <Route index element={<DashboardPage />} />
                   <Route path="proveedores" element={<ProveedoresPage />} />
+                  <Route path="proveedores/:id/cta-cte" element={<ProviderCtaCtePage />} />
                   <Route path="compras" element={<ComprasPage />} />
                   <Route path="resumen-deuda" element={<ResumenDeudaPage />} />
                   <Route path="libro-iva" element={<LibroIvaComprasPage />} />

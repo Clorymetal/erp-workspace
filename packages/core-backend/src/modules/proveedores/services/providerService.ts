@@ -2,7 +2,6 @@ import { prisma } from '../../../db';
 import { InvoiceStatus } from '@prisma/client';
 
 export const getSupplierBalance = async (providerId: string) => {
-  // Verificamos si es un proveedor de Cuenta Corriente
   const provider = await prisma.prov_Provider.findUnique({ 
     where: { id: providerId },
     select: { isCtaCte: true }
@@ -12,35 +11,37 @@ export const getSupplierBalance = async (providerId: string) => {
     return { providerId, balance: 0 };
   }
 
-  // Calculamos la deuda sumando las facturas pendientes o pagadas parcialmente
+  // 1. Débitos: Todas las Facturas y Notas de Débito
   const invoices = await prisma.prov_Invoice.findMany({
-    where: {
+    where: { 
       providerId,
-      status: {
-        in: ['PENDIENTE', 'PAGADA_PARCIAL', 'VENCIDA']
-      }
-    },
-    include: {
-      paymentsItems: true
+      invoiceType: { in: ['FACTURA_A', 'FACTURA_B', 'FACTURA_C', 'NOTA_DEBITO'] }
     }
   });
 
-  let totalDebt = 0;
-  
-  invoices.forEach((inv: any) => {
-    const paidSoFar = inv.paymentsItems.reduce((acc: number, current: any) => acc + current.amountPaid, 0);
-    const remaining = inv.totalAmount - paidSoFar;
-    
-    if (inv.invoiceType === 'NOTA_CREDITO') {
-      totalDebt -= remaining;
-    } else {
-      totalDebt += remaining;
+  // 2. Créditos (Documentos): Notas de Crédito
+  const creditNotes = await prisma.prov_Invoice.findMany({
+    where: { 
+      providerId,
+      invoiceType: 'NOTA_CREDITO'
     }
   });
+
+  // 3. Créditos (Pagos): Pagos Confirmados + sus Ajustes
+  const payments = await prisma.prov_Payment.findMany({
+    where: { 
+      providerId, 
+      status: 'CONFIRMADO' 
+    }
+  });
+
+  const totalDebits = invoices.reduce((acc, inv) => acc + inv.totalAmount, 0);
+  const totalCreditNotes = creditNotes.reduce((acc, cn) => acc + cn.totalAmount, 0);
+  const totalPayments = payments.reduce((acc, pay) => acc + pay.totalAmount + (pay.discountAmount || 0), 0);
 
   return {
     providerId,
-    balance: totalDebt
+    balance: totalDebits - totalCreditNotes - totalPayments
   };
 };
 

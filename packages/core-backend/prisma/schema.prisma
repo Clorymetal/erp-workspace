@@ -79,6 +79,7 @@ enum InvoiceType {
   FACTURA_B
   FACTURA_C
   NOTA_CREDITO
+  NOTA_DEBITO
 }
 
 enum InvoiceStatus {
@@ -127,21 +128,32 @@ enum PaymentMethod {
   CHEQUE
 }
 
+enum PaymentStatus {
+  BORRADOR
+  CONFIRMADO
+  ANULADO
+}
+
 model Prov_Payment {
-  id              String   @id @default(uuid())
-  paymentDate     DateTime @default(now())
+  id              String         @id @default(uuid())
+  number          String?        // Nro de Orden de Pago o Recibo
+  paymentDate     DateTime       @default(now())
   totalAmount     Float
   paymentMethod   PaymentMethod
+  status          PaymentStatus  @default(CONFIRMADO)
   referenceNotes  String?
   
+  // Para registrar descuentos o pequeños ajustes al cerrar el pago
+  discountAmount  Float          @default(0.0)
+  
   providerId      String
-  provider        Prov_Provider @relation(fields: [providerId], references: [id], onDelete: Restrict)
+  provider        Prov_Provider  @relation(fields: [providerId], references: [id], onDelete: Restrict)
 
   invoicesPaid    Prov_PaymentItem[]
   checks          Prov_Check[]
 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 }
 
 // Tabla Pivot para relacionar Pagos con Facturas
@@ -158,20 +170,28 @@ model Prov_PaymentItem {
   createdAt    DateTime @default(now())
 }
 
+enum CheckStatus {
+  PENDIENTE
+  DEPOSITADO
+  ENTREGADO
+  RECHAZADO
+}
+
 model Prov_Check {
-  id              String   @id @default(uuid())
+  id              String      @id @default(uuid())
   checkNumber     String
   bankName        String
   issuerName      String
   issueDate       DateTime
   dueDate         DateTime
   amount          Float
+  status          CheckStatus @default(PENDIENTE)
 
   paymentId       String
   payment         Prov_Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 }
 // ==========================================
 // MODULE: CORE / SEGURIDAD

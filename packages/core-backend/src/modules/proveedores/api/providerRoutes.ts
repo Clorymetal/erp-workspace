@@ -10,7 +10,12 @@ import {
     updateExistingProvider,
     getAllFinancialInvoices,
     runIvaMigration,
-    fixDueDatesMigration
+    fixDueDatesMigration,
+    getProviderCtaCte,
+    getProviderPendingItems,
+    createNewPayment,
+    annulPayment,
+    getPaymentTraceability
 } from '../controllers/providerController';
 
 const router = Router();
@@ -34,5 +39,12 @@ router.get('/:id/balance', getBalance);
 router.get('/:id/facturas', getProviderInvoices);
 router.post('/:id/facturas', createNewInvoice);
 router.patch('/:id/facturas/:invoiceId', patchInvoice);
+
+// Cuenta Corriente y Pagos
+router.get('/:id/cta-cte', getProviderCtaCte);
+router.get('/:id/items-pendientes', getProviderPendingItems);
+router.post('/:id/pagos', createNewPayment);
+router.get('/pagos/:paymentId', getPaymentTraceability);
+router.patch('/pagos/:paymentId/annul', annulPayment);
 
 export default router;

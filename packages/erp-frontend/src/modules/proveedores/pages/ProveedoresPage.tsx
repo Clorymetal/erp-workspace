@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Plus, Search, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, BookOpen } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button, DataTable, Modal, ExportMenu } from '../../../core/components';
 import { AnimatePresence } from 'framer-motion';
 import { ProviderDetails } from '../components/ProviderDetails';
@@ -8,6 +9,7 @@ import { API_BASE_URL } from '../../../core/config/apiConfig';
 import { useProviders, type Proveedor } from '../hooks/useProviders';
 
 export const ProveedoresPage = () => {
+  const navigate = useNavigate();
   const { 
     providers, 
     isLoading, 
@@ -106,8 +108,14 @@ export const ProveedoresPage = () => {
             setEditingProviderId(row.id);
             setFormData({ ...row });
             setIsModalOpen(true);
-          }} className="p-1.5 text-gray-400 hover:text-primary-500"><Pencil size={18} /></button>
-          <button className="p-1.5 text-gray-400 hover:text-red-500"><Trash2 size={18} /></button>
+          }} className="p-1.5 text-gray-400 hover:text-primary-500" title="Editar"><Pencil size={18} /></button>
+          
+          <button onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/proveedores/${row.id}/cta-cte`);
+          }} className="p-1.5 text-gray-400 hover:text-secondary-500" title="Cuenta Corriente"><BookOpen size={18} /></button>
+
+          <button className="p-1.5 text-gray-400 hover:text-red-500" title="Eliminar"><Trash2 size={18} /></button>
         </div>
       )
     }
