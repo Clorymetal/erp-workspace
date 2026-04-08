@@ -82,21 +82,21 @@ export const ResumenDeudaPage = () => {
           .print-break-inside-avoid { break-inside: avoid; }
           body { background: white !important; font-family: sans-serif; }
           .main-content { padding: 0 !important; margin: 0 !important; width: 100% !important; border: none !important; shadow: none !important; }
-          table { width: 100% !important; border-collapse: collapse !important; font-size: 8.5pt !important; table-layout: fixed; }
-          th { background-color: #f8fafc !important; color: #475569 !important; -webkit-print-color-adjust: exact; border: 1px solid #e2e8f0 !important; padding: 6px 4px !important; }
-          td { border: 1px solid #f1f5f9 !important; padding: 4px 4px !important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+          table { width: 100% !important; border-collapse: collapse !important; font-size: 11.5pt !important; table-layout: fixed; }
+          th { background-color: #f8fafc !important; color: #475569 !important; -webkit-print-color-adjust: exact; border: 1px solid #e2e8f0 !important; padding: 8px 4px !important; }
+          td { border: 1px solid #f1f5f9 !important; padding: 6px 4px !important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
           .bg-primary-50\\/20 { background-color: #f1f5f9 !important; -webkit-print-color-adjust: exact; }
           .font-black { font-weight: 800 !important; }
           .text-primary-900 { color: #000 !important; }
           .subtotal-row { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; font-weight: bold !important; border-top: 1.5pt solid #000 !important; }
           
-          /* Ajuste de anchos de columna para A4 Portrait */
-          .col-prov { width: 40%; }
+          /* Ajuste de anchos de columna para A4 Portrait sin CUIT repetido */
+          .col-prov { width: 35%; }
           .col-tipo { width: 10%; }
-          .col-fecha { width: 12%; }
-          .col-nro { width: 15%; }
-          .col-venc { width: 12%; }
-          .col-imp { width: 11%; }
+          .col-fecha { width: 15%; }
+          .col-nro { width: 20%; }
+          .col-venc { width: 10%; }
+          .col-imp { width: 10%; }
         }
       `}</style>
 
@@ -204,17 +204,21 @@ export const ResumenDeudaPage = () => {
                 </tr>
               ) : providers.map(prov => (
                 <Fragment key={prov}>
-                  {/* Header del Proveedor */}
-                  <tr className="bg-primary-50/20 dark:bg-primary-900/10">
+                  {/* Header del Proveedor con CUIT */}
+                  <tr className="bg-primary-50/20 dark:bg-primary-900/10 print-break-inside-avoid">
                     <td colSpan={6} className="px-6 py-3 border-b border-primary-100/50 dark:border-primary-900/30">
-                      <span className="font-black text-primary-900 dark:text-primary-100 tracking-tight uppercase">{prov}</span>
+                      <div className="flex justify-between items-center w-full">
+                        <span className="font-black text-primary-900 dark:text-primary-100 tracking-tight uppercase">{prov}</span>
+                        <span className="text-[10px] font-bold text-gray-500 no-print">CUIT: {groupedData[prov].invoices[0]?.provider?.taxId}</span>
+                        <span className="hidden print:block text-[10pt] font-bold text-black border border-black px-2 py-0.5">CUIT: {groupedData[prov].invoices[0]?.provider?.taxId}</span>
+                      </div>
                     </td>
                   </tr>
                   {/* Detalle de Facturas */}
                   {groupedData[prov].invoices.map((inv: any) => (
                     <tr key={inv.id} className="hover:bg-gray-50/50 dark:hover:bg-dark-background/30 transition-colors">
-                      <td className="px-6 py-2 text-[10px] text-gray-400 font-medium pl-10">
-                         {inv.provider?.taxId}
+                      <td className="px-6 py-2 text-[10px] text-gray-400 font-medium pl-10 border-l border-gray-100">
+                         {/* Celda de CUIT vacía para dar lugar */}
                       </td>
                       <td className="px-6 py-2 text-center">
                         <span className="text-[10px] font-black text-gray-400 bg-gray-100 dark:bg-dark-background px-1.5 py-0.5 rounded uppercase tracking-tighter">
