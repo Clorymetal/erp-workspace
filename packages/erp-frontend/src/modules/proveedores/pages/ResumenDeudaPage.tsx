@@ -195,7 +195,7 @@ export const ResumenDeudaPage = () => {
                   <td colSpan={6} className="px-6 py-12 text-center text-gray-400 font-medium">No se encontraron facturas con los filtros seleccionados.</td>
                 </tr>
               ) : providers.map(prov => (
-                <div key={prov} className="contents print-break-inside-avoid">
+                <Fragment key={prov}>
                   {/* Header del Proveedor */}
                   <tr className="bg-primary-50/20 dark:bg-primary-900/10">
                     <td colSpan={6} className="px-6 py-3 border-b border-primary-100/50 dark:border-primary-900/30">
@@ -240,7 +240,7 @@ export const ResumenDeudaPage = () => {
                       </span>
                     </td>
                   </tr>
-                </div>
+                </Fragment>
               ))}
             </tbody>
             {/* Footer Total General */}
