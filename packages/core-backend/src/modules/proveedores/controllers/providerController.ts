@@ -21,6 +21,30 @@ export const runIvaMigration = async (req: Request, res: Response) => {
     }
 };
 
+export const fixDueDatesMigration = async (req: Request, res: Response) => {
+    try {
+        const providers = await prisma.prov_Provider.findMany({
+            where: { expirationDays: { gt: 0 } },
+            include: { invoices: { where: { dueDate: null } } }
+        });
+
+        let updatedCount = 0;
+        for (const provider of providers) {
+            for (const invoice of provider.invoices) {
+                const newDueDate = new Date(invoice.issueDate.getTime() + provider.expirationDays * 24 * 60 * 60 * 1000);
+                await prisma.prov_Invoice.update({
+                    where: { id: invoice.id },
+                    data: { dueDate: newDueDate }
+                });
+                updatedCount++;
+            }
+        }
+        res.json({ message: `Successfully recalculated ${updatedCount} invoice due dates based on provider expiration days.` });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 export const getAllProviders = async (req: Request, res: Response) => {
     try {
         const providers = await prisma.prov_Provider.findMany({
