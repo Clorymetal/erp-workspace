@@ -225,7 +225,7 @@ export const ResumenDeudaPage = () => {
             <tbody className="divide-y divide-gray-50 dark:divide-dark-border">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-gray-400">
+                  <td colSpan={7} className="px-6 py-12 text-center text-gray-400">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mx-auto mb-2"></div>
                     Cargando información...
                   </td>
@@ -301,46 +301,50 @@ export const ResumenDeudaPage = () => {
                     </Fragment>
                   );
                 })
-              ) : (
-                /* Vista Ordenada por Vencimiento */
-                sortedByDueDate.map((inv: any) => (
-                  <tr key={inv.id} className="hover:bg-gray-50/50 dark:hover:bg-dark-background/30 transition-colors">
-                    <td className="px-6 py-2">
-                      <div className="flex flex-col">
-                        <span className="text-xs font-bold text-gray-900 dark:text-gray-100 uppercase truncate max-w-[200px]" title={inv.provider?.businessName}>
-                          {inv.provider?.businessName}
+              ) : (() => {
+                let runningTotal = 0;
+                return sortedByDueDate.map((inv: any) => {
+                  runningTotal += inv.totalAmount;
+                  return (
+                    <tr key={inv.id} className="hover:bg-gray-50/50 dark:hover:bg-dark-background/30 transition-colors">
+                      <td className="px-6 py-2">
+                        <div className="flex flex-col">
+                          <span className="text-xs font-bold text-gray-900 dark:text-gray-100 uppercase truncate max-w-[200px]" title={inv.provider?.businessName}>
+                            {inv.provider?.businessName}
+                          </span>
+                          <span className="text-[9px] text-gray-400 font-medium">CUIT: {inv.provider?.taxId}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-2 text-center">
+                        <span className="text-[10px] font-black text-gray-400 bg-gray-100 dark:bg-dark-background px-1.5 py-0.5 rounded uppercase tracking-tighter">
+                          {inv.invoiceType.replace('FACTURA_', '')}
                         </span>
-                        <span className="text-[9px] text-gray-400 font-medium">CUIT: {inv.provider?.taxId}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-2 text-center">
-                      <span className="text-[10px] font-black text-gray-400 bg-gray-100 dark:bg-dark-background px-1.5 py-0.5 rounded uppercase tracking-tighter">
-                        {inv.invoiceType.replace('FACTURA_', '')}
-                      </span>
-                    </td>
-                    <td className="px-6 py-2 text-center text-sm font-medium text-gray-600 dark:text-gray-300">
-                      {new Date(inv.issueDate).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-2 text-center text-sm font-mono text-gray-500">
-                      {inv.pointOfSale}-{inv.invoiceNumber}
-                    </td>
-                    <td className="px-6 py-2 text-center">
-                      <span className={`text-sm font-bold ${inv.dueDate && new Date(inv.dueDate) < new Date() ? 'text-red-500' : 'text-gray-700 dark:text-gray-300'}`}>
-                        {inv.dueDate ? new Date(inv.dueDate).toLocaleDateString() : '-'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-2 text-right">
-                      <span className="text-sm font-bold text-gray-900 dark:text-gray-100">
-                        {formatCurrency(inv.totalAmount)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-2 text-right bg-gray-50/30 dark:bg-black/10">
-                      {/* En modo vencimiento no mostramos saldo acumulado porque no tiene sentido por proveedor */}
-                      <span className="text-[10px] text-gray-400 italic">N/A</span>
-                    </td>
-                  </tr>
-                ))
-              )}
+                      </td>
+                      <td className="px-6 py-2 text-center text-sm font-medium text-gray-600 dark:text-gray-300">
+                        {new Date(inv.issueDate).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-2 text-center text-sm font-mono text-gray-500">
+                        {inv.pointOfSale}-{inv.invoiceNumber}
+                      </td>
+                      <td className="px-6 py-2 text-center">
+                        <span className={`text-sm font-bold ${inv.dueDate && new Date(inv.dueDate) < new Date() ? 'text-red-500' : 'text-gray-700 dark:text-gray-300'}`}>
+                          {inv.dueDate ? new Date(inv.dueDate).toLocaleDateString() : '-'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-2 text-right">
+                        <span className="text-sm font-bold text-gray-900 dark:text-gray-100">
+                          {formatCurrency(inv.totalAmount)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-2 text-right bg-gray-50/30 dark:bg-black/10">
+                        <span className="text-sm font-medium text-primary-600 dark:text-primary-400">
+                          {formatCurrency(runningTotal)}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                });
+              })()}
             </tbody>
             {/* Footer Total General */}
             {!loading && Object.keys(groupedData).length > 0 && (
