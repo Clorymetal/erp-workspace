@@ -16,6 +16,7 @@ export const ResumenDeudaPage = () => {
     status: 'PENDIENTE',
     isCtaCte: 'all'
   });
+  const [viewMode, setViewMode] = useState<'grouped' | 'dueDate'>('grouped');
 
   const fetchInvoices = async () => {
     try {
@@ -41,7 +42,7 @@ export const ResumenDeudaPage = () => {
     fetchInvoices();
   }, [filters, searchTerm]);
 
-  // Agrupar facturas por proveedor
+  // Agrupar y ordenar facturas por proveedor
   const groupedData = invoices.reduce((acc: any, inv: any) => {
     const providerName = inv.provider?.businessName || 'Desconocido';
     if (!acc[providerName]) acc[providerName] = { invoices: [], total: 0 };
@@ -49,6 +50,17 @@ export const ResumenDeudaPage = () => {
     acc[providerName].total += inv.totalAmount;
     return acc;
   }, {});
+
+  // Ordenar facturas dentro de cada proveedor por fecha de emisión para el subtotal acumulado
+  Object.keys(groupedData).forEach(prov => {
+    groupedData[prov].invoices.sort((a: any, b: any) => new Date(a.issueDate).getTime() - new Date(b.issueDate).getTime());
+  });
+
+  const sortedByDueDate = [...invoices].sort((a, b) => {
+    const dateA = a.dueDate ? new Date(a.dueDate).getTime() : Infinity;
+    const dateB = b.dueDate ? new Date(b.dueDate).getTime() : Infinity;
+    return dateA - dateB;
+  });
 
   const providers = Object.keys(groupedData).sort();
   const globalTotal = invoices.reduce((acc, inv) => acc + inv.totalAmount, 0);
@@ -91,12 +103,13 @@ export const ResumenDeudaPage = () => {
           .subtotal-row { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; font-weight: bold !important; border-top: 1.5pt solid #000 !important; }
           
           /* Ajuste de anchos de columna para A4 Portrait sin CUIT repetido */
-          .col-prov { width: 35%; }
-          .col-tipo { width: 10%; }
-          .col-fecha { width: 15%; }
-          .col-nro { width: 20%; }
+          .col-prov { width: 30%; }
+          .col-tipo { width: 8%; }
+          .col-fecha { width: 12%; }
+          .col-nro { width: 15%; }
           .col-venc { width: 10%; }
-          .col-imp { width: 10%; }
+          .col-imp { width: 12%; }
+          .col-acum { width: 13%; }
         }
       `}</style>
 
@@ -174,6 +187,24 @@ export const ResumenDeudaPage = () => {
             />
           </div>
         </div>
+
+        <div className="flex flex-col gap-1 md:col-span-1">
+          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest pl-1">Modo de Vista</label>
+          <div className="flex bg-gray-50 dark:bg-dark-background rounded-xl p-1 gap-1 ring-1 ring-gray-100 dark:ring-dark-border">
+            <button
+              onClick={() => setViewMode('grouped')}
+              className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all ${viewMode === 'grouped' ? 'bg-primary-500 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-200/50'}`}
+            >
+              Por Proveedor
+            </button>
+            <button
+              onClick={() => setViewMode('dueDate')}
+              className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all ${viewMode === 'dueDate' ? 'bg-primary-500 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-200/50'}`}
+            >
+              Por Vencimiento
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Tabla Agrupada */}
@@ -188,6 +219,7 @@ export const ResumenDeudaPage = () => {
                 <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center col-nro">Suc. / Número</th>
                 <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center col-venc">Vencimiento</th>
                 <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right col-imp">IMPORTE</th>
+                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right col-acum">SALDO ACUM.</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50 dark:divide-dark-border">
@@ -200,73 +232,129 @@ export const ResumenDeudaPage = () => {
                 </tr>
               ) : Object.keys(groupedData).length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-gray-400 font-medium">No se encontraron facturas con los filtros seleccionados.</td>
+                  <td colSpan={7} className="px-6 py-12 text-center text-gray-400 font-medium">No se encontraron facturas con los filtros seleccionados.</td>
                 </tr>
-              ) : providers.map(prov => (
-                <Fragment key={prov}>
-                  {/* Header del Proveedor con CUIT */}
-                  <tr className="bg-primary-50/20 dark:bg-primary-900/10 print-break-inside-avoid">
-                    <td colSpan={6} className="px-6 py-3 border-b border-primary-100/50 dark:border-primary-900/30">
-                      <div className="flex justify-between items-center w-full">
-                        <span className="font-black text-primary-900 dark:text-primary-100 tracking-tight uppercase">{prov}</span>
-                        <span className="text-[10px] font-bold text-gray-500 no-print">CUIT: {groupedData[prov].invoices[0]?.provider?.taxId}</span>
-                        <span className="hidden print:block text-[10pt] font-bold text-black border border-black px-2 py-0.5">CUIT: {groupedData[prov].invoices[0]?.provider?.taxId}</span>
+              ) : viewMode === 'grouped' ? (
+                providers.map(prov => {
+                  let runningTotal = 0;
+                  return (
+                    <Fragment key={prov}>
+                      {/* Header del Proveedor con CUIT */}
+                      <tr className="bg-primary-50/20 dark:bg-primary-900/10 print-break-inside-avoid border-t-2 border-primary-100 dark:border-primary-900/30">
+                        <td colSpan={7} className="px-6 py-3 border-b border-primary-100/50 dark:border-primary-900/30">
+                          <div className="flex justify-between items-center w-full">
+                            <span className="font-black text-primary-900 dark:text-primary-100 tracking-tight uppercase">{prov}</span>
+                            <div className="flex items-center gap-4">
+                              <span className="text-[10px] font-bold text-gray-500 no-print">CUIT: {groupedData[prov].invoices[0]?.provider?.taxId}</span>
+                              <span className="hidden print:block text-[10pt] font-bold text-black border border-black px-2 py-0.5">CUIT: {groupedData[prov].invoices[0]?.provider?.taxId}</span>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      {/* Detalle de Facturas */}
+                      {groupedData[prov].invoices.map((inv: any) => {
+                        runningTotal += inv.totalAmount;
+                        return (
+                          <tr key={inv.id} className="hover:bg-gray-50/50 dark:hover:bg-dark-background/30 transition-colors">
+                            <td className="px-6 py-2 text-[10px] text-gray-400 font-medium pl-10 border-l border-gray-100">
+                               {/* Celda de Proveedor vacía en modo agrupado */}
+                            </td>
+                            <td className="px-6 py-2 text-center">
+                              <span className="text-[10px] font-black text-gray-400 bg-gray-100 dark:bg-dark-background px-1.5 py-0.5 rounded uppercase tracking-tighter">
+                                {inv.invoiceType.replace('FACTURA_', '')}
+                              </span>
+                            </td>
+                            <td className="px-6 py-2 text-center text-sm font-medium text-gray-600 dark:text-gray-300">
+                              {new Date(inv.issueDate).toLocaleDateString()}
+                            </td>
+                            <td className="px-6 py-2 text-center text-sm font-mono text-gray-500">
+                              {inv.pointOfSale}-{inv.invoiceNumber}
+                            </td>
+                            <td className="px-6 py-2 text-center text-sm text-gray-500">
+                              {inv.dueDate ? new Date(inv.dueDate).toLocaleDateString() : '-'}
+                            </td>
+                            <td className="px-6 py-2 text-right">
+                              <span className="text-sm font-bold text-gray-900 dark:text-gray-100">
+                                {formatCurrency(inv.totalAmount)}
+                              </span>
+                            </td>
+                            <td className="px-6 py-2 text-right bg-gray-50/30 dark:bg-black/10">
+                              <span className="text-sm font-medium text-primary-600 dark:text-primary-400">
+                                {formatCurrency(runningTotal)}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                      {/* Subtotal del Proveedor */}
+                      <tr className="subtotal-row border-b-2 border-gray-100">
+                        <td colSpan={5} className="px-6 py-2 text-right text-[10px] font-black text-gray-500 uppercase tracking-widest pr-4">
+                          Total {prov}
+                        </td>
+                        <td className="px-6 py-2 text-right">
+                          <span className="text-sm font-black text-gray-900 dark:text-gray-100">
+                            {formatCurrency(groupedData[prov].total)}
+                          </span>
+                        </td>
+                        <td className="px-6 py-2 bg-gray-100/50 dark:bg-white/5 border-l border-gray-200/50"></td>
+                      </tr>
+                    </Fragment>
+                  );
+                })
+              ) : (
+                /* Vista Ordenada por Vencimiento */
+                sortedByDueDate.map((inv: any) => (
+                  <tr key={inv.id} className="hover:bg-gray-50/50 dark:hover:bg-dark-background/30 transition-colors">
+                    <td className="px-6 py-2">
+                      <div className="flex flex-col">
+                        <span className="text-xs font-bold text-gray-900 dark:text-gray-100 uppercase truncate max-w-[200px]" title={inv.provider?.businessName}>
+                          {inv.provider?.businessName}
+                        </span>
+                        <span className="text-[9px] text-gray-400 font-medium">CUIT: {inv.provider?.taxId}</span>
                       </div>
                     </td>
-                  </tr>
-                  {/* Detalle de Facturas */}
-                  {groupedData[prov].invoices.map((inv: any) => (
-                    <tr key={inv.id} className="hover:bg-gray-50/50 dark:hover:bg-dark-background/30 transition-colors">
-                      <td className="px-6 py-2 text-[10px] text-gray-400 font-medium pl-10 border-l border-gray-100">
-                         {/* Celda de CUIT vacía para dar lugar */}
-                      </td>
-                      <td className="px-6 py-2 text-center">
-                        <span className="text-[10px] font-black text-gray-400 bg-gray-100 dark:bg-dark-background px-1.5 py-0.5 rounded uppercase tracking-tighter">
-                          {inv.invoiceType.replace('FACTURA_', '')}
-                        </span>
-                      </td>
-                      <td className="px-6 py-2 text-center text-sm font-medium text-gray-600 dark:text-gray-300">
-                        {new Date(inv.issueDate).toLocaleDateString()}
-                      </td>
-                      <td className="px-6 py-2 text-center text-sm font-mono text-gray-500">
-                        {inv.pointOfSale}-{inv.invoiceNumber}
-                      </td>
-                      <td className="px-6 py-2 text-center text-sm text-gray-500">
-                        {inv.dueDate ? new Date(inv.dueDate).toLocaleDateString() : '-'}
-                      </td>
-                      <td className="px-6 py-2 text-right">
-                        <span className="text-sm font-bold text-gray-900 dark:text-gray-100">
-                          {formatCurrency(inv.totalAmount)}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                  {/* Subtotal del Proveedor */}
-                  <tr className="subtotal-row border-b-2 border-gray-100">
-                    <td colSpan={5} className="px-6 py-2 text-right text-[10px] font-black text-gray-500 uppercase tracking-widest pr-4">
-                      Total {prov}
-                    </td>
-                    <td className="px-6 py-2 text-right">
-                      <span className="text-sm font-black text-gray-900 dark:text-gray-100">
-                        {formatCurrency(groupedData[prov].total)}
+                    <td className="px-6 py-2 text-center">
+                      <span className="text-[10px] font-black text-gray-400 bg-gray-100 dark:bg-dark-background px-1.5 py-0.5 rounded uppercase tracking-tighter">
+                        {inv.invoiceType.replace('FACTURA_', '')}
                       </span>
                     </td>
+                    <td className="px-6 py-2 text-center text-sm font-medium text-gray-600 dark:text-gray-300">
+                      {new Date(inv.issueDate).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-2 text-center text-sm font-mono text-gray-500">
+                      {inv.pointOfSale}-{inv.invoiceNumber}
+                    </td>
+                    <td className="px-6 py-2 text-center">
+                      <span className={`text-sm font-bold ${inv.dueDate && new Date(inv.dueDate) < new Date() ? 'text-red-500' : 'text-gray-700 dark:text-gray-300'}`}>
+                        {inv.dueDate ? new Date(inv.dueDate).toLocaleDateString() : '-'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-2 text-right">
+                      <span className="text-sm font-bold text-gray-900 dark:text-gray-100">
+                        {formatCurrency(inv.totalAmount)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-2 text-right bg-gray-50/30 dark:bg-black/10">
+                      {/* En modo vencimiento no mostramos saldo acumulado porque no tiene sentido por proveedor */}
+                      <span className="text-[10px] text-gray-400 italic">N/A</span>
+                    </td>
                   </tr>
-                </Fragment>
-              ))}
+                ))
+              )}
             </tbody>
             {/* Footer Total General */}
             {!loading && Object.keys(groupedData).length > 0 && (
               <tfoot>
                 <tr className="bg-gray-900 text-white">
-                  <td colSpan={5} className="px-6 py-4 text-right text-xs font-black uppercase tracking-widest">
+                  <td colSpan={5} className="px-6 py-4 text-right text-xs font-black uppercase tracking-widest border-t border-gray-700">
                     Total general
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-6 py-4 text-right border-t border-gray-700">
                     <span className="text-lg font-black tracking-tight">
                       {formatCurrency(globalTotal)}
                     </span>
                   </td>
+                  <td className="px-6 py-4 border-t border-gray-700"></td>
                 </tr>
               </tfoot>
             )}
