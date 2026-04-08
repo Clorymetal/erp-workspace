@@ -12,6 +12,8 @@ export interface Proveedor {
   condFisc: string;
   saldo: number;
   isCtaCte: boolean;
+  expirationDays: number;
+  netAmountCode: string;
   estado: 'Activo' | 'Inactivo';
 }
 
@@ -29,6 +31,8 @@ const fetchProviders = async (): Promise<Proveedor[]> => {
     cp: p.postalCode || '',
     condFisc: p.taxCondition || '',
     isCtaCte: !!p.isCtaCte,
+    expirationDays: p.expirationDays || 0,
+    netAmountCode: p.netAmountCode || '',
     saldo: p.balance || 0,
     estado: 'Activo'
   }));

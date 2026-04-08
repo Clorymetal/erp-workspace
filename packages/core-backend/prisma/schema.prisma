@@ -30,6 +30,8 @@ model Prov_Provider {
   taxCondition   String?
   discountRate   Float    @default(0.0)
   isCtaCte       Boolean  @default(true)
+  expirationDays Int      @default(0)
+  netAmountCode  String?
   
   categoryId     String?
   category       Prov_Category? @relation(fields: [categoryId], references: [id])

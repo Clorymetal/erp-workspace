@@ -6,9 +6,10 @@ interface InvoiceModalProps {
   onClose: () => void;
   onSave: (data: any) => void;
   initialData?: any;
+  expirationDays?: number;
 }
 
-export const InvoiceModal = ({ isOpen, onClose, onSave, initialData }: InvoiceModalProps) => {
+export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationDays = 0 }: InvoiceModalProps) => {
   const [formData, setFormData] = useState({
     invoiceType: 'FACTURA_A',
     pointOfSale: '',
@@ -22,9 +23,28 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData }: InvoiceMo
     nonTaxedAmount: '',
     isCtaCte: true,
     status: 'PENDIENTE',
-    ivaPeriod: '',
+    ivaPeriod: new Date().toISOString().substring(0, 7),
     ivaNumber: ''
   });
+
+  // Auto-calcular vencimiento y periodo al cambiar fecha de emisión
+  useEffect(() => {
+    if (formData.issueDate && expirationDays >= 0 && !initialData) {
+      const issue = new Date(formData.issueDate);
+      
+      // Vencimiento
+      if (expirationDays > 0) {
+        const due = new Date(issue.getTime() + expirationDays * 24 * 60 * 60 * 1000);
+        setFormData(prev => ({ ...prev, dueDate: due.toISOString().split('T')[0] }));
+      } else {
+        setFormData(prev => ({ ...prev, dueDate: formData.issueDate }));
+      }
+
+      // Periodo IVA automático
+      const period = formData.issueDate.substring(0, 7);
+      setFormData(prev => ({ ...prev, ivaPeriod: period }));
+    }
+  }, [formData.issueDate, expirationDays, initialData]);
 
   useEffect(() => {
     if (initialData) {

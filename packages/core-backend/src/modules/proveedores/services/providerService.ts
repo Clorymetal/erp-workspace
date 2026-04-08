@@ -45,6 +45,19 @@ export const getSupplierBalance = async (providerId: string) => {
 };
 
 export const createInvoice = async (providerId: string, data: any) => {
+  let dueDate = data.dueDate ? new Date(data.dueDate) : null;
+  
+  if (!dueDate) {
+    const provider = await prisma.prov_Provider.findUnique({ 
+      where: { id: providerId },
+      select: { expirationDays: true }
+    });
+    if (provider && provider.expirationDays > 0) {
+      const issueDate = new Date(data.issueDate);
+      dueDate = new Date(issueDate.getTime() + provider.expirationDays * 24 * 60 * 60 * 1000);
+    }
+  }
+
   return await prisma.prov_Invoice.create({
     data: {
       providerId,
@@ -53,7 +66,7 @@ export const createInvoice = async (providerId: string, data: any) => {
       invoiceNumber: data.invoiceNumber,
       issueDate: new Date(data.issueDate),
       receptionDate: data.receptionDate ? new Date(data.receptionDate) : new Date(),
-      dueDate: data.dueDate ? new Date(data.dueDate) : null,
+      dueDate,
       netAmount: Number(data.netAmount || 0),
       taxAmount: Number(data.taxAmount || 0),
       perceptionAmount: Number(data.perceptionAmount || 0),
@@ -93,18 +106,20 @@ export const updateProvider = async (id: string, data: any) => {
   return await prisma.prov_Provider.update({
     where: { id },
     data: {
-      businessName: data.razonSocial,
-      taxId: data.cuit,
-      province: data.provincia,
-      postalCode: data.cp,
-      taxCondition: data.condFisc,
+      businessName: data.razonSocial || data.businessName,
+      taxId: data.cuit || data.taxId,
+      province: data.provincia || data.province,
+      postalCode: data.cp || data.postalCode,
+      taxCondition: data.condFisc || data.taxCondition,
       isCtaCte: data.isCtaCte,
-      contacts: data.email || data.telefono ? {
+      expirationDays: data.expirationDays ? Number(data.expirationDays) : undefined,
+      netAmountCode: data.netAmountCode,
+      contacts: data.email || data.telefono || data.phone ? {
         updateMany: {
           where: {},
           data: {
             email: data.email,
-            phone: data.telefono
+            phone: data.telefono || data.phone
           }
         }
       } : undefined
@@ -122,6 +137,8 @@ export const createProvider = async (data: any) => {
       province: data.province || data.pcia || '',
       taxCondition: data.taxCondition || data.condFisc || '',
       isCtaCte: data.isCtaCte ?? true,
+      expirationDays: data.expirationDays ? Number(data.expirationDays) : 0,
+      netAmountCode: data.netAmountCode || null,
       contacts: {
         create: {
           name: 'Principal',

@@ -27,7 +27,8 @@ export const ProveedoresPage = () => {
   const [editingProviderId, setEditingProviderId] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({ 
-    razonSocial: '', cuit: '', telefono: '', email: '', provincia: '', cp: '', condFisc: '', isCtaCte: true 
+    razonSocial: '', cuit: '', telefono: '', email: '', provincia: '', cp: '', condFisc: '', isCtaCte: true,
+    expirationDays: 0, netAmountCode: ''
   });
 
   const [selectedProvider, setSelectedProvider] = useState<Proveedor | null>(null);
@@ -40,7 +41,10 @@ export const ProveedoresPage = () => {
     try {
       await saveProvider({ provider: formData, isEdit: isEditingProvider, id: editingProviderId || undefined });
       setIsModalOpen(false);
-      setFormData({ razonSocial: '', cuit: '', telefono: '', email: '', provincia: '', cp: '', condFisc: '', isCtaCte: true });
+      setFormData({ 
+        razonSocial: '', cuit: '', telefono: '', email: '', provincia: '', cp: '', condFisc: '', isCtaCte: true,
+        expirationDays: 0, netAmountCode: ''
+      });
     } catch (e) {
       console.error(e);
       alert('Error guardando el proveedor');
@@ -151,7 +155,10 @@ export const ProveedoresPage = () => {
           />
           <Button variant="primary" icon={<Plus size={18} />} onClick={() => {
             setIsEditingProvider(false);
-            setFormData({ razonSocial: '', cuit: '', telefono: '', email: '', provincia: '', cp: '', condFisc: '', isCtaCte: true });
+            setFormData({ 
+                razonSocial: '', cuit: '', telefono: '', email: '', provincia: '', cp: '', condFisc: '', isCtaCte: true,
+                expirationDays: 0, netAmountCode: '' 
+            });
             setIsModalOpen(true);
           }}>Nuevo Proveedor</Button>
         </div>
@@ -209,7 +216,9 @@ export const ProveedoresPage = () => {
       <InvoiceModal 
         isOpen={isInvoiceModalOpen} 
         onClose={() => setIsInvoiceModalOpen(false)}
-        onSave={handleSaveInvoice} initialData={selectedInvoice}
+        onSave={handleSaveInvoice} 
+        initialData={selectedInvoice}
+        expirationDays={selectedProvider?.expirationDays}
       />
 
       <Modal 
@@ -221,30 +230,40 @@ export const ProveedoresPage = () => {
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2">
               <label className="text-sm font-bold">Razón Social</label>
-              <input type="text" value={formData.razonSocial} onChange={e => setFormData({...formData, razonSocial: e.target.value})} className="w-full p-2 bg-gray-50 border rounded-lg" />
+              <input type="text" value={formData.razonSocial} onChange={e => setFormData({...formData, razonSocial: e.target.value})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg" />
             </div>
             <div>
               <label className="text-sm font-bold">CUIT</label>
-              <input type="text" value={formData.cuit} onChange={e => setFormData({...formData, cuit: e.target.value})} className="w-full p-2 bg-gray-50 border rounded-lg" />
+              <input type="text" value={formData.cuit} onChange={e => setFormData({...formData, cuit: e.target.value})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg" />
             </div>
             <div>
               <label className="text-sm font-bold">Teléfono</label>
-              <input type="text" value={formData.telefono} onChange={e => setFormData({...formData, telefono: e.target.value})} className="w-full p-2 bg-gray-50 border rounded-lg" />
+              <input type="text" value={formData.telefono} onChange={e => setFormData({...formData, telefono: e.target.value})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg" />
             </div>
             <div>
               <label className="text-sm font-bold">Provincia</label>
-              <select value={formData.provincia} onChange={e => setFormData({...formData, provincia: e.target.value})} className="w-full p-2 bg-gray-50 border rounded-lg">
+              <select value={formData.provincia} onChange={e => setFormData({...formData, provincia: e.target.value})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg">
                 <option value="">Seleccionar</option>
                 {provinces.map((p: any) => <option key={p.id} value={p.value}>{p.label}</option>)}
               </select>
             </div>
             <div>
               <label className="text-sm font-bold">Cond. Fiscal</label>
-              <select value={formData.condFisc} onChange={e => setFormData({...formData, condFisc: e.target.value})} className="w-full p-2 bg-gray-50 border rounded-lg">
+              <select value={formData.condFisc} onChange={e => setFormData({...formData, condFisc: e.target.value})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg">
                 <option value="">Seleccionar</option>
                 {taxConditions.map((c: any) => <option key={c.id} value={c.value}>{c.label}</option>)}
               </select>
             </div>
+            
+            <div className="col-span-1">
+              <label className="text-sm font-bold">Días Vencimiento</label>
+              <input type="number" value={formData.expirationDays} onChange={e => setFormData({...formData, expirationDays: Number(e.target.value)})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg" />
+            </div>
+            <div className="col-span-1">
+              <label className="text-sm font-bold">Código NETO</label>
+              <input type="text" value={formData.netAmountCode} onChange={e => setFormData({...formData, netAmountCode: e.target.value})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg" placeholder="Ej: 001" />
+            </div>
+
             <div className="col-span-2 mt-2 p-3 bg-primary-50 dark:bg-primary-900/10 rounded-xl border border-primary-100 dark:border-primary-800/30">
               <label className="flex items-center gap-3 cursor-pointer group">
                 <input 

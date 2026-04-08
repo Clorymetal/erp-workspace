@@ -4,23 +4,13 @@ import path from 'path';
 
 /**
  * Script de Sincronización Total desde Excel (Compras.xlsx)
- * 
- * Este script:
- * 1. Limpia las tablas de Compras (Facturas, Pagos, Cheques).
- * 2. Sincroniza Parámetros básicos.
- * 3. Upsert de Proveedores desde la hoja "Proveedores".
- * 4. Inyecta Facturas desde la hoja "Registros" como fuente única de verdad.
  */
 
-// Helper para convertir fechas de Excel (número de serie o Date) a Date de JS
 function parseExcelDate(val: any): Date {
   if (!val) return new Date();
   if (val instanceof Date) return val;
   if (typeof val === 'number') {
-    // Offset de Excel: 1900-1-1 es 1. Unix epoch: 1970-1-1.
-    // La diferencia es de aproximadamente 25569 días.
     const date = new Date(Math.round((val - 25569) * 86400 * 1000));
-    // Ajuste de zona horaria si fuera necesario, pero para fechas contables esto suele bastar
     return date;
   }
   const d = new Date(val);
@@ -30,84 +20,76 @@ function parseExcelDate(val: any): Date {
 async function main() {
   if (process.env.ALLOW_DATA_OVERWRITE !== 'true') {
     console.error('❌ ERROR DE SEGURIDAD: Sincronización bloqueada.');
-    console.error('La App es ahora la fuente de verdad. El uso de este script sobrescribiría datos nuevos.');
-    console.error('Si REALMENTE necesitas volver a importar desde Excel, define ALLOW_DATA_OVERWRITE=true');
     process.exit(1);
   }
 
-  const dbUrl = process.env.DATABASE_URL;
-  console.log(`🚀 Iniciando sincronización en: ${dbUrl?.includes('neon.tech') ? 'PRODUCCIÓN (Neon)' : 'LOCAL (Docker)'}`);
-  
   const prisma = new PrismaClient();
 
   try {
-    // 1. LIMPIEZA DE TABLAS DE COMPRAS (En orden de dependencia)
     console.log('🧹 Limpiando datos antiguos de Compras...');
     await prisma.prov_Check.deleteMany({});
     await prisma.prov_PaymentItem.deleteMany({});
     await prisma.prov_Payment.deleteMany({});
     await prisma.prov_Invoice.deleteMany({});
-    console.log('✅ Tablas de compras limpias (Empleados no afectados).');
 
-    // 2. PARÁMETROS BÁSICOS
-    const basicParams = [
-      { category: 'PROVINCIA', key: 'CHACO', value: 'Chaco', label: 'Chaco' },
-      { category: 'PROVINCIA', key: 'BSAS', value: 'Bs. As.', label: 'Buenos Aires' },
-      { category: 'COND_FISCAL', key: 'RI', value: 'Responsable Inscripto', label: 'Resp. Inscrito' },
-      { category: 'COND_FISCAL', key: 'MT', value: 'Monotributo', label: 'Monotributo' },
-    ];
-    for (const p of basicParams) {
-      await prisma.core_Parameter.upsert({
-        where: { category_key: { category: p.category, key: p.key } },
-        update: {},
-        create: p
-      });
-    }
-
-    // 3. CARGAR EXCEL
     const excelPath = path.resolve(__dirname, '../../../docs/Compras.xlsx');
     const workbook = xlsx.readFile(excelPath, { cellDates: true });
 
-    // 4. PROVEEDORES (Hoja: Proveedores)
+    // 4. PROVEEDORES
     console.log('👥 Sincronizando proveedores...');
     const provSheet = workbook.Sheets['Proveedores'];
-    const provRows: any[] = xlsx.utils.sheet_to_json(provSheet);
+    const provRawRows = xlsx.utils.sheet_to_json(provSheet, { header: 1 }) as any[][];
+    const provHeaders = provRawRows[0].map(h => String(h || '').trim());
     
-    for (const row of provRows) {
-      const taxId = String(row['CUIT'] || '').replace(/-/g, '').trim();
+    const findProvIdx = (possibleNames: string[]) => {
+      const normalizedNames = possibleNames.map(n => n.toLowerCase().trim());
+      return provHeaders.findIndex(h => normalizedNames.includes(h.toLowerCase().trim()));
+    };
+
+    const pIdx = {
+      cuit: findProvIdx(['CUIT']),
+      razon: findProvIdx(['Razón Social', 'Nombre']),
+      domicilio: findProvIdx(['Domicilio']),
+      cp: findProvIdx(['CP']),
+      provincia: findProvIdx(['Provincia']),
+      condicion: findProvIdx(['Condición Fiscal']),
+      ctacte: findProvIdx(['Cta Cte']),
+      venc: findProvIdx(['Vencimiento', 'Días']),
+      neto: findProvIdx(['Neto', 'NETO'])
+    };
+
+    for (let i = 1; i < provRawRows.length; i++) {
+      const row = provRawRows[i];
+      const taxId = String(row[pIdx.cuit] || '').replace(/-/g, '').trim();
       if (!taxId || taxId === 'undefined') continue;
+
+      const expirationDays = pIdx.venc !== -1 ? Number(row[pIdx.venc] || 0) : 0;
 
       await prisma.prov_Provider.upsert({
         where: { taxId },
         update: {
-          businessName: String(row['Razón Social'] || row['Nombre'] || '').trim(),
-          address: String(row['Domicilio'] || '').trim(),
-          postalCode: String(row['CP'] || '').trim(),
-          province: String(row['Provincia'] || '').trim(),
-          taxCondition: String(row['Condición Fiscal'] || '').trim(),
-          isCtaCte: String(row['Cta Cte'] || '').toUpperCase() === 'SI'
+          businessName: String(row[pIdx.razon] || '').trim(),
+          isCtaCte: String(row[pIdx.ctacte] || '').toUpperCase() === 'SI' || String(row[pIdx.ctacte] || '').toUpperCase() === 'S',
+          expirationDays: expirationDays,
+          netAmountCode: pIdx.neto !== -1 ? String(row[pIdx.neto] || '').trim() : null
         },
         create: {
           taxId,
-          businessName: String(row['Razón Social'] || row['Nombre'] || '').trim(),
-          address: String(row['Domicilio'] || '').trim(),
-          postalCode: String(row['CP'] || '').trim(),
-          province: String(row['Provincia'] || '').trim(),
-          taxCondition: String(row['Condición Fiscal'] || '').trim(),
-          isCtaCte: String(row['Cta Cte'] || '').toUpperCase() === 'SI'
+          businessName: String(row[pIdx.razon] || '').trim(),
+          isCtaCte: String(row[pIdx.ctacte] || '').toUpperCase() === 'SI' || String(row[pIdx.ctacte] || '').toUpperCase() === 'S',
+          expirationDays: expirationDays,
+          netAmountCode: pIdx.neto !== -1 ? String(row[pIdx.neto] || '').trim() : null
         }
       });
     }
 
-    // Mapeo de proveedores para FKs
-    const allProviders = await prisma.prov_Provider.findMany({ select: { id: true, taxId: true } });
+    const allProviders = await prisma.prov_Provider.findMany({ select: { id: true, taxId: true, expirationDays: true } });
     const providerMap = new Map(allProviders.map(p => [p.taxId, p.id]));
+    const providerDaysMap = new Map(allProviders.map(p => [p.taxId, p.expirationDays]));
 
-    // 5. FACTURAS (Hoja: Registros) - Fuente de Verdad
-    console.log('🧾 Registrando facturas desde hoja "Registros"...');
+    // 5. FACTURAS
+    console.log('🧾 Registrando facturas...');
     const regSheet = workbook.Sheets['Registros'];
-    
-    // Usamos matriz de filas para mayor precisión con las columnas
     const rows = xlsx.utils.sheet_to_json(regSheet, { header: 1 }) as any[][];
     const headers = rows[0].map(h => String(h || '').trim());
     
@@ -117,53 +99,49 @@ async function main() {
     };
 
     const idx = {
-      fechaEmi: findIdx(['Fecha Emisión']),
-      fechaRec: findIdx(['Fecha Recepción']),
-      tipo: findIdx(['Tipo']),
-      suc: findIdx(['Suc.']),
-      nro: findIdx(['Número']),
-      cuit: findIdx(['CUIT']),
-      razon: findIdx(['Razón Social o Denominación Cliente', 'Proveedor']),
-      neto: findIdx(['Neto Gravado']),
-      iva: findIdx(['IVA Liquidado']),
-      noGrab: findIdx(['Conceptos NG/EX']),
-      perc: findIdx(['Perc./Ret.']),
-      total: findIdx(['Total']),
-      ctacte: findIdx(['Cta cte']),
-      pagado: findIdx(['Pagado']),
-      orden: findIdx(['Orden']),
-      periodo: findIdx(['Período'])
+        fechaEmi: findIdx(['Fecha Emisión']),
+        fechaRec: findIdx(['Fecha Recepción']),
+        tipo: findIdx(['Tipo']),
+        suc: findIdx(['Suc.']),
+        nro: findIdx(['Número']),
+        cuit: findIdx(['CUIT']),
+        razon: findIdx(['Razón Social o Denominación Cliente', 'Proveedor']),
+        neto: findIdx(['Neto Gravado']),
+        iva: findIdx(['IVA Liquidado']),
+        noGrab: findIdx(['Conceptos NG/EX']),
+        perc: findIdx(['Perc./Ret.']),
+        total: findIdx(['Total']),
+        ctacte: findIdx(['Cta cte']),
+        pagado: findIdx(['Pagado']),
+        orden: findIdx(['Orden']),
+        periodo: findIdx(['Período'])
     };
 
-    console.log('Mapeo de columnas (normalizado):', idx);
-
     let count = 0;
-    // Empezamos desde i=1 para saltar cabeceras
     for (let i = 1; i < rows.length; i++) {
       const row = rows[i];
       if (!row[idx.cuit]) continue;
-
       const taxId = String(row[idx.cuit] || '').replace(/-/g, '').trim();
-      let providerId = providerMap.get(taxId);
+      const providerId = providerMap.get(taxId);
+      if (!providerId) continue;
+
+      const issueDate = parseExcelDate(row[idx.fechaEmi]);
       
-      if (!providerId) {
-        const nameIdx = idx.razon !== -1 ? idx.razon : idx.cuit + 1; // Fallback al siguiente si no hay razon
-        const newProvName = String(row[nameIdx] || 'Proveedor ' + taxId).trim();
-        const newProv = await prisma.prov_Provider.create({
-          data: { taxId, businessName: newProvName, isCtaCte: true }
-        });
-        providerId = newProv.id;
-        providerMap.set(taxId, providerId);
+      // CALCULO VENCIMIENTO
+      let dueDate: Date | null = null;
+      const days = providerDaysMap.get(taxId) || 0;
+      if (days > 0) {
+        dueDate = new Date(issueDate.getTime() + days * 24 * 60 * 60 * 1000);
+      } else if (row[idx.pagado] && String(row[idx.pagado]).toUpperCase().includes('PAGADO')) {
+        dueDate = issueDate;
       }
 
-      // Mapeo de Tipo
       const tipoStr = String(row[idx.tipo] || '').toUpperCase();
       let invoiceType: InvoiceType = InvoiceType.FACTURA_A;
       if (tipoStr.includes('B')) invoiceType = InvoiceType.FACTURA_B;
       if (tipoStr.includes('C')) invoiceType = InvoiceType.FACTURA_C;
       if (tipoStr.includes('NC') || tipoStr.includes('CREDITO')) invoiceType = InvoiceType.NOTA_CREDITO;
 
-      const issueDate = parseExcelDate(row[idx.fechaEmi]);
       let ivaPeriod = '';
       if (row[idx.periodo]) {
         const pDate = parseExcelDate(row[idx.periodo]);
@@ -174,13 +152,13 @@ async function main() {
 
       await prisma.prov_Invoice.create({
         data: {
-          providerId: providerMap.get(taxId)!,
+          providerId,
           invoiceType,
           pointOfSale: String(row[idx.suc] || '0').padStart(4, '0'),
           invoiceNumber: String(row[idx.nro] || '0').padStart(8, '0'),
           issueDate,
           receptionDate: row[idx.fechaRec] ? parseExcelDate(row[idx.fechaRec]) : issueDate,
-          dueDate: row[idx.pagado] && String(row[idx.pagado]).toUpperCase().includes('PAGADO') ? issueDate : null,
+          dueDate,
           netAmount: Number(row[idx.neto] || 0),
           taxAmount: Number(row[idx.iva] || 0),
           perceptionAmount: Number(row[idx.perc] || 0),
@@ -194,14 +172,12 @@ async function main() {
       });
       count++;
     }
-
-    console.log(`✨ Sincronización exitosa. ${count} facturas inyectadas.`);
-
-  } catch (error) {
-    console.error('❌ Error en la sincronización:', error);
+    console.log(`✨ Éxito: ${count} facturas sincronizadas.`);
+  } catch (e) {
+    console.error(e);
   } finally {
     await prisma.$disconnect();
   }
 }
 
-sync();
+main();
