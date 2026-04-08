@@ -77,18 +77,26 @@ export const ResumenDeudaPage = () => {
     <div className="w-full flex flex-col gap-6 p-4">
       <style>{`
         @media print {
-          @page { size: landscape; margin: 1cm; }
+          @page { size: A4 portrait; margin: 1cm 0.5cm; }
           .no-print { display: none !important; }
           .print-break-inside-avoid { break-inside: avoid; }
-          body { background: white !important; }
-          .main-content { padding: 0 !important; margin: 0 !important; width: 100% !important; }
-          table { width: 100% !important; border-collapse: collapse !important; font-size: 10pt !important; }
-          th { background-color: #f1f5f9 !important; color: #475569 !important; -webkit-print-color-adjust: exact; border: 1px solid #e2e8f0 !important; }
-          td { border: 1px solid #f1f5f9 !important; }
-          .bg-primary-50\\/20 { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; }
-          .font-black { font-weight: 900 !important; }
-          .text-primary-900 { color: #1e3a8a !important; -webkit-print-color-adjust: exact; }
-          .subtotal-row { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; font-weight: bold !important; }
+          body { background: white !important; font-family: sans-serif; }
+          .main-content { padding: 0 !important; margin: 0 !important; width: 100% !important; border: none !important; shadow: none !important; }
+          table { width: 100% !important; border-collapse: collapse !important; font-size: 8.5pt !important; table-layout: fixed; }
+          th { background-color: #f8fafc !important; color: #475569 !important; -webkit-print-color-adjust: exact; border: 1px solid #e2e8f0 !important; padding: 6px 4px !important; }
+          td { border: 1px solid #f1f5f9 !important; padding: 4px 4px !important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+          .bg-primary-50\\/20 { background-color: #f1f5f9 !important; -webkit-print-color-adjust: exact; }
+          .font-black { font-weight: 800 !important; }
+          .text-primary-900 { color: #000 !important; }
+          .subtotal-row { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; font-weight: bold !important; border-top: 1.5pt solid #000 !important; }
+          
+          /* Ajuste de anchos de columna para A4 Portrait */
+          .col-prov { width: 40%; }
+          .col-tipo { width: 10%; }
+          .col-fecha { width: 12%; }
+          .col-nro { width: 15%; }
+          .col-venc { width: 12%; }
+          .col-imp { width: 11%; }
         }
       `}</style>
 
@@ -174,12 +182,12 @@ export const ResumenDeudaPage = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50/50 dark:bg-dark-background/50 border-b border-gray-100 dark:border-dark-border">
-                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">PROVEEDOR</th>
-                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Tipo</th>
-                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Fecha Emisión</th>
-                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Suc. / Número</th>
-                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Vencimiento</th>
-                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">IMPORTE</th>
+                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest col-prov">PROVEEDOR</th>
+                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center col-tipo">Tipo</th>
+                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center col-fecha">Fecha Emisión</th>
+                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center col-nro">Suc. / Número</th>
+                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center col-venc">Vencimiento</th>
+                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right col-imp">IMPORTE</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50 dark:divide-dark-border">
