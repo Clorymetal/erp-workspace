@@ -27,7 +27,14 @@ function parseExcelDate(val: any): Date {
   return isNaN(d.getTime()) ? new Date() : d;
 }
 
-async function sync() {
+async function main() {
+  if (process.env.ALLOW_DATA_OVERWRITE !== 'true') {
+    console.error('❌ ERROR DE SEGURIDAD: Sincronización bloqueada.');
+    console.error('La App es ahora la fuente de verdad. El uso de este script sobrescribiría datos nuevos.');
+    console.error('Si REALMENTE necesitas volver a importar desde Excel, define ALLOW_DATA_OVERWRITE=true');
+    process.exit(1);
+  }
+
   const dbUrl = process.env.DATABASE_URL;
   console.log(`🚀 Iniciando sincronización en: ${dbUrl?.includes('neon.tech') ? 'PRODUCCIÓN (Neon)' : 'LOCAL (Docker)'}`);
   

@@ -7,7 +7,7 @@
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "npx prisma generate && tsc",
     "start": "npx prisma migrate deploy && node dist/index.js",
-    "sync:excel": "ts-node scripts/syncFromExcel.ts"
+    "x-legacy-sync": "ts-node scripts/syncFromExcel.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.12.1",
