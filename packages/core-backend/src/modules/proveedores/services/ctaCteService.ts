@@ -73,11 +73,10 @@ export const getMovementHistory = async (providerId: string) => {
 
 export const getPendingItems = async (providerId: string) => {
   const pid = providerId.trim();
-  // Busca facturas pendientes o parciales
+  // Busca facturas del proveedor sin filtros restrictivos de estado inicialmente para diagnóstico
   const pendingInvoices = await prisma.prov_Invoice.findMany({
     where: {
-      providerId: pid,
-      status: { in: ['PENDIENTE', 'PAGADA_PARCIAL', 'VENCIDA'] }
+      providerId: pid
     },
     include: {
       paymentsItems: true
