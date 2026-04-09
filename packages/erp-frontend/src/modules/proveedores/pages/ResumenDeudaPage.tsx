@@ -45,9 +45,12 @@ export const ResumenDeudaPage = () => {
   // Agrupar y ordenar facturas por proveedor
   const groupedData = invoices.reduce((acc: any, inv: any) => {
     const providerName = inv.provider?.businessName || 'Desconocido';
+    const amountPaid = (inv.paymentsItems || []).reduce((sum: number, p: any) => sum + (Number(p.amountPaid) || 0), 0);
+    const amountPending = (Number(inv.totalAmount) || 0) - amountPaid;
+
     if (!acc[providerName]) acc[providerName] = { invoices: [], total: 0 };
-    acc[providerName].invoices.push(inv);
-    acc[providerName].total += inv.totalAmount;
+    acc[providerName].invoices.push({ ...inv, amountPending });
+    acc[providerName].total += amountPending;
     return acc;
   }, {});
 
@@ -63,7 +66,7 @@ export const ResumenDeudaPage = () => {
   });
 
   const providers = Object.keys(groupedData).sort();
-  const globalTotal = invoices.reduce((acc, inv) => acc + inv.totalAmount, 0);
+  const globalTotal = Object.values(groupedData).reduce((acc: number, prov: any) => acc + prov.total, 0);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(amount);
@@ -218,8 +221,9 @@ export const ResumenDeudaPage = () => {
                 <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center col-fecha">Fecha Emisión</th>
                 <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center col-nro">Suc. / Número</th>
                 <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center col-venc">Vencimiento</th>
-                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right col-imp">IMPORTE</th>
-                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right col-acum">SALDO ACUM.</th>
+                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right col-imp">IMPORTE ORIG.</th>
+                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right col-imp">SALDO PEND.</th>
+                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right col-acum">DEUDA ACUM.</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50 dark:divide-dark-border">
@@ -253,7 +257,7 @@ export const ResumenDeudaPage = () => {
                       </tr>
                       {/* Detalle de Facturas */}
                       {groupedData[prov].invoices.map((inv: any) => {
-                        runningTotal += inv.totalAmount;
+                        runningTotal += inv.amountPending;
                         return (
                           <tr key={inv.id} className="hover:bg-gray-50/50 dark:hover:bg-dark-background/30 transition-colors">
                             <td className="px-6 py-2 text-[10px] text-gray-400 font-medium pl-10 border-l border-gray-100">
@@ -274,8 +278,13 @@ export const ResumenDeudaPage = () => {
                               {inv.dueDate ? new Date(inv.dueDate).toLocaleDateString() : '-'}
                             </td>
                             <td className="px-6 py-2 text-right">
-                              <span className="text-sm font-bold text-gray-900 dark:text-gray-100">
+                              <span className="text-xs text-gray-400">
                                 {formatCurrency(inv.totalAmount)}
+                              </span>
+                            </td>
+                            <td className="px-6 py-2 text-right">
+                              <span className="text-sm font-bold text-gray-900 dark:text-gray-100">
+                                {formatCurrency(inv.amountPending)}
                               </span>
                             </td>
                             <td className="px-6 py-2 text-right bg-gray-50/30 dark:bg-black/10">

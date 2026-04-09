@@ -166,7 +166,13 @@ export const getAllInvoices = async (filters: any) => {
     };
   }
   
-  if (status && status !== 'ALL') where.status = status;
+  if (status && status !== 'ALL') {
+    if (status === 'PENDIENTE') {
+      where.status = { in: ['PENDIENTE', 'PAGADA_PARCIAL', 'VENCIDA'] };
+    } else {
+      where.status = status;
+    }
+  }
   if (isCtaCte !== undefined) where.isCtaCte = isCtaCte === 'true' ? true : (isCtaCte === 'false' ? false : undefined);
   if (providerId) where.providerId = providerId;
   
