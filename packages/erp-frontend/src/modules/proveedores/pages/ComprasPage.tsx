@@ -46,10 +46,9 @@ export const ComprasPage = () => {
   const handleSaveInvoice = async (data: any) => {
     try {
       const isEdit = !!selectedInvoice;
-      // Note: This endpoint should be correct or handle provider routing
       const url = isEdit 
-        ? `${API_BASE_URL}/proveedores/invoices/${selectedInvoice.id}`
-        : `${API_BASE_URL}/proveedores/invoices`;
+        ? `${API_BASE_URL}/proveedores/facturas/${selectedInvoice.id}`
+        : `${API_BASE_URL}/proveedores/${data.providerId}/facturas`;
         
       const res = await fetch(url, {
         method: isEdit ? 'PATCH' : 'POST',
@@ -181,6 +180,7 @@ export const ComprasPage = () => {
         onClose={() => setIsInvoiceModalOpen(false)} 
         onSave={handleSaveInvoice}
         initialData={selectedInvoice}
+        showProviderSelector={true}
       />
     </div>
   );

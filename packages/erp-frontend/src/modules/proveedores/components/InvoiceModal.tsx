@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Modal, Button } from '../../../core/components';
+import { useQuery } from '@tanstack/react-query';
+import { API_BASE_URL } from '../../../core/config/apiConfig';
 
 interface InvoiceModalProps {
   isOpen: boolean;
@@ -7,10 +9,12 @@ interface InvoiceModalProps {
   onSave: (data: any) => void;
   initialData?: any;
   expirationDays?: number;
+  showProviderSelector?: boolean;
 }
 
 export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationDays = 0 }: InvoiceModalProps) => {
   const [formData, setFormData] = useState({
+    providerId: '',
     invoiceType: 'FACTURA_A',
     pointOfSale: '',
     invoiceNumber: '',
@@ -46,10 +50,20 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
     }
   }, [formData.issueDate, expirationDays, initialData]);
 
+  const { data: providers = [] } = useQuery({
+    queryKey: ['providers'],
+    queryFn: async () => {
+      const res = await fetch(`${API_BASE_URL}/proveedores`);
+      return res.json();
+    },
+    enabled: showProviderSelector
+  });
+
   useEffect(() => {
     if (initialData) {
       setFormData({
         ...initialData,
+        providerId: initialData.providerId?.toString() || '',
         issueDate: initialData.issueDate ? new Date(initialData.issueDate).toISOString().split('T')[0] : '',
         dueDate: initialData.dueDate ? new Date(initialData.dueDate).toISOString().split('T')[0] : '',
         totalAmount: initialData.totalAmount.toString(),
@@ -79,12 +93,28 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (showProviderSelector && !formData.providerId) return alert("Debe seleccionar un proveedor");
     onSave(formData);
   };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={initialData ? "Editar Factura" : "Registrar Nueva Factura"}>
       <form onSubmit={handleSubmit} className="space-y-4">
+        {showProviderSelector && !initialData && (
+          <div className="bg-orange-50 dark:bg-orange-900/10 p-3 rounded-xl border border-orange-100 dark:border-orange-900/30 mb-2">
+            <label className="block text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-1">Seleccionar Proveedor</label>
+            <select
+              value={formData.providerId}
+              onChange={e => setFormData({ ...formData, providerId: e.target.value })}
+              className="w-full p-2 bg-white dark:bg-gray-800 border-none rounded-lg text-sm outline-none ring-1 ring-orange-200 dark:ring-orange-800"
+            >
+              <option value="">-- Eliga un proveedor --</option>
+              {providers.map((p: any) => (
+                <option key={p.id} value={p.id}>{p.businessName} (CUIT: {p.taxId})</option>
+              ))}
+            </select>
+          </div>
+        )}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors">Tipo de Comprobante</label>
