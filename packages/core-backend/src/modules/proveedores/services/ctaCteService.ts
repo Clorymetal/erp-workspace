@@ -1,5 +1,5 @@
 import { prisma } from '../../../db';
-// Eliminamos importaciones explicitas de tipos de @prisma/client para que TS los infiera desde la DB
+import { InvoiceStatus, InvoiceType, PaymentStatus } from '@prisma/client';
 
 export const getMovementHistory = async (providerId: string) => {
   const pid = providerId.trim();
