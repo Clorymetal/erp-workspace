@@ -12,7 +12,7 @@ interface InvoiceModalProps {
   showProviderSelector?: boolean;
 }
 
-export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationDays = 0 }: InvoiceModalProps) => {
+export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationDays = 0, showProviderSelector = false }: InvoiceModalProps) => {
   const [formData, setFormData] = useState({
     providerId: '',
     invoiceType: 'FACTURA_A',
