@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Modal, Button, DataTable } from '../../../core/components';
-import { Check, Wallet, Landmark, Receipt, ArrowRight, ArrowLeft, Plus, X } from 'lucide-react';
+import { Modal, Button } from '../../../core/components';
+import { Check, Wallet, Landmark, Receipt, ArrowRight, Plus, X } from 'lucide-react';
 import { useCtaCte } from '../hooks/useCtaCte';
 
 interface Props {
@@ -93,7 +93,7 @@ export const PaymentWizard = ({ isOpen, onClose, providerId }: Props) => {
       isOpen={isOpen} 
       onClose={onClose} 
       title={`Nueva Orden de Pago - Paso ${step} de 3`}
-      size="xl"
+      maxWidth="xl"
       footer={
         <div className="flex justify-between w-full">
           <Button variant="ghost" onClick={step === 1 ? onClose : () => setStep(step - 1)}>

@@ -25,7 +25,7 @@ export const PaymentDetailsModal = ({ isOpen, onClose, paymentId }: Props) => {
       isOpen={isOpen} 
       onClose={onClose} 
       title="Detalle de Pago / Orden de Pago"
-      size="lg"
+      maxWidth="lg"
       footer={<Button variant="primary" onClick={onClose}>Cerrar</Button>}
     >
       {isLoading ? (

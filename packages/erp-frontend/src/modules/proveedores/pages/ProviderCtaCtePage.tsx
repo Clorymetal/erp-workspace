@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, Trash2, Printer, Search, Download, History } from 'lucide-react';
-import { Button, DataTable, Modal } from '../../../core/components';
+import { Button, DataTable } from '../../../core/components';
 import { useCtaCte } from '../hooks/useCtaCte';
 import { useProviders } from '../hooks/useProviders';
 import { PaymentWizard } from '../components/PaymentWizard';

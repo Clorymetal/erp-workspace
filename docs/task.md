@@ -74,7 +74,7 @@
 - [X] Desplegar Frontend en **Vercel.com**
 
 ### Próximos Pasos (Próxima Sesión):
-- [ ] **Deploy Cta Cte**: Realizar el merge a `main` y ejecutar migraciones en producción.
+- [x] **Deploy Cta Cte**: Realizar el merge a `main` y ejecutar migraciones en producción. (Completado ✅)
 - [ ] **Fase 12 (RRHH)**: Reportes de Cierre de Mes Avanzados e Históricos.
 - [ ] **Fase 7 (Tesorería)**: Reporte global de cheques emitidos.
 - [ ] **Fase 13 (UI/UX)**: Pulido de los 58 errores de Lint detectados.

@@ -316,4 +316,21 @@ _Nota: Al retomar el trabajo, leer siempre el último registro de estado y revis
 **Estado Actual:**
 Módulo de Cuenta Corriente finalizado y listo para ser desplegado a producción. El sistema permite una gestión financiera profesional de proveedores, superando la simple carga de facturas.
 
+### Sesión 17: 09 de Abril de 2026 - Despliegue de Cuenta Corriente (Cta Cte)
+**Objetivos:**
+- Realizar el merge de la rama `feat/cta-cte` a `main`.
+- Desplegar el módulo de Cuenta Corriente y Pagos al entorno de producción.
+- Asegurar la ejecución de migraciones de Prisma en Neon.
+
+**Acciones Realizadas:**
+- [x] **Git Merge:** Fusionada la rama `feat/cta-cte` en `main`. Los cambios incluyen el esquema de BD, servicios de imputación, asistente de pago y la nueva interfaz de historial.
+- [x] **Git Push:** Subidos los cambios al repositorio remoto. Esto dispara el build automático en Render y Vercel.
+- [x] **Migraciones:** El script de `start` en Render ejecuta automáticamente `prisma migrate deploy`, aplicando la migración `20260408190015_add_cta_cte_fields` en la base de datos de Neon.
+- [x] **Task Update:** Marcada la fase de despliegue de Cta Cte como completada en `task.md`.
+
+**Estado Actual:**
+El ERP cuenta ahora con el módulo de Cuenta Corriente operativo en producción. Los usuarios pueden registrar pagos, realizar imputaciones y visualizar el historial de deuda consolidado por proveedor.
+
+---
 _Nota: Al retomar el trabajo, leer siempre el último registro de estado y revisar `task.md`._
+
