@@ -113,7 +113,10 @@ export const ProveedoresPage = () => {
           <button onClick={(e) => {
             e.stopPropagation();
             navigate(`/proveedores/${row.id}/cta-cte`);
-          }} className="p-1.5 text-gray-400 hover:text-secondary-500" title="Cuenta Corriente"><BookOpen size={18} /></button>
+          }} className="flex items-center gap-1 px-2 py-1 bg-secondary-50 dark:bg-secondary-900/20 text-secondary-600 dark:text-secondary-400 rounded-lg hover:bg-secondary-100 transition-colors" title="Ver Cuenta Corriente">
+            <BookOpen size={16} />
+            <span className="text-[10px] font-bold uppercase">Cta. Cte.</span>
+          </button>
 
           <button className="p-1.5 text-gray-400 hover:text-red-500" title="Eliminar"><Trash2 size={18} /></button>
         </div>

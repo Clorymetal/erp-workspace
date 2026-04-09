@@ -327,6 +327,8 @@ Módulo de Cuenta Corriente finalizado y listo para ser desplegado a producción
 - [x] **Git Push:** Subidos los cambios al repositorio remoto. Esto dispara el build automático en Render y Vercel.
 - [x] **Migraciones:** El script de `start` en Render ejecuta automáticamente `prisma migrate deploy`, aplicando la migración `20260408190015_add_cta_cte_fields` en la base de datos de Neon.
 - [x] **Task Update:** Marcada la fase de despliegue de Cta Cte como completada en `task.md`.
+- [x] **Hotfix (TypeScript):** Corregidos errores de tipado en `PaymentDetailsModal.tsx` y `PaymentWizard.tsx` (prop `size` $\rightarrow$ `maxWidth`) y limpieza de imports no utilizados para asegurar la compilación exitosa en Vercel.
+
 
 **Estado Actual:**
 El ERP cuenta ahora con el módulo de Cuenta Corriente operativo en producción. Los usuarios pueden registrar pagos, realizar imputaciones y visualizar el historial de deuda consolidado por proveedor.

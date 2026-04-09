@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { X, Plus, Receipt, Edit, CheckCircle } from 'lucide-react';
 import { DataTable } from '../../../core/components/DataTable';
@@ -25,6 +26,7 @@ interface ProviderDetailsProps {
 }
 
 export const ProviderDetails = ({ provider, onClose, onAddInvoice, onEditInvoice, onStatusChange, refreshTrigger }: ProviderDetailsProps) => {
+  const navigate = useNavigate();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('all');
@@ -157,9 +159,17 @@ export const ProviderDetails = ({ provider, onClose, onAddInvoice, onEditInvoice
               {new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(provider.saldo)}
             </p>
           </div>
-          <div className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700">
-            <p className="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase">Total Facturas</p>
-            <p className="text-xl font-black text-gray-700 dark:text-gray-300 mt-1">{invoices.length}</p>
+          <div className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 flex flex-col justify-between">
+            <div>
+              <p className="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase">Total Facturas</p>
+              <p className="text-xl font-black text-gray-700 dark:text-gray-300 mt-1">{invoices.length}</p>
+            </div>
+            <button 
+              onClick={() => navigate(`/proveedores/${provider.id}/cta-cte`)}
+              className="mt-2 text-[10px] font-bold text-primary-500 hover:text-primary-600 flex items-center gap-1 uppercase tracking-wider"
+            >
+              Ver Historial Completo →
+            </button>
           </div>
         </div>
 
