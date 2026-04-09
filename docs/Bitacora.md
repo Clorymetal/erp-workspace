@@ -316,23 +316,28 @@ _Nota: Al retomar el trabajo, leer siempre el último registro de estado y revis
 **Estado Actual:**
 Módulo de Cuenta Corriente finalizado y listo para ser desplegado a producción. El sistema permite una gestión financiera profesional de proveedores, superando la simple carga de facturas.
 
-### Sesión 17: 09 de Abril de 2026 - Despliegue de Cuenta Corriente (Cta Cte)
+### Sesión 17: 09 de Abril de 2026 - Despliegue, Depuración y Reporte de Saldos Reales
 **Objetivos:**
-- Realizar el merge de la rama `feat/cta-cte` a `main`.
-- Desplegar el módulo de Cuenta Corriente y Pagos al entorno de producción.
-- Asegurar la ejecución de migraciones de Prisma en Neon.
+- Fusionar `feat/cta-cte` y desplegar el módulo de Cuenta Corriente a Producción.
+- Resolver errores 404 (rutas no encontradas) y bloqueos de base de datos en Render.
+- Refinar el reporte de Resumen de Deuda para mostrar saldos reales.
 
 **Acciones Realizadas:**
-- [x] **Git Merge:** Fusionada la rama `feat/cta-cte` en `main`. Los cambios incluyen el esquema de BD, servicios de imputación, asistente de pago y la nueva interfaz de historial.
-- [x] **Git Push:** Subidos los cambios al repositorio remoto. Esto dispara el build automático en Render y Vercel.
-- [x] **Migraciones:** El script de `start` en Render ejecuta automáticamente `prisma migrate deploy`, aplicando la migración `20260408190015_add_cta_cte_fields` en la base de datos de Neon.
-- [x] **Task Update:** Marcada la fase de despliegue de Cta Cte como completada en `task.md`.
-- [x] **Hotfix (TypeScript):** Corregidos errores de tipado en `PaymentDetailsModal.tsx` y `PaymentWizard.tsx` (prop `size` $\rightarrow$ `maxWidth`) y limpieza de imports no utilizados para asegurar la compilación exitosa en Vercel.
-
+- [x] **Git & Merge:** Fusionada la rama `feat/cta-cte` en `main` y desplegada.
+- [x] **Hotfix de Despliegue (Render):**
+  - Se resolvió bloqueo de base de datos (Error P3009) mediante reparación manual de migración en el paso de `postinstall`.
+  - Se forzó el relanzamiento del servidor de Render para activar los nuevos endpoints que daban error 404.
+- [x] **Robustez Backend:** Mejorada la lógica de `ctaCteService.ts` con `trim()` en IDs, ordenamiento seguro de fechas y manejo de imputaciones sin pagos previos.
+- [x] **Mejora de Reportes (Resumen de Deuda):**
+  - **Filtro Inclusivo:** El filtro de "Sólo Pendientes" ahora incluye correctamente facturas con pagos parciales (`PAGADA_PARCIAL`).
+  - **Cálculo de Deuda Real:** Se modificó el reporte global para que calcule y muestre el **"Saldo Pendiente"** real (Importe - Pagos) y los totales se basen en la deuda neta, no en el importe original de las facturas.
+- [x] **Captura de Errores:** Implementada capa de robustez en el frontend (`useCtaCte.ts`) para capturar y mostrar errores técnicos del servidor en lugar de fallos de JSON.
 
 **Estado Actual:**
-El ERP cuenta ahora con el módulo de Cuenta Corriente operativo en producción. Los usuarios pueden registrar pagos, realizar imputaciones y visualizar el historial de deuda consolidado por proveedor.
+El módulo de Cuenta Corriente está **vuelo y 100% operativo en producción**. El usuario ya puede imputar pagos parciales, ver cómo se descuentan del balance global y generar reportes de deuda precisos que coinciden con la realidad financiera.
+
 
 ---
 _Nota: Al retomar el trabajo, leer siempre el último registro de estado y revisar `task.md`._
+
 

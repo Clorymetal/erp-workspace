@@ -44,6 +44,7 @@
 - [x] **Imputación Automática:** Vincular pagos a facturas pendientes para descontar saldos.
 - [x] **Historial Ledger:** Vista de Cuenta Corriente por proveedor con saldo acumulado.
 - [x] **Trazabilidad:** Poder ver qué facturas cubrió un pago y viceversa.
+- [x] **Reporte de Saldos Reales:** Resumen de deuda basado en saldos netos e integración de pagos parciales en filtros. (Validado en Producción ✅)
 - [ ] **Cartera de Tesorería:** Visualización de cheques emitidos y estados de cuentas bancarias. (Pendiente)
 
 ## Fase 8: Módulo de Empleados y RRHH (Completado)
@@ -74,7 +75,6 @@
 - [X] Desplegar Frontend en **Vercel.com**
 
 ### Próximos Pasos (Próxima Sesión):
-- [x] **Deploy Cta Cte**: Realizar el merge a `main` y ejecutar migraciones en producción. (Completado ✅)
+- [ ] **Fase 7 (Tesorería)**: Reporte global de cheques emitidos y conciliación bancaria simple.
 - [ ] **Fase 12 (RRHH)**: Reportes de Cierre de Mes Avanzados e Históricos.
-- [ ] **Fase 7 (Tesorería)**: Reporte global de cheques emitidos.
-- [ ] **Fase 13 (UI/UX)**: Pulido de los 58 errores de Lint detectados.
+- [ ] **Fase 13 (UI/UX)**: Pulido de los 58 errores de Lint detectados para máxima estabilidad de código.
