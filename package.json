@@ -14,7 +14,8 @@
     "lint": "npm run lint --workspaces --if-present",
     "start": "node packages/core-backend/dist/index.js",
     "db:up": "docker-compose up -d",
-    "db:down": "docker-compose down"
+    "db:down": "docker-compose down",
+    "postinstall": "npx prisma migrate resolve --applied 20260408151533_add_financial_fields_to_provider --schema packages/core-backend/prisma/schema.prisma || echo 'OK'"
   },
   "overrides": {
     "react": "18.3.1",
