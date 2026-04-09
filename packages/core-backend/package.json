@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "build": "npx prisma generate && tsc",
+    "build": "echo 'Building ERP Backend 2.3.0...' && npx prisma generate && tsc",
     "start": "npx prisma migrate deploy && node dist/index.js",
     "x-legacy-sync": "ts-node scripts/syncFromExcel.ts"
   },
