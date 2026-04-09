@@ -2,9 +2,10 @@ import { prisma } from '../../../db';
 import { PaymentStatus, InvoiceStatus, CheckStatus, InvoiceType } from '@prisma/client';
 
 export const getMovementHistory = async (providerId: string) => {
+  const pid = providerId.trim();
   // 1. Obtener Facturas / Notas de Débito / Notas de Crédito
   const invoices = await prisma.prov_Invoice.findMany({
-    where: { providerId },
+    where: { providerId: pid },
     orderBy: { issueDate: 'asc' }
   });
 
@@ -51,8 +52,14 @@ export const getMovementHistory = async (providerId: string) => {
     });
   });
 
-  // Ordenar por fecha
-  movements.sort((a, b) => a.date.getTime() - b.date.getTime());
+  // Ordenar por fecha de forma segura y robusta
+  movements.sort((a, b) => {
+    const timeA = a.date ? new Date(a.date).getTime() : 0;
+    const timeB = b.date ? new Date(b.date).getTime() : 0;
+    if (isNaN(timeA)) return 1;
+    if (isNaN(timeB)) return -1;
+    return timeA - timeB;
+  });
 
   // 4. Calcular saldo acumulado
   let runningBalance = 0;
@@ -65,10 +72,11 @@ export const getMovementHistory = async (providerId: string) => {
 };
 
 export const getPendingItems = async (providerId: string) => {
+  const pid = providerId.trim();
   // Busca facturas pendientes o parciales
   const pendingInvoices = await prisma.prov_Invoice.findMany({
     where: {
-      providerId,
+      providerId: pid,
       status: { in: ['PENDIENTE', 'PAGADA_PARCIAL', 'VENCIDA'] }
     },
     include: {
@@ -79,8 +87,9 @@ export const getPendingItems = async (providerId: string) => {
 
   // Calculamos el saldo real pendiente de cada factura
   const formattedInvoices = pendingInvoices.map(inv => {
-    const paid = inv.paymentsItems.reduce((acc, curr) => acc + curr.amountPaid, 0);
-    const pending = inv.totalAmount - paid;
+    const paid = (inv.paymentsItems || []).reduce((acc: number, curr: any) => acc + (Number(curr.amountPaid) || 0), 0);
+    const total = Number(inv.totalAmount) || 0;
+    const pending = total - paid;
     return {
       ...inv,
       amountPaidTotal: paid,

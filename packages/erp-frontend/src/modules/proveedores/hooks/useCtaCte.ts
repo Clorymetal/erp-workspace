@@ -43,8 +43,9 @@ export const useCtaCte = (providerId: string) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(paymentData)
       });
-      if (!res.ok) throw new Error('Error creating payment');
-      return res.json();
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Error al procesar el pago');
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cta-cte', providerId] });
