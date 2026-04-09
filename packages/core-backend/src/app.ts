@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Rutas Globales Base (Gateway)
 app.get('/health', (req: Request, res: Response) => {
-  res.status(200).json({ status: 'ok', message: 'ERP Core is running', version: '2.2.2-iva-migration' });
+  res.status(200).json({ status: 'ok', message: 'ERP Core is running', version: '2.3.0-cta-cte' });
 });
 
 // Módulos
