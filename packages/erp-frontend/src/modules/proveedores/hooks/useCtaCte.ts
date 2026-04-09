@@ -20,7 +20,17 @@ export const useCtaCte = (providerId: string) => {
     queryKey: ['cta-cte', providerId],
     queryFn: async () => {
       const res = await fetch(`${API_BASE_URL}/proveedores/${providerId}/cta-cte`);
-      if (!res.ok) throw new Error('Failed to fetch movement history');
+      const contentType = res.headers.get("content-type");
+      if (!res.ok) {
+        let errorMsg = 'Error al cargar historial';
+        if (contentType?.includes("application/json")) {
+           const errData = await res.json();
+           errorMsg = errData.error || errData.message || errorMsg;
+        } else {
+           errorMsg = await res.text();
+        }
+        throw new Error(errorMsg.substring(0, 100));
+      }
       return res.json();
     },
     enabled: !!providerId
@@ -30,7 +40,17 @@ export const useCtaCte = (providerId: string) => {
     queryKey: ['pending-items', providerId],
     queryFn: async () => {
       const res = await fetch(`${API_BASE_URL}/proveedores/${providerId}/items-pendientes`);
-      if (!res.ok) throw new Error('Failed to fetch pending items');
+      const contentType = res.headers.get("content-type");
+      if (!res.ok) {
+        let errorMsg = 'Error al cargar items pendientes';
+        if (contentType?.includes("application/json")) {
+           const errData = await res.json();
+           errorMsg = errData.error || errData.message || errorMsg;
+        } else {
+           errorMsg = await res.text();
+        }
+        throw new Error(errorMsg.substring(0, 100));
+      }
       return res.json();
     },
     enabled: !!providerId
@@ -43,9 +63,19 @@ export const useCtaCte = (providerId: string) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(paymentData)
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Error al procesar el pago');
-      return data;
+      
+      const contentType = res.headers.get("content-type");
+      if (!res.ok) {
+        let errorMsg = 'Error en el pago';
+        if (contentType?.includes("application/json")) {
+           const errData = await res.json();
+           errorMsg = errData.error || errData.message || errorMsg;
+        } else {
+           errorMsg = await res.text();
+        }
+        throw new Error(errorMsg.substring(0, 100)); // Limitamos longitud por el alert
+      }
+      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cta-cte', providerId] });
