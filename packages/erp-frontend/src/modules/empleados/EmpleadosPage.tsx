@@ -82,10 +82,10 @@ export const EmpleadosPage: React.FC = () => {
       </style>
       
       {/* Título sólo para impresión */}
-      <div className="hidden print:block mb-6 border-b-2 border-gray-800 pb-1">
-        <h1 className="text-sm font-black uppercase">
+      <div className="hidden print:block mb-4 border-b border-gray-400 pb-1">
+        <h1 className="text-sm font-bold">
           Detalle de adelantos al {' '}
-          {new Intl.DateTimeFormat('es-AR', { weekday: 'long' }).format(new Date())} {' '}
+          <span className="capitalize">{new Intl.DateTimeFormat('es-AR', { weekday: 'long' }).format(new Date())}</span> {' '}
           {new Date().getDate().toString().padStart(2, '0')} / {' '}
           {(new Date().getMonth() + 1).toString().padStart(2, '0')} / {' '}
           {new Date().getFullYear()}

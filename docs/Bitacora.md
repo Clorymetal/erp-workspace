@@ -336,22 +336,21 @@ Módulo de Cuenta Corriente finalizado y listo para ser desplegado a producción
 **Estado Actual:**
 El módulo de Cuenta Corriente está **vuelo y 100% operativo en producción**. El usuario ya puede imputar pagos parciales, ver cómo se descuentan del balance global y generar reportes de deuda precisos que coinciden con la realidad financiera.
 
-
 ---
-_Nota: Al retomar el trabajo, leer siempre el último registro de estado y revisar `task.md`._
 
-### Sesión 18: 13 de Abril de 2026 - Refinado de Terminología y Despliegue de UI
+### Sesión 18: 13 de Abril de 2026 - Refinado de Terminología y Mejoras de Impresión
 **Objetivos:**
 - Atender solicitud de cambio de etiquetas en el módulo de Adelantos para mayor precisión terminológica.
-- Asegurar que el cambio se refleje en pantalla, reportes PDF, Excel y compartidos de WhatsApp.
+- Implementar mejoras visuales en el reporte PDF, incluyendo la fecha de emisión automática.
 
 **Acciones Realizadas:**
 - [x] **Refactorización de UI**: Se cambió la etiqueta `"Sueldo Aproximado Mensual"` por `"Valor Estimativo del mes"` en el componente `EmployeeCard.tsx`.
 - [x] **Consistencia en Reportes**: Actualizado el módulo de exportación en `EmpleadosPage.tsx` para que los resúmenes de WhatsApp y los encabezados de Excel utilicen la nueva terminología.
+- [x] **Fecha de Impresión**: Se incorporó un encabezado automático (sólo visible al imprimir PDF) con el formato solicitado: `"Detalle de adelantos al [día] [dd] / [mm] / [yyyy]"`.
 - [x] **Despliegue**: Los cambios fueron commiteados y pusheados a la rama `main`, disparando el despliegue automático a producción (Render/Vercel).
 
 **Estado Actual:**
-- Cambios aplicados y en proceso de despliegue. La terminología es ahora acorde a la preferencia del usuario en todos los puntos de contacto del sistema de adelantos.
+- Cambios aplicados y operativos. La terminología y el formato de impresión son ahora acordes a la preferencia del usuario en todos los puntos de contacto del sistema de adelantos.
 
 ---
 _Nota: Al retomar el trabajo, leer siempre el último registro de estado y revisar `task.md`._
