@@ -83,13 +83,13 @@ export const EmpleadosPage: React.FC = () => {
       
       {/* Título sólo para impresión */}
       <div className="hidden print:block mb-4 border-b border-gray-400 pb-1">
-        <h1 className="text-sm font-bold">
+        <p className="!text-[14px] !font-bold capitalize">
           Detalle de adelantos al {' '}
-          <span className="capitalize">{new Intl.DateTimeFormat('es-AR', { weekday: 'long' }).format(new Date())}</span> {' '}
+          {new Intl.DateTimeFormat('es-AR', { weekday: 'long' }).format(new Date())} {' '}
           {new Date().getDate().toString().padStart(2, '0')} / {' '}
           {(new Date().getMonth() + 1).toString().padStart(2, '0')} / {' '}
           {new Date().getFullYear()}
-        </h1>
+        </p>
       </div>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 print:hidden">
         <div>
