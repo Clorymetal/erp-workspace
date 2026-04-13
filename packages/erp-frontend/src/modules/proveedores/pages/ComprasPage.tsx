@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Plus, Pencil } from 'lucide-react';
+import { Search, Plus, Pencil, Trash } from 'lucide-react';
 import { Button, DataTable, ExportMenu } from '../../../core/components';
 import { InvoiceModal } from '../components/InvoiceModal';
 import { API_BASE_URL } from '../../../core/config/apiConfig';
@@ -63,6 +63,25 @@ export const ComprasPage = () => {
     } catch (e) { console.error(e); }
   };
 
+  const handleDeleteInvoice = async (invoiceId: string) => {
+    if (!window.confirm("Est seguro que desea eliminar esta factura? Esta accin no se puede deshacer.")) return;
+    
+    try {
+      const res = await fetch(`${API_BASE_URL}/proveedores/facturas/${invoiceId}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        fetchInvoices();
+      } else {
+        const error = await res.json();
+        alert(error.error || "No se pudo eliminar la factura");
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Error de conexin");
+    }
+  };
+
   const columns = [
     { 
       key: 'provider', 
@@ -119,8 +138,16 @@ export const ComprasPage = () => {
           <button 
             onClick={(e) => { e.stopPropagation(); setSelectedInvoice(row); setIsInvoiceModalOpen(true); }}
             className="p-2 hover:bg-gray-100 rounded-lg text-gray-400 hover:text-primary-500 transition-colors"
+            title="Editar"
           >
             <Pencil size={18} />
+          </button>
+          <button 
+            onClick={(e) => { e.stopPropagation(); handleDeleteInvoice(row.id); }}
+            className="p-2 hover:bg-red-50 rounded-lg text-gray-400 hover:text-red-600 transition-colors"
+            title="Eliminar"
+          >
+            <Trash size={18} />
           </button>
         </div>
       )

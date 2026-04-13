@@ -7,6 +7,7 @@ import {
     getProviderInvoices, 
     createNewInvoice, 
     patchInvoice,
+    deleteExistingInvoice,
     updateExistingProvider,
     getAllFinancialInvoices,
     runIvaMigration,
@@ -27,6 +28,7 @@ router.get('/maintenance/fix-due-dates', fixDueDatesMigration);
 // Endpoints globales de facturas
 router.get('/facturas', getAllFinancialInvoices);
 router.patch('/facturas/:invoiceId', patchInvoice);
+router.delete('/facturas/:invoiceId', deleteExistingInvoice);
 
 // Endpoints principales de proveedores
 router.get('/', getAllProviders);

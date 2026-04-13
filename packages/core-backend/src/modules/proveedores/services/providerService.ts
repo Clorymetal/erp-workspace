@@ -201,3 +201,19 @@ export const getAllInvoices = async (filters: any) => {
     orderBy: { issueDate: 'desc' }
   });
 };
+
+export const deleteInvoice = async (invoiceId: string) => {
+  const invoice = await prisma.prov_Invoice.findUnique({
+    where: { id: invoiceId },
+    include: { paymentsItems: true }
+  });
+
+  if (!invoice) throw new Error("Factura no encontrada");
+  if (invoice.paymentsItems.length > 0) {
+    throw new Error("No se puede eliminar una factura que ya tiene pagos asociados. Debe anular los pagos primero.");
+  }
+
+  return await prisma.prov_Invoice.delete({
+    where: { id: invoiceId }
+  });
+};

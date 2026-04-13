@@ -3,6 +3,7 @@ import {
     updateInvoice,
     getAllInvoices,
     createInvoice,
+    deleteInvoice,
     updateProvider,
     getSupplierBalance,
     createProvider
@@ -122,6 +123,15 @@ export const patchInvoice = async (req: Request, res: Response) => {
     try {
         const invoice = await updateInvoice(req.params.invoiceId, req.body);
         res.json(invoice);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const deleteExistingInvoice = async (req: Request, res: Response) => {
+    try {
+        await deleteInvoice(req.params.invoiceId);
+        res.json({ message: "Factura eliminada correctamente" });
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
