@@ -78,12 +78,28 @@ export const useProviders = () => {
     }
   });
 
+  const deleteProviderMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await fetch(`${API_BASE_URL}/proveedores/${id}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Error deleting provider');
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['providers'] });
+    }
+  });
+
   return {
     providers: providersQuery.data || [],
     isLoading: providersQuery.isLoading,
     provinces: provincesQuery.data || [],
     taxConditions: taxConditionsQuery.data || [],
     saveProvider: saveProviderMutation.mutateAsync,
-    isSubmitting: saveProviderMutation.isPending
+    deleteProvider: deleteProviderMutation.mutateAsync,
+    isSubmitting: saveProviderMutation.isPending || deleteProviderMutation.isPending
   };
 };
+

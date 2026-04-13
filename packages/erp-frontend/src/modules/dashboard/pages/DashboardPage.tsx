@@ -69,11 +69,11 @@ export const DashboardPage = () => {
       bgColor: 'bg-blue-50 dark:bg-blue-500/10',
       description: 'Acumulado mes en curso',
       extra: (
-        <div className="mt-3 pt-3 border-t border-gray-100 dark:border-dark-border space-y-1">
+        <div className="mt-3 pt-3 border-t border-gray-100 dark:border-dark-border space-y-2">
           {stats?.monthlyHistory?.slice(1).map((h: any) => (
-            <div key={h.month} className="flex justify-between text-[10px]">
-              <span className="text-gray-400 capitalize">{h.month}</span>
-              <span className="font-bold text-gray-600 dark:text-gray-300">{formatCurrency(h.total)}</span>
+            <div key={h.month} className="flex justify-between text-xs">
+              <span className="text-gray-500 font-medium capitalize">{h.month}</span>
+              <span className="font-black text-gray-700 dark:text-gray-200">{formatCurrency(h.total)}</span>
             </div>
           ))}
         </div>
@@ -157,8 +157,8 @@ export const DashboardPage = () => {
           >
             <div className="flex justify-between items-center mb-8">
               <div>
-                <h2 className="text-xl font-bold">Comparativo de Compras</h2>
-                <p className="text-sm text-gray-500">Mes Actual vs Mes Anterior (Día por día)</p>
+                <h2 className="text-xl font-bold">Trayectoria de Compras (Acumulado)</h2>
+                <p className="text-sm text-gray-500">Comparativa del crecimiento del gasto mes a mes</p>
               </div>
               <button 
                 onClick={() => setShowChart(false)}
@@ -239,16 +239,16 @@ export const DashboardPage = () => {
                       {overdue ? <AlertCircle size={18} /> : <Clock size={18} />}
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm">{inv.provider?.businessName}</h4>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] text-gray-500 font-bold">{new Date(inv.dueDate).toLocaleDateString('es-AR')}</span>
-                        {overdue && <span className="text-[10px] bg-rose-500 text-white px-1.5 py-0.5 rounded font-black">VENCIDO</span>}
+                      <h4 className="font-black text-base text-gray-800 dark:text-gray-100 leading-tight">{inv.provider?.businessName}</h4>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs text-gray-500 font-bold">{new Date(inv.dueDate).toLocaleDateString('es-AR')}</span>
+                        {overdue && <span className="text-xs bg-rose-500 text-white px-2 py-0.5 rounded-lg font-black shadow-sm shadow-rose-500/20">VENCIDO</span>}
                       </div>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className={`font-black text-sm ${overdue ? 'text-rose-600' : 'text-gray-900 dark:text-gray-100'}`}>{formatCurrency(inv.totalAmount)}</div>
-                    <p className="text-[10px] text-gray-400">Fact. {inv.invoiceNumber}</p>
+                    <div className={`font-black text-base ${overdue ? 'text-rose-600' : 'text-gray-900 dark:text-gray-100'}`}>{formatCurrency(inv.totalAmount)}</div>
+                    <p className="text-xs text-gray-400 font-medium uppercase tracking-tighter">Fact. {inv.invoiceNumber}</p>
                   </div>
                 </div>
               );

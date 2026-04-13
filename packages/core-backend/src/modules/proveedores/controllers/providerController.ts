@@ -6,7 +6,8 @@ import {
     deleteInvoice,
     updateProvider,
     getSupplierBalance,
-    createProvider
+    createProvider,
+    deleteProvider
 } from '../services/providerService';
 import { 
     getMovementHistory, 
@@ -132,6 +133,15 @@ export const deleteExistingInvoice = async (req: Request, res: Response) => {
     try {
         await deleteInvoice(req.params.invoiceId);
         res.json({ message: "Factura eliminada correctamente" });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const deleteExistingProvider = async (req: Request, res: Response) => {
+    try {
+        await deleteProvider(req.params.id);
+        res.json({ message: "Proveedor eliminado correctamente" });
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }

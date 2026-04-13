@@ -76,11 +76,17 @@ export const getDashboardStats = async (req: Request, res: Response) => {
         dailyMap[day] = (dailyMap[day] || 0) + inv.totalAmount;
       });
       
-      return Array.from({ length: 31 }, (_, i) => ({
-        day: i + 1,
-        total: dailyMap[i + 1] || 0
-      }));
+      let runningTotal = 0;
+      return Array.from({ length: 31 }, (_, i) => {
+        const day = i + 1;
+        runningTotal += (dailyMap[day] || 0);
+        return {
+          day,
+          total: runningTotal
+        };
+      });
     };
+
 
     const currentMonthChart = await getDailyData(startOfCurrentMonth, today);
     const lastMonthChart = await getDailyData(startOfLastMonth, endOfLastMonth);

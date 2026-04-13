@@ -217,3 +217,21 @@ export const deleteInvoice = async (invoiceId: string) => {
     where: { id: invoiceId }
   });
 };
+
+export const deleteProvider = async (id: string) => {
+  const provider = await prisma.prov_Provider.findUnique({
+    where: { id },
+    include: { invoices: true, payments: true }
+  });
+
+  if (!provider) throw new Error("Proveedor no encontrado");
+  
+  if (provider.invoices.length > 0 || provider.payments.length > 0) {
+    throw new Error("No se puede eliminar un proveedor con historial de facturas o pagos. Debe anular sus registros primero.");
+  }
+
+  return await prisma.prov_Provider.delete({
+    where: { id }
+  });
+};
+

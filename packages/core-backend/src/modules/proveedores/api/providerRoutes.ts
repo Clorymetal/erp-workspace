@@ -8,6 +8,7 @@ import {
     createNewInvoice, 
     patchInvoice,
     deleteExistingInvoice,
+    deleteExistingProvider,
     updateExistingProvider,
     getAllFinancialInvoices,
     runIvaMigration,
@@ -34,6 +35,7 @@ router.delete('/facturas/:invoiceId', deleteExistingInvoice);
 router.get('/', getAllProviders);
 router.post('/', createNewProvider);
 router.patch('/:id', updateExistingProvider);
+router.delete('/:id', deleteExistingProvider);
 router.get('/report/csv', getReportCSV);
 router.get('/:id/balance', getBalance);
 

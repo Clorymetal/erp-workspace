@@ -16,8 +16,20 @@ export const ProveedoresPage = () => {
     provinces, 
     taxConditions, 
     saveProvider, 
-    isSubmitting: isSubmittingSave 
+    deleteProvider,
+    isSubmitting 
   } = useProviders();
+
+  const handleDelete = async (row: Proveedor) => {
+    if (row.saldo !== 0) return alert("No se puede eliminar un proveedor con saldo pendiente (positivo o negativo).");
+    if (window.confirm(`¿Está seguro que desea eliminar a "${row.razonSocial}"? Esta acción no se puede deshacer.`)) {
+      try {
+        await deleteProvider(row.id);
+      } catch (e: any) {
+        alert(e.message || "Error al eliminar el proveedor");
+      }
+    }
+  };
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filterProvince, setFilterProvince] = useState('');
@@ -118,11 +130,21 @@ export const ProveedoresPage = () => {
             <span className="text-[10px] font-bold uppercase">Cta. Cte.</span>
           </button>
 
-          <button className="p-1.5 text-gray-400 hover:text-red-500" title="Eliminar"><Trash2 size={18} /></button>
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete(row);
+            }} 
+            className="p-1.5 text-gray-400 hover:text-red-500" 
+            title="Eliminar"
+          >
+            <Trash2 size={18} />
+          </button>
         </div>
       )
     }
   ];
+
 
   const filteredData = providers.filter(p => {
     const s = searchTerm.toLowerCase();
@@ -235,7 +257,7 @@ export const ProveedoresPage = () => {
       <Modal 
         isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}
         title={isEditingProvider ? "Editar Proveedor" : "Nuevo Proveedor"}
-        footer={<><Button variant="ghost" onClick={() => setIsModalOpen(false)}>Cancelar</Button><Button variant="primary" onClick={handleSave} isLoading={isSubmittingSave}>Guardar</Button></>}
+        footer={<><Button variant="ghost" onClick={() => setIsModalOpen(false)}>Cancelar</Button><Button variant="primary" onClick={handleSave} isLoading={isSubmitting}>Guardar</Button></>}
       >
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
