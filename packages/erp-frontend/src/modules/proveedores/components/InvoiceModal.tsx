@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Modal, Button } from '../../../core/components';
 import { useProviders } from '../hooks/useProviders';
+import { Search } from 'lucide-react';
 
 interface InvoiceModalProps {
   isOpen: boolean;
@@ -31,14 +32,26 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
     ivaNumber: ''
   });
 
-  // Auto-calcular vencimiento y periodo al cambiar fecha de emisión
+  const [providerSearch, setProviderSearch] = useState('');
+  const [showProviderList, setShowProviderList] = useState(false);
+
+  // Filtrar proveedores por búsqueda
+  const filteredProviders = providers.filter(p => 
+    p.razonSocial.toLowerCase().includes(providerSearch.toLowerCase()) || 
+    p.cuit.includes(providerSearch)
+  );
+
+  const selectedProvider = providers.find(p => p.id === formData.providerId);
+  const currentExpirationDays = selectedProvider?.expirationDays ?? expirationDays;
+
+  // Auto-calcular vencimiento y periodo al cambiar fecha de emisión o proveedor
   useEffect(() => {
-    if (formData.issueDate && expirationDays >= 0 && !initialData) {
-      const issue = new Date(formData.issueDate);
+    if (formData.issueDate && !initialData) {
+      const issue = new Date(formData.issueDate + 'T12:00:00');
       
       // Vencimiento
-      if (expirationDays > 0) {
-        const due = new Date(issue.getTime() + expirationDays * 24 * 60 * 60 * 1000);
+      if (currentExpirationDays > 0) {
+        const due = new Date(issue.getTime() + currentExpirationDays * 24 * 60 * 60 * 1000);
         setFormData(prev => ({ ...prev, dueDate: due.toISOString().split('T')[0] }));
       } else {
         setFormData(prev => ({ ...prev, dueDate: formData.issueDate }));
@@ -48,7 +61,7 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
       const period = formData.issueDate.substring(0, 7);
       setFormData(prev => ({ ...prev, ivaPeriod: period }));
     }
-  }, [formData.issueDate, expirationDays, initialData]);
+  }, [formData.issueDate, currentExpirationDays, initialData]);
 
 
   useEffect(() => {
@@ -93,20 +106,50 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
     <Modal isOpen={isOpen} onClose={onClose} title={initialData ? "Editar Factura" : "Registrar Nueva Factura"}>
       <form onSubmit={handleSubmit} className="space-y-4">
         {showProviderSelector && !initialData && (
-          <div className="bg-orange-50 dark:bg-orange-900/10 p-3 rounded-xl border border-orange-100 dark:border-orange-900/30 mb-2">
+          <div className="bg-orange-50 dark:bg-orange-900/10 p-3 rounded-xl border border-orange-100 dark:border-orange-900/30 mb-2 relative">
             <label className="block text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-1">Seleccionar Proveedor</label>
-            <select
-              id="providerId"
-              name="providerId"
-              value={formData.providerId}
-              onChange={e => setFormData({ ...formData, providerId: e.target.value })}
-              className="w-full p-2 bg-white dark:bg-gray-800 border-none rounded-lg text-sm outline-none ring-1 ring-orange-200 dark:ring-orange-800"
-            >
-              <option value="">-- Eliga un proveedor --</option>
-              {providers.map((p: any) => (
-                <option key={p.id} value={p.id}>{p.razonSocial} (CUIT: {p.cuit})</option>
-              ))}
-            </select>
+            <div className="relative">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-orange-400" size={16} />
+                <input
+                  type="text"
+                  placeholder="Buscar por Nombre o CUIT..."
+                  value={selectedProvider ? `${selectedProvider.razonSocial} (${selectedProvider.cuit})` : providerSearch}
+                  onFocus={() => {
+                    setShowProviderList(true);
+                    if (selectedProvider) {
+                      setFormData(prev => ({ ...prev, providerId: '' }));
+                      setProviderSearch('');
+                    }
+                  }}
+                  onChange={(e) => setProviderSearch(e.target.value)}
+                  className="w-full p-2 pl-9 bg-white dark:bg-gray-800 border-none rounded-lg text-sm outline-none ring-1 ring-orange-200 dark:ring-orange-800 focus:ring-2 focus:ring-orange-500 transition-all"
+                />
+              </div>
+
+              {showProviderList && (
+                <div className="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-orange-100 dark:border-orange-900/30 max-h-48 overflow-y-auto">
+                  {filteredProviders.length > 0 ? (
+                    filteredProviders.map((p: any) => (
+                      <div 
+                        key={p.id}
+                        onClick={() => {
+                          setFormData(prev => ({ ...prev, providerId: p.id }));
+                          setShowProviderList(false);
+                          setProviderSearch('');
+                        }}
+                        className="p-3 hover:bg-orange-50 dark:hover:bg-orange-900/20 cursor-pointer border-b border-gray-50 dark:border-gray-700 last:border-0"
+                      >
+                        <p className="text-sm font-bold text-gray-800 dark:text-gray-200">{p.razonSocial}</p>
+                        <p className="text-[10px] text-gray-500">CUIT: {p.cuit}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="p-3 text-center text-gray-500 text-xs">No se encontraron proveedores</div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         )}
         <div className="grid grid-cols-2 gap-4">
