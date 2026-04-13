@@ -12,25 +12,27 @@ interface InvoiceModalProps {
   showProviderSelector?: boolean;
 }
 
+const initialFormState = {
+  providerId: '',
+  invoiceType: 'FACTURA_A',
+  pointOfSale: '',
+  invoiceNumber: '',
+  issueDate: new Date().toISOString().split('T')[0],
+  dueDate: '',
+  totalAmount: '',
+  netAmount: '',
+  taxAmount: '',
+  perceptionAmount: '',
+  nonTaxedAmount: '',
+  isCtaCte: true,
+  status: 'PENDIENTE',
+  ivaPeriod: new Date().toISOString().substring(0, 7),
+  ivaNumber: ''
+};
+
 export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationDays = 0, showProviderSelector = false }: InvoiceModalProps) => {
   const { providers } = useProviders();
-  const [formData, setFormData] = useState({
-    providerId: '',
-    invoiceType: 'FACTURA_A',
-    pointOfSale: '',
-    invoiceNumber: '',
-    issueDate: new Date().toISOString().split('T')[0],
-    dueDate: '',
-    totalAmount: '',
-    netAmount: '',
-    taxAmount: '',
-    perceptionAmount: '',
-    nonTaxedAmount: '',
-    isCtaCte: true,
-    status: 'PENDIENTE',
-    ivaPeriod: new Date().toISOString().substring(0, 7),
-    ivaNumber: ''
-  });
+  const [formData, setFormData] = useState(initialFormState);
 
   const [providerSearch, setProviderSearch] = useState('');
   const [showProviderList, setShowProviderList] = useState(false);
@@ -64,9 +66,19 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
   }, [formData.issueDate, currentExpirationDays, initialData]);
 
 
+  // Reset form when opening for new invoice
   useEffect(() => {
-    if (initialData) {
+    if (isOpen && !initialData) {
+      setFormData(initialFormState);
+      setProviderSearch('');
+      setShowProviderList(false);
+    }
+  }, [isOpen, initialData]);
+
+  useEffect(() => {
+    if (initialData && isOpen) {
       setFormData({
+        ...initialFormState,
         ...initialData,
         providerId: initialData.providerId?.toString() || '',
         issueDate: initialData.issueDate ? new Date(initialData.issueDate).toISOString().split('T')[0] : '',
