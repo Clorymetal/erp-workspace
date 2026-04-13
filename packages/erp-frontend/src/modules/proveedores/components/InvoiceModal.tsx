@@ -108,6 +108,16 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
     }
   }, [formData.netAmount, formData.taxAmount, formData.perceptionAmount, formData.nonTaxedAmount]);
 
+  const handleBlur = (field: 'pointOfSale' | 'invoiceNumber') => {
+    const value = formData[field];
+    if (!value) return;
+    const length = field === 'pointOfSale' ? 4 : 8;
+    setFormData(prev => ({
+      ...prev,
+      [field]: value.padStart(length, '0')
+    }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (showProviderSelector && !formData.providerId) return alert("Debe seleccionar un proveedor");
@@ -190,6 +200,7 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
                 maxLength={4}
                 value={formData.pointOfSale}
                 onChange={e => setFormData({ ...formData, pointOfSale: e.target.value })}
+                onBlur={() => handleBlur('pointOfSale')}
                 className="mt-1 w-full p-2 bg-gray-50 dark:bg-gray-800 border rounded-lg dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-primary-500 outline-none"
                 placeholder="0001"
               />
@@ -202,6 +213,7 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
                 type="text"
                 value={formData.invoiceNumber}
                 onChange={e => setFormData({ ...formData, invoiceNumber: e.target.value })}
+                onBlur={() => handleBlur('invoiceNumber')}
                 className="mt-1 w-full p-2 bg-gray-50 dark:bg-gray-800 border rounded-lg dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-primary-500 outline-none"
                 placeholder="00001234"
               />
