@@ -68,7 +68,7 @@ export const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee, onAddAdvan
         {/* Resumen Principal */}
         <div className="grid grid-cols-2 gap-4 print:gap-1.5">
           <div className="p-3 print:p-1 bg-gray-50 dark:bg-dark-background/50 rounded-xl print:rounded border border-gray-100 dark:border-dark-border relative group">
-            <span className="text-xs text-gray-500 dark:text-gray-400 block mb-1 print:mb-0 font-medium tracking-tight whitespace-nowrap">Sueldo Aproximado Mensual</span>
+            <span className="text-xs text-gray-500 dark:text-gray-400 block mb-1 print:mb-0 font-medium tracking-tight whitespace-nowrap">Valor Estimativo del mes</span>
             {isEditingSalary ? (
               <input 
                 type="number"

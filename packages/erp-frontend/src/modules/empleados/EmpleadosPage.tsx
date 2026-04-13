@@ -53,7 +53,7 @@ export const EmpleadosPage: React.FC = () => {
       return {
         Nombre: emp.name,
         'Tipo Sueldo': emp.payType === 'MONTHLY' ? 'Mensual' : 'Quincenal',
-        'Sueldo Aproximado ($)': p.baseSalary,
+        'Valor Estimativo del mes ($)': p.baseSalary,
         '1ra Quincena ($)': p.firstInstallment || 0,
         '2da Quincena ($)': p.secondInstallment || 0,
         'Total Adelantos ($)': p.totalAdvances,
@@ -67,7 +67,7 @@ export const EmpleadosPage: React.FC = () => {
     text += "-------------------------------\n";
     exportData.forEach(d => {
       text += `👤 *${d.Nombre}*:\n`;
-      text += `Sueldo Aproximado: ${formatCurrency(d['Sueldo Aproximado ($)'])}\n`;
+      text += `Valor Estimativo del mes: ${formatCurrency(d['Valor Estimativo del mes ($)'])}\n`;
       text += `Adelantos: ${formatCurrency(d['Total Adelantos ($)'])}\n`;
       text += `💰 *Adeudado: ${formatCurrency(d['Saldo Adeudado ($)'])}*\n`;
       text += `-------------------------------\n`;
