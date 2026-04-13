@@ -175,7 +175,7 @@ export const DashboardPage = () => {
                   <YAxis hide />
                   <Tooltip 
                     contentStyle={{ borderRadius: '1rem', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                    formatter={(value: number) => formatCurrency(value)}
+                    formatter={(value: any) => formatCurrency(Number(value || 0))}
                   />
                   <Legend verticalAlign="top" height={36}/>
                   <Line type="monotone" name="Mes Actual" dataKey="actual" stroke="#6366F1" strokeWidth={4} dot={false} activeDot={{ r: 8 }} />
