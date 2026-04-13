@@ -143,13 +143,32 @@ export const ResumenDeudaPage = () => {
       {/* Filtros */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white dark:bg-dark-surface p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border no-print">
         <div className="flex flex-col gap-1">
-          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest pl-1">Período</label>
-          <input
-            type="month"
-            value={filters.ivaPeriod}
-            onChange={(e) => setFilters({ ...filters, ivaPeriod: e.target.value })}
-            className="w-full px-4 py-2 bg-gray-50 dark:bg-dark-background border-none rounded-xl text-sm outline-none ring-1 ring-gray-100 dark:ring-dark-border focus:ring-2 focus:ring-primary-500 transition-all"
-          />
+          <div className="flex justify-between items-center pr-1">
+            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest pl-1">Período</label>
+            {filters.ivaPeriod !== 'ALL' && (
+              <button 
+                onClick={() => setFilters({ ...filters, ivaPeriod: 'ALL' })}
+                className="text-[9px] text-primary-600 dark:text-primary-400 font-bold hover:underline transition-all"
+              >
+                VER TODO EL HISTORIAL
+              </button>
+            )}
+          </div>
+          {filters.ivaPeriod === 'ALL' ? (
+            <button 
+              onClick={() => setFilters({ ...filters, ivaPeriod: currentPeriod })}
+              className="w-full px-4 py-2 bg-primary-600 text-white rounded-xl text-xs font-bold hover:bg-primary-700 transition-all shadow-sm"
+            >
+              HISTORIAL COMPLETO (Clic para filtrar)
+            </button>
+          ) : (
+            <input
+              type="month"
+              value={filters.ivaPeriod}
+              onChange={(e) => setFilters({ ...filters, ivaPeriod: e.target.value })}
+              className="w-full px-4 py-2 bg-gray-50 dark:bg-dark-background border-none rounded-xl text-sm outline-none ring-1 ring-gray-100 dark:ring-dark-border focus:ring-2 focus:ring-primary-500 transition-all"
+            />
+          )}
         </div>
 
         <div className="flex flex-col gap-1">
