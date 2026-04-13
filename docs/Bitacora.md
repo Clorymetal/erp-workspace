@@ -340,4 +340,18 @@ El módulo de Cuenta Corriente está **vuelo y 100% operativo en producción**. 
 ---
 _Nota: Al retomar el trabajo, leer siempre el último registro de estado y revisar `task.md`._
 
+### Sesión 18: 13 de Abril de 2026 - Refinado de Terminología y Despliegue de UI
+**Objetivos:**
+- Atender solicitud de cambio de etiquetas en el módulo de Adelantos para mayor precisión terminológica.
+- Asegurar que el cambio se refleje en pantalla, reportes PDF, Excel y compartidos de WhatsApp.
 
+**Acciones Realizadas:**
+- [x] **Refactorización de UI**: Se cambió la etiqueta `"Sueldo Aproximado Mensual"` por `"Valor Estimativo del mes"` en el componente `EmployeeCard.tsx`.
+- [x] **Consistencia en Reportes**: Actualizado el módulo de exportación en `EmpleadosPage.tsx` para que los resúmenes de WhatsApp y los encabezados de Excel utilicen la nueva terminología.
+- [x] **Despliegue**: Los cambios fueron commiteados y pusheados a la rama `main`, disparando el despliegue automático a producción (Render/Vercel).
+
+**Estado Actual:**
+- Cambios aplicados y en proceso de despliegue. La terminología es ahora acorde a la preferencia del usuario en todos los puntos de contacto del sistema de adelantos.
+
+---
+_Nota: Al retomar el trabajo, leer siempre el último registro de estado y revisar `task.md`._

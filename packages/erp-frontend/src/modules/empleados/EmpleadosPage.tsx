@@ -80,6 +80,17 @@ export const EmpleadosPage: React.FC = () => {
       <style type="text/css" media="print">
         {`@page { size: A4 portrait; margin: 0.5cm; } * { font-size: 11px !important; line-height: 1.1 !important; }`}
       </style>
+      
+      {/* Título sólo para impresión */}
+      <div className="hidden print:block mb-6 border-b-2 border-gray-800 pb-1">
+        <h1 className="text-sm font-black uppercase">
+          Detalle de adelantos al {' '}
+          {new Intl.DateTimeFormat('es-AR', { weekday: 'long' }).format(new Date())} {' '}
+          {new Date().getDate().toString().padStart(2, '0')} / {' '}
+          {(new Date().getMonth() + 1).toString().padStart(2, '0')} / {' '}
+          {new Date().getFullYear()}
+        </h1>
+      </div>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 print:hidden">
         <div>
           <h1 className="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-orange-500">
