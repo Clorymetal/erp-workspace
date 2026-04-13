@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Modal, Button } from '../../../core/components';
-import { useQuery } from '@tanstack/react-query';
-import { API_BASE_URL } from '../../../core/config/apiConfig';
+import { useProviders } from '../hooks/useProviders';
 
 interface InvoiceModalProps {
   isOpen: boolean;
@@ -13,6 +12,7 @@ interface InvoiceModalProps {
 }
 
 export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationDays = 0, showProviderSelector = false }: InvoiceModalProps) => {
+  const { providers } = useProviders();
   const [formData, setFormData] = useState({
     providerId: '',
     invoiceType: 'FACTURA_A',
@@ -50,14 +50,6 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
     }
   }, [formData.issueDate, expirationDays, initialData]);
 
-  const { data: providers = [] } = useQuery({
-    queryKey: ['providers'],
-    queryFn: async () => {
-      const res = await fetch(`${API_BASE_URL}/proveedores`);
-      return res.json();
-    },
-    enabled: showProviderSelector
-  });
 
   useEffect(() => {
     if (initialData) {
@@ -104,13 +96,15 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
           <div className="bg-orange-50 dark:bg-orange-900/10 p-3 rounded-xl border border-orange-100 dark:border-orange-900/30 mb-2">
             <label className="block text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-1">Seleccionar Proveedor</label>
             <select
+              id="providerId"
+              name="providerId"
               value={formData.providerId}
               onChange={e => setFormData({ ...formData, providerId: e.target.value })}
               className="w-full p-2 bg-white dark:bg-gray-800 border-none rounded-lg text-sm outline-none ring-1 ring-orange-200 dark:ring-orange-800"
             >
               <option value="">-- Eliga un proveedor --</option>
               {providers.map((p: any) => (
-                <option key={p.id} value={p.id}>{p.businessName} (CUIT: {p.taxId})</option>
+                <option key={p.id} value={p.id}>{p.razonSocial} (CUIT: {p.cuit})</option>
               ))}
             </select>
           </div>
@@ -119,6 +113,8 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors">Tipo de Comprobante</label>
             <select
+              id="invoiceType"
+              name="invoiceType"
               value={formData.invoiceType}
               onChange={e => setFormData({ ...formData, invoiceType: e.target.value })}
               className="mt-1 w-full p-2 bg-gray-50 dark:bg-gray-800 border rounded-lg dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-primary-500 outline-none"
@@ -133,6 +129,8 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
             <div className="w-20">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">P.V.</label>
               <input
+                id="pointOfSale"
+                name="pointOfSale"
                 type="text"
                 maxLength={4}
                 value={formData.pointOfSale}
@@ -144,6 +142,8 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
             <div className="flex-1">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Número de Factura</label>
               <input
+                id="invoiceNumber"
+                name="invoiceNumber"
                 type="text"
                 value={formData.invoiceNumber}
                 onChange={e => setFormData({ ...formData, invoiceNumber: e.target.value })}
@@ -158,6 +158,8 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Emisión</label>
             <input
+              id="issueDate"
+              name="issueDate"
               type="date"
               value={formData.issueDate}
               onChange={e => setFormData({ ...formData, issueDate: e.target.value })}
@@ -167,6 +169,8 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Vencimiento</label>
             <input
+              id="dueDate"
+              name="dueDate"
               type="date"
               value={formData.dueDate}
               onChange={e => setFormData({ ...formData, dueDate: e.target.value })}
@@ -181,6 +185,8 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
             <div>
               <label className="text-xs text-gray-500 dark:text-gray-400 font-medium">Neto Gravado</label>
               <input
+                id="netAmount"
+                name="netAmount"
                 type="number"
                 step="0.01"
                 value={formData.netAmount}
@@ -191,6 +197,8 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
             <div>
               <label className="text-xs text-gray-500 dark:text-gray-400 font-medium">IVA (21%)</label>
               <input
+                id="taxAmount"
+                name="taxAmount"
                 type="number"
                 step="0.01"
                 value={formData.taxAmount}
@@ -201,6 +209,8 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
             <div>
               <label className="text-xs text-gray-500 dark:text-gray-400 font-medium">Percepciones</label>
               <input
+                id="perceptionAmount"
+                name="perceptionAmount"
                 type="number"
                 step="0.01"
                 value={formData.perceptionAmount}
@@ -211,6 +221,8 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
             <div>
               <label className="text-xs text-gray-500 dark:text-gray-400 font-medium">No Gravado / Otros</label>
               <input
+                id="nonTaxedAmount"
+                name="nonTaxedAmount"
                 type="number"
                 step="0.01"
                 value={formData.nonTaxedAmount}
@@ -232,6 +244,8 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
            <div className="flex items-center gap-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Estado:</label>
             <select 
+              id="status"
+              name="status"
               value={formData.status}
               onChange={e => setFormData({...formData, status: e.target.value})}
               className="text-sm p-1.5 bg-gray-50 dark:bg-gray-800 border rounded-lg dark:border-gray-700"
@@ -245,6 +259,8 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
            <div className="flex items-center gap-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300 italic">Cta Cte:</label>
             <input 
+              id="isCtaCte"
+              name="isCtaCte"
               type="checkbox" 
               checked={formData.isCtaCte} 
               onChange={e => setFormData({...formData, isCtaCte: e.target.checked})}
@@ -259,6 +275,8 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
             <div>
               <label className="block text-xs font-medium text-gray-700 dark:text-gray-300">Período (YYYY-MM)</label>
               <input
+                id="ivaPeriod"
+                name="ivaPeriod"
                 type="month"
                 value={formData.ivaPeriod}
                 onChange={e => setFormData({ ...formData, ivaPeriod: e.target.value })}
@@ -268,6 +286,8 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
             <div>
               <label className="block text-xs font-medium text-gray-700 dark:text-gray-300">N° Orden (Rec)</label>
               <input
+                id="ivaNumber"
+                name="ivaNumber"
                 type="number"
                 value={formData.ivaNumber}
                 onChange={e => setFormData({ ...formData, ivaNumber: e.target.value })}

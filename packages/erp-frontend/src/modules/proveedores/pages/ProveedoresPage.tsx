@@ -241,26 +241,26 @@ export const ProveedoresPage = () => {
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2">
               <label className="text-sm font-bold">Razón Social</label>
-              <input type="text" value={formData.razonSocial} onChange={e => setFormData({...formData, razonSocial: e.target.value})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg" />
+              <input id="razonSocial" name="razonSocial" type="text" value={formData.razonSocial} onChange={e => setFormData({...formData, razonSocial: e.target.value})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg" />
             </div>
             <div>
               <label className="text-sm font-bold">CUIT</label>
-              <input type="text" value={formData.cuit} onChange={e => setFormData({...formData, cuit: e.target.value})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg" />
+              <input id="cuit" name="cuit" type="text" value={formData.cuit} onChange={e => setFormData({...formData, cuit: e.target.value})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg" />
             </div>
             <div>
               <label className="text-sm font-bold">Teléfono</label>
-              <input type="text" value={formData.telefono} onChange={e => setFormData({...formData, telefono: e.target.value})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg" />
+              <input id="telefono" name="telefono" type="text" value={formData.telefono} onChange={e => setFormData({...formData, telefono: e.target.value})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg" />
             </div>
             <div>
               <label className="text-sm font-bold">Provincia</label>
-              <select value={formData.provincia} onChange={e => setFormData({...formData, provincia: e.target.value})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg">
+              <select id="provincia" name="provincia" value={formData.provincia} onChange={e => setFormData({...formData, provincia: e.target.value})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg">
                 <option value="">Seleccionar</option>
                 {provinces.map((p: any) => <option key={p.id} value={p.value}>{p.label}</option>)}
               </select>
             </div>
             <div>
               <label className="text-sm font-bold">Cond. Fiscal</label>
-              <select value={formData.condFisc} onChange={e => setFormData({...formData, condFisc: e.target.value})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg">
+              <select id="condFisc" name="condFisc" value={formData.condFisc} onChange={e => setFormData({...formData, condFisc: e.target.value})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg">
                 <option value="">Seleccionar</option>
                 {taxConditions.map((c: any) => <option key={c.id} value={c.value}>{c.label}</option>)}
               </select>
