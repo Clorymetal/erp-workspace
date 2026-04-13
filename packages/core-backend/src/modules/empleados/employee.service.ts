@@ -100,7 +100,7 @@ export class EmployeeService {
         data: {
           employeeId,
           periodId,
-          date: new Date(date),
+          date: new Date(date + 'T12:00:00'),
           cashAmount,
           transferAmount,
           checkAmount,

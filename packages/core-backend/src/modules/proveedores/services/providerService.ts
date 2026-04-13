@@ -46,7 +46,7 @@ export const getSupplierBalance = async (providerId: string) => {
 };
 
 export const createInvoice = async (providerId: string, data: any) => {
-  let dueDate = data.dueDate ? new Date(data.dueDate) : null;
+  let dueDate = data.dueDate ? new Date(data.dueDate + 'T12:00:00') : null;
   
   if (!dueDate) {
     const provider = await prisma.prov_Provider.findUnique({ 
@@ -54,7 +54,7 @@ export const createInvoice = async (providerId: string, data: any) => {
       select: { expirationDays: true }
     });
     if (provider && provider.expirationDays > 0) {
-      const issueDate = new Date(data.issueDate);
+      const issueDate = new Date(data.issueDate + 'T12:00:00');
       dueDate = new Date(issueDate.getTime() + provider.expirationDays * 24 * 60 * 60 * 1000);
     }
   }
@@ -65,8 +65,8 @@ export const createInvoice = async (providerId: string, data: any) => {
       invoiceType: data.invoiceType || 'FACTURA_A',
       pointOfSale: data.pointOfSale,
       invoiceNumber: data.invoiceNumber,
-      issueDate: new Date(data.issueDate),
-      receptionDate: data.receptionDate ? new Date(data.receptionDate) : new Date(),
+      issueDate: new Date(data.issueDate + 'T12:00:00'),
+      receptionDate: data.receptionDate ? new Date(data.receptionDate + 'T12:00:00') : new Date(),
       dueDate,
       netAmount: Number(data.netAmount || 0),
       taxAmount: Number(data.taxAmount || 0),
@@ -88,8 +88,8 @@ export const updateInvoice = async (invoiceId: string, data: any) => {
       invoiceType: data.invoiceType,
       pointOfSale: data.pointOfSale,
       invoiceNumber: data.invoiceNumber,
-      issueDate: data.issueDate ? new Date(data.issueDate) : undefined,
-      dueDate: data.dueDate ? new Date(data.dueDate) : undefined,
+      issueDate: data.issueDate ? new Date(data.issueDate + 'T12:00:00') : undefined,
+      dueDate: data.dueDate ? new Date(data.dueDate + 'T12:00:00') : undefined,
       netAmount: data.netAmount !== undefined ? Number(data.netAmount) : undefined,
       taxAmount: data.taxAmount !== undefined ? Number(data.taxAmount) : undefined,
       perceptionAmount: data.perceptionAmount !== undefined ? Number(data.perceptionAmount) : undefined,
@@ -161,8 +161,8 @@ export const getAllInvoices = async (filters: any) => {
   
   if (startDate || endDate) {
     where.issueDate = {
-      gte: startDate ? new Date(startDate) : undefined,
-      lte: endDate ? new Date(endDate) : undefined
+      gte: startDate ? new Date(startDate + 'T00:00:00') : undefined,
+      lte: endDate ? new Date(endDate + 'T23:59:59') : undefined
     };
   }
   
