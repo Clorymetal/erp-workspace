@@ -336,17 +336,31 @@ Módulo de Cuenta Corriente finalizado y listo para ser desplegado a producción
 **Estado Actual:**
 El módulo de Cuenta Corriente está **vuelo y 100% operativo en producción**. El usuario ya puede imputar pagos parciales, ver cómo se descuentan del balance global y generar reportes de deuda precisos que coinciden con la realidad financiera.
 
----
-
-### Sesión 18: 13 de Abril de 2026 - Refinado de Terminología y Mejoras de Impresión
+### Sesión 19: 13 de Abril de 2026 - UX de Compras, Integridad de Datos y Reportes Históricos
 **Objetivos:**
-- Atender solicitud de cambio de etiquetas en el módulo de Adelantos para mayor precisión terminológica.
-- Implementar mejoras visuales en el reporte PDF, incluyendo la fecha de emisión automática.
+- Resolver errores de navegación y consistencia en el módulo de Proveedores.
+- Corregir el bug crítico de fechas ("un día menos") debido a desfases de zona horaria UTC.
+- Potenciar la carga de facturas con buscadores dinámicos y automatizaciones.
+- Flexibilizar el reporte de Resumen de Deuda para permitir vistas históricas.
+- Implementar gestión de borrado de comprobantes con validación de seguridad.
 
 **Acciones Realizadas:**
-- [x] **Refactorización de UI**: Se cambió la etiqueta `"Sueldo Aproximado Mensual"` por `"Valor Estimativo del mes"` en el componente `EmployeeCard.tsx`.
-- [x] **Consistencia en Reportes**: Actualizado el módulo de exportación en `EmpleadosPage.tsx` para que los resúmenes de WhatsApp y los encabezados de Excel utilicen la nueva terminología.
-- [x] **Fecha de Impresión**: Se incorporó un encabezado automático (sólo visible al imprimir PDF) con el formato solicitado: `"Detalle de adelantos al [día] [dd] / [mm] / [yyyy]"`.
+- [x] **Estabilización de Navegación**: Refactorización de `InvoiceModal.tsx` para usar `useProviders` (TanStack Query), eliminando colisiones de caché y asegurando que la lista de proveedores cargue siempre correctamente sin importar la ruta de acceso.
+- [x] **Fix Date Bug (UTC)**: Corrección del error de desfase de -1 día en las fechas de Adelantos y Facturas. Se forzó la grabación y lectura al mediodía (T12:00:00) para neutralizar el desplazamiento horario de Argentina (UTC-3).
+- [x] **Mejora UI/UX Compras**: 
+  - **Buscador Dinámico**: Implementación de selector de proveedor con búsqueda en tiempo real por Nombre o CUIT.
+  - **Vencimiento Automático**: El sistema ahora calcula el `dueDate` en el momento de la carga basándose en los días de crédito del proveedor seleccionado.
+  - **Normalización de Facturas**: Auto-completado de ceros a la izquierda para Punto de Venta (4 dígitos) y Número (8 dígitos) al perder el foco, garantizando consistencia y activando correctamente las restricciones de duplicados en la BD.
+  - **Limpieza de Estado**: Implementada lógica de reset total del formulario al abrir el modal para nuevas cargas.
+- [x] **Reporte de Deuda Histórica**: Agregada opción "Ver Todo el Historial" en `ResumenDeudaPage.tsx`, permitiendo visualizar saldos pendientes totales sin restricciones de periodo mensual.
+- [x] **Gestión de Comprobantes**:
+  - **Backend**: Creación de endpoint de eliminación con verificación de integridad (bloquea el borrado si existen pagos imputados).
+  - **Frontend**: Incorporación del botón de eliminación (Trash) en la tabla de Compras.
+- [x] **Terminología e Impresión**: Cambio de etiquetas a "Valor Estimativo del mes" y agregado de fecha de emisión automática en encabezados de PDF.
+
+**Estado Actual:**
+- El módulo de Compras y Cuentas Corrientes ha alcanzado su punto más alto de madurez operativa. Los datos son íntegros, la carga es ágil y asistida, y los reportes permiten una visión global de la deuda de la empresa.
+- Todos los cambios están desplegados y validados en el entorno de producción.
 - [x] **Despliegue**: Los cambios fueron commiteados y pusheados a la rama `main`, disparando el despliegue automático a producción (Render/Vercel).
 
 **Estado Actual:**
