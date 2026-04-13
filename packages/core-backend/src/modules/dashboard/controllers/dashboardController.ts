@@ -6,82 +6,103 @@ const prisma = new PrismaClient();
 export const getDashboardStats = async (req: Request, res: Response) => {
   try {
     const today = new Date();
-    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-    const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-    const nextWeek = new Date(today);
-    nextWeek.setDate(today.getDate() + 7);
+    const startOfCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+    const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+    const startOfTwoMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 2, 1);
+    const endOfTwoMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 1, 0);
 
-    // 1. Deuda Total (Suma de facturas no pagadas en proveedores Cta Cte)
+    // 1. Deuda Total
     const pendingInvoicesSummary = await prisma.prov_Invoice.aggregate({
       where: {
         status: { not: 'PAGADA' },
         isCtaCte: true
       },
-      _sum: {
-        totalAmount: true
-      }
+      _sum: { totalAmount: true }
     });
     const totalDebt = pendingInvoicesSummary._sum.totalAmount || 0;
 
-    // 2. Compras del Mes (Total de facturas en el mes actual)
-    const monthlyInvoices = await prisma.prov_Invoice.aggregate({
-      where: {
-        issueDate: {
-          gte: startOfMonth,
-          lte: endOfMonth
-        }
-      },
-      _sum: {
-        totalAmount: true
-      },
-      _count: true
-    });
+    // 2. Compras del Mes (Actual y anteriores)
+    const getMonthlyTotal = async (start: Date, end: Date) => {
+      const summary = await prisma.prov_Invoice.aggregate({
+        where: { issueDate: { gte: start, lte: end } },
+        _sum: { totalAmount: true }
+      });
+      return summary._sum.totalAmount || 0;
+    };
 
-    // 3. Vencimientos Próximos (Facturas pendientes que vencen en 7 días)
-    const upcomingExpiring = await prisma.prov_Invoice.count({
+    const currentMonthTotal = await getMonthlyTotal(startOfCurrentMonth, today);
+    const lastMonthTotal = await getMonthlyTotal(startOfLastMonth, endOfLastMonth);
+    const twoMonthsAgoTotal = await getMonthlyTotal(startOfTwoMonthsAgo, endOfTwoMonthsAgo);
+
+    const monthlyHistory = [
+      { month: today.toLocaleString('es-AR', { month: 'long' }), total: currentMonthTotal },
+      { month: startOfLastMonth.toLocaleString('es-AR', { month: 'long' }), total: lastMonthTotal },
+      { month: startOfTwoMonthsAgo.toLocaleString('es-AR', { month: 'long' }), total: twoMonthsAgoTotal },
+    ];
+
+    // 3. Vencimientos (Próximos y Vencidos)
+    const expiringSoonAndOverdue = await prisma.prov_Invoice.findMany({
       where: {
         status: { not: 'PAGADA' },
-        dueDate: {
-          gte: today,
-          lte: nextWeek
-        }
-      }
+        dueDate: { lte: new Date(today.getTime() + 15 * 24 * 60 * 60 * 1000) } // Prox 15 dias + vencidos
+      },
+      orderBy: { dueDate: 'asc' },
+      include: { provider: true }
     });
 
-    // 4. Últimas Facturas (Top 5)
+    // 4. Últimas Compras
     const recentInvoices = await prisma.prov_Invoice.findMany({
       take: 5,
       orderBy: { issueDate: 'desc' },
       include: { provider: true }
     });
 
-    // 5. Distribución por Provincia (Proveedores con facturas pendientes)
-    const invoicesByProvince = await prisma.prov_Invoice.findMany({
-      where: { status: { not: 'PAGADA' } },
-      include: { provider: { select: { province: true } } }
-    });
+    // 5. Tendencia
+    const trendValue = lastMonthTotal > 0 
+      ? ((currentMonthTotal - lastMonthTotal) / lastMonthTotal) * 100 
+      : 0;
 
-    const provinceStatsMap: Record<string, number> = {};
-    invoicesByProvince.forEach(inv => {
-      const pcia = inv.provider?.province || 'Sin Provincia';
-      provinceStatsMap[pcia] = (provinceStatsMap[pcia] || 0) + inv.totalAmount;
-    });
+    // 6. Datos para gráfico (agrupados por día del mes)
+    const getDailyData = async (start: Date, end: Date) => {
+      const invoices = await prisma.prov_Invoice.findMany({
+        where: { issueDate: { gte: start, lte: end } },
+        select: { issueDate: true, totalAmount: true }
+      });
+      
+      const dailyMap: Record<number, number> = {};
+      invoices.forEach(inv => {
+        const day = new Date(inv.issueDate).getDate();
+        dailyMap[day] = (dailyMap[day] || 0) + inv.totalAmount;
+      });
+      
+      return Array.from({ length: 31 }, (_, i) => ({
+        day: i + 1,
+        total: dailyMap[i + 1] || 0
+      }));
+    };
 
-    const provinceStats = Object.entries(provinceStatsMap).map(([province, total]) => ({
-      province,
-      total
-    }));
+    const currentMonthChart = await getDailyData(startOfCurrentMonth, today);
+    const lastMonthChart = await getDailyData(startOfLastMonth, endOfLastMonth);
 
     res.json({
       totalDebt,
-      monthlyTotal: monthlyInvoices._sum.totalAmount || 0,
-      monthlyCount: monthlyInvoices._count,
-      upcomingExpiring,
+      currentMonthTotal,
+      monthlyHistory,
+      expiringSoonAndOverdue,
       recentInvoices,
-      provinceStats
+      trend: {
+        value: trendValue.toFixed(1),
+        comparison: currentMonthTotal >= lastMonthTotal ? 'up' : 'down'
+      },
+      chartData: {
+        current: currentMonthChart,
+        previous: lastMonthChart
+      }
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error fetching dashboard stats' });
   }
 };
+
