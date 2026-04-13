@@ -226,12 +226,29 @@ export const deleteProvider = async (id: string) => {
 
   if (!provider) throw new Error("Proveedor no encontrado");
   
-  if (provider.invoices.length > 0 || provider.payments.length > 0) {
-    throw new Error("No se puede eliminar un proveedor con historial de facturas o pagos. Debe anular sus registros primero.");
+  if (provider.invoices.length > 0) {
+    throw new Error("No se puede eliminar un proveedor con facturas (incluso de contado). Debe eliminar las facturas primero.");
   }
 
-  return await prisma.prov_Provider.delete({
-    where: { id }
+  const hasActivePayments = provider.payments.some(p => p.status === 'CONFIRMADO');
+  if (hasActivePayments) {
+    throw new Error("No se puede eliminar un proveedor con pagos confirmados. Anule los pagos primero.");
+  }
+
+  return await prisma.$transaction(async (tx) => {
+    const paymentIds = provider.payments.map(p => p.id);
+    
+    // Limpiar dependencias de pagos
+    await tx.prov_PaymentItem.deleteMany({ where: { paymentId: { in: paymentIds } } });
+    await tx.prov_Check.deleteMany({ where: { paymentId: { in: paymentIds } } });
+    await tx.prov_Payment.deleteMany({ where: { providerId: id } });
+    
+    // Limpiar contactos y bancos
+    await tx.prov_Contact.deleteMany({ where: { providerId: id } });
+    await tx.prov_BankAccount.deleteMany({ where: { providerId: id } });
+
+    return await tx.prov_Provider.delete({ where: { id } });
   });
 };
+
 
