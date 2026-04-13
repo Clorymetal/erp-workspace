@@ -367,4 +367,23 @@ El módulo de Cuenta Corriente está **vuelo y 100% operativo en producción**. 
 - Cambios aplicados y operativos. La terminología y el formato de impresión son ahora acordes a la preferencia del usuario en todos los puntos de contacto del sistema de adelantos.
 
 ---
+### Sesión 20: 13 de Abril de 2026 - Dashboard Analítico V2 y Unificación de UI
+**Objetivos:**
+- Transformar el Dashboard en una herramienta de monitoreo financiero en tiempo real.
+- Unificar la navegación de proveedores para optimizar el espacio.
+- Implementar borrado seguro de proveedores.
+
+**Acciones Realizadas:**
+- [x] **UI Sidebar**: Refactorización del menú lateral para agrupar todas las opciones de proveedores bajo un solo ítem desplegable.
+- [x] **Dashboard Analítico (Pro)**:
+    - **KPIs Dinámicos**: Implementación de "Deuda Total", "Compras del Mes" con historial y contador de vencimientos con alertas.
+    - **Gráfico de Trayectoria Acumulada**: Integración de `Recharts` para visualizar la trayectoria de gastos del mes actual vs mes anterior.
+    - **Vencimientos Detallados**: Lista de facturas próximas y vencidas con resaltado visual.
+- [x] **Gestión de Borrado de Proveedores**: Implementación de eliminación segura con validación de historial financiero (bloquea si hay facturas o pagos activos).
+- [x] **Refinamientos de UX**: Ajuste de fuentes, tooltips y lógica de borrado para registros de prueba/anulados.
+
+**Estado Actual:**
+- El ERP cuenta con un panel de control estratégico de alta visibilidad. La navegación es más intuitiva y el sistema de proveedores permite una gestión de ciclo de vida completo (Alta, Baja y Modificación). Todos los cambios están desplegados y validados en producción.
+
+---
 _Nota: Al retomar el trabajo, leer siempre el último registro de estado y revisar `task.md`._
