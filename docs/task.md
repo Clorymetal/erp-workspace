@@ -37,7 +37,8 @@
 - [x] **Libro IVA Compras:** Interfaz interactiva de filtrado mensual, edición de número secuencial (`Rec`) y reportes impositivos. (Productivo ✅)
 - [x] **Exportación Contable:** Generación de reportes de 23 columnas (Excel/PDF) compatibles con AFIP/Contadora.
 - [x] **Lógica de Cta Cte:** Filtros precisos para diferenciar proveedores de contado vs deuda real.
-- [x] **Dashboard Real:** Panel de control con KPIs (Deuda total, Compras del mes, Alerta de vencimientos).
+- [x] **Dashboard Analítico V2:** Panel de control premium con KPIs (Deuda total, Compras del mes, Alerta de vencimientos) y gráfico de trayectoria acumulada comparativa. (Completado ✅)
+- [x] **Baja de Proveedores:** Implementada eliminación segura con validación de historial financiero (facturas/pagos). (Completado ✅)
 
 ## Fase 7: Gestión de Pagos e Imputación (Completada ✅)
 - [x] **Registrar Pago:** Formulario para procesar pagos a proveedores (Efectivo/Cheque/Transferencia).
@@ -74,7 +75,8 @@
 - [X] Refactorizar Frontend para URLs dinámicas (Desarrollo vs Producción)
 - [X] Desplegar Frontend en **Vercel.com**
 
-### Próximos Pasos (Próxima Sesión):
+### Próximos Pasos:
 - [ ] **Fase 7 (Tesorería)**: Reporte global de cheques emitidos y conciliación bancaria simple.
 - [ ] **Fase 12 (RRHH)**: Reportes de Cierre de Mes Avanzados e Históricos.
-- [ ] **Fase 13 (UI/UX)**: Pulido de los 58 errores de Lint detectados para máxima estabilidad de código.
+- [ ] **Fase 13 (UI/UX)**: Pulido de los errores de Lint detectados para máxima estabilidad de código.
+- [ ] **Fase 14 (Mejoras)**: Reporte de movimientos por "Categoría" de gastos (Parámetros).
