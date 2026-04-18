@@ -82,13 +82,12 @@ export const EmpleadosPage: React.FC = () => {
       </style>
       
       {/* Título sólo para impresión */}
-      <div className="hidden print:block mb-4 border-b border-gray-400 pb-1">
-        <p className="!text-[14px] !font-bold capitalize">
-          Detalle de adelantos al {' '}
-          {new Intl.DateTimeFormat('es-AR', { weekday: 'long' }).format(new Date())} {' '}
-          {new Date().getDate().toString().padStart(2, '0')} / {' '}
-          {(new Date().getMonth() + 1).toString().padStart(2, '0')} / {' '}
-          {new Date().getFullYear()}
+      <div className="hidden print:flex justify-between items-center mb-4 border-b-2 border-gray-800 pb-2">
+        <p className="!text-[16px] !font-black uppercase tracking-tighter">
+          Detalle de adelantos: {['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'][currentMonth - 1]} {currentYear}
+        </p>
+        <p className="!text-[12px] font-bold text-gray-600">
+          Impreso el: {new Date().toLocaleDateString('es-AR')}
         </p>
       </div>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 print:hidden">
@@ -152,6 +151,10 @@ export const EmpleadosPage: React.FC = () => {
         onClose={() => setSelectedEmployeeForAdvance(null)}
         onSubmit={handleCreateAdvance}
       />
+
+      <div className="hidden print:block fixed bottom-4 right-4 opacity-50 text-[10px] font-mono border border-gray-400 p-2 rounded italic">
+        SISTEMA ERP - IMPRESO EL: {new Date().toLocaleDateString('es-AR')} - {new Date().toLocaleTimeString('es-AR')}
+      </div>
     </div>
   );
 };

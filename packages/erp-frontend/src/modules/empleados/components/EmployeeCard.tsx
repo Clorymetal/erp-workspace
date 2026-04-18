@@ -59,7 +59,7 @@ export const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee, onAddAdvan
       <div className={`${headerBg} text-white p-3 print:p-1.5 flex justify-between items-center text-sm print:text-[12px] font-semibold shadow-inner transition-colors`}>
         <div className="flex flex-col">
           <span className="text-lg tracking-wide leading-tight">{employee.name}</span>
-          <span className="text-[10px] opacity-75 font-normal uppercase tracking-wider">{isBiWeekly ? 'Quincenal' : 'Mensual'}</span>
+          <span className="text-[10px] opacity-75 font-normal uppercase tracking-wider print:hidden">{isBiWeekly ? 'Quincenal' : 'Mensual'}</span>
         </div>
         <span className="opacity-90 font-medium">{statusText}</span>
       </div>
@@ -67,7 +67,7 @@ export const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee, onAddAdvan
       <div className="p-4 print:p-1.5 space-y-4 print:space-y-1">
         {/* Resumen Principal */}
         <div className="grid grid-cols-2 gap-4 print:gap-1.5">
-          <div className="p-3 print:p-1 bg-gray-50 dark:bg-dark-background/50 rounded-xl print:rounded border border-gray-100 dark:border-dark-border relative group">
+          <div className="p-3 print:p-1 bg-gray-50 dark:bg-dark-background/50 rounded-xl print:rounded border border-gray-100 dark:border-dark-border relative group print:hidden">
             <span className="text-xs text-gray-500 dark:text-gray-400 block mb-1 print:mb-0 font-medium tracking-tight whitespace-nowrap">Valor Estimativo del mes</span>
             {isEditingSalary ? (
               <input 
@@ -90,7 +90,7 @@ export const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee, onAddAdvan
               </button>
             )}
           </div>
-          <div className="p-3 print:p-1 bg-orange-50 dark:bg-orange-900/20 rounded-xl print:rounded border border-orange-100 dark:border-orange-800/30">
+          <div className="p-3 print:p-1 bg-orange-50 dark:bg-orange-900/20 rounded-xl print:rounded border border-orange-100 dark:border-orange-800/30 print:col-span-2">
             <span className="text-xs text-orange-600 dark:text-orange-400 block mb-1 print:mb-0 font-medium tracking-tight">Adelantos Tot.</span>
             <span className="text-lg print:text-sm font-bold text-orange-700 dark:text-orange-300">{formatCurrency(period.totalAdvances)}</span>
           </div>
@@ -98,7 +98,7 @@ export const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee, onAddAdvan
 
         {/* Info Quincenal Condicional */}
         {isBiWeekly && (
-          <div className="p-3 print:p-1 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl print:rounded border border-indigo-100 dark:border-indigo-800/30">
+          <div className="p-3 print:p-1 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl print:rounded border border-indigo-100 dark:border-indigo-800/30 print:hidden">
             <div className="flex justify-between items-center mb-2">
               <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Distribución Quincenal</span>
               {isEditingSalary && <span className="text-[10px] text-indigo-500 italic">Puedes ajustar los montos</span>}
@@ -166,14 +166,14 @@ export const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee, onAddAdvan
               {formatCurrency(period.balance)}
             </span>
           </div>
-          <Button variant="primary" icon={<Plus size={16} />} onClick={() => onAddAdvance(employee)}>
+          <Button variant="primary" icon={<Plus size={16} />} onClick={() => onAddAdvance(employee)} className="print:hidden">
             Adelanto
           </Button>
         </div>
 
         {/* Expandir Historial de Adelantos */}
         {period.advances && period.advances.length > 0 && (
-          <div className="mt-2">
+          <div className="mt-2 print:hidden">
             <button 
               onClick={() => setIsExpanded(!isExpanded)}
               className="w-full flex items-center justify-center gap-1 text-xs text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 py-2 bg-gray-50 dark:bg-dark-background/50 rounded-lg transition print:hidden"
