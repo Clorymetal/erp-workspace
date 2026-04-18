@@ -173,7 +173,7 @@ export const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee, onAddAdvan
 
         {/* Expandir Historial de Adelantos */}
         {period.advances && period.advances.length > 0 && (
-          <div className="mt-2 print:hidden">
+          <div className="mt-2">
             <button 
               onClick={() => setIsExpanded(!isExpanded)}
               className="w-full flex items-center justify-center gap-1 text-xs text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 py-2 bg-gray-50 dark:bg-dark-background/50 rounded-lg transition print:hidden"
