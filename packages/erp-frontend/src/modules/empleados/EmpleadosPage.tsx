@@ -5,8 +5,9 @@ import { AdvanceModal } from './components/AdvanceModal';
 import { useEmployees } from './hooks/useEmployees';
 
 export const EmpleadosPage: React.FC = () => {
-  const [currentMonth, setCurrentMonth] = useState(3);
-  const [currentYear] = useState(2026);
+  const now = new Date();
+  const [currentMonth, setCurrentMonth] = useState(now.getMonth() + 1);
+  const [currentYear] = useState(now.getFullYear());
   const [selectedEmployeeForAdvance, setSelectedEmployeeForAdvance] = useState<any>(null);
 
   const {

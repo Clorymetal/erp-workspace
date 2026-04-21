@@ -8,16 +8,7 @@ export const useEmployees = (year: number, month: number) => {
     const res = await fetch(`${API_BASE_URL}/empleados/dashboard?year=${year}&month=${month}`);
     if (!res.ok) throw new Error('Failed to fetch employees dashboard');
     const dashboardData = await res.json();
-
-    const fullData = await Promise.all(
-      dashboardData.data.map(async (emp: any) => {
-        const detailRes = await fetch(`${API_BASE_URL}/empleados/${emp.id}/detail?year=${year}&month=${month}`);
-        if (!detailRes.ok) return emp; // fallback a data basica si falla el detalle
-        const detailData = await detailRes.json();
-        return detailData.data;
-      })
-    );
-    return fullData;
+    return dashboardData.data;
   };
 
   const query = useQuery({

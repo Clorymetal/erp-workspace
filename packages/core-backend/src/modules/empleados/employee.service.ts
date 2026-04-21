@@ -53,7 +53,12 @@ export class EmployeeService {
       where: { isActive: true },
       include: {
         salaryPeriods: {
-          where: { periodYear: year, periodMonth: month }
+          where: { periodYear: year, periodMonth: month },
+          include: {
+            advances: {
+              orderBy: { date: 'asc' }
+            }
+          }
         }
       },
       orderBy: { name: 'asc' }

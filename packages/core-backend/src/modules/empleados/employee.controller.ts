@@ -33,8 +33,9 @@ export class EmployeeController {
 
   static async getDashboard(req: Request, res: Response) {
     try {
-      const year = parseInt(req.query.year as string) || 2026;
-      const month = parseInt(req.query.month as string) || 3;
+      const now = new Date();
+      const year = parseInt(req.query.year as string) || now.getFullYear();
+      const month = parseInt(req.query.month as string) || (now.getMonth() + 1);
       
       const data = await EmployeeService.getDashboard(year, month);
       res.json({ success: true, data });
@@ -46,8 +47,9 @@ export class EmployeeController {
   static async getDetail(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const year = parseInt(req.query.year as string) || 2026;
-      const month = parseInt(req.query.month as string) || 3;
+      const now = new Date();
+      const year = parseInt(req.query.year as string) || now.getFullYear();
+      const month = parseInt(req.query.month as string) || (now.getMonth() + 1);
       
       const data = await EmployeeService.getEmployeeDetail(Number(id), year, month);
       if (!data) return res.status(404).json({ success: false, error: "Empleado no encontrado" });
