@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Modal, Button } from '../../../core/components';
-import { Search, Plus, Trash2, Wrench, User, AlertCircle } from 'lucide-react';
+import { Search, Plus, Trash2, Wrench, AlertCircle } from 'lucide-react';
 import { useClients } from '../hooks/useClients';
 
 interface OrderModalProps {
@@ -106,7 +106,7 @@ export const OrderModal = ({ isOpen, order, onClose, onSave, mechanics }: OrderM
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={order ? `Editar Orden №${order.orderNumber}` : "Nueva Orden de Reparación"} size="lg">
+    <Modal isOpen={isOpen} onClose={onClose} title={order ? `Editar Orden №${order.orderNumber}` : "Nueva Orden de Reparación"} maxWidth="lg">
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* SECCIÓN CLIENTE */}
         <div className="bg-primary-50 dark:bg-primary-900/10 p-4 rounded-2xl border border-primary-100 dark:border-primary-800/30">

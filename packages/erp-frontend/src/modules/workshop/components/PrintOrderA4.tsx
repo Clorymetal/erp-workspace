@@ -3,10 +3,9 @@ import React from 'react';
 interface PrintOrderProps {
   order: any;
   businessConfig: any;
-  mechanics: any[];
 }
 
-export const PrintOrderA4: React.FC<PrintOrderProps> = ({ order, businessConfig, mechanics }) => {
+export const PrintOrderA4: React.FC<PrintOrderProps> = ({ order, businessConfig }) => {
   const bizAddress = businessConfig?.address || 'Ruta Nac. Nº 11 - Km 1006';
   const bizPhone = businessConfig?.phone || '0362 – 5545436';
   const bizEmail = businessConfig?.email || 'clorymetal@gmail.com';

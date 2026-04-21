@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { Modal, Button } from '../../../core/components';
-import { DollarSign, CreditCard, Calendar, FileText, CheckCircle2 } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 
 interface CollectionModalProps {
   isOpen: boolean;
   onClose: () => void;
   clientId: string;
-  clientName: string;
   onSave: (data: any) => void;
 }
 
@@ -18,7 +17,7 @@ const PAYMENT_METHODS = [
   { id: 'CHEQUE', label: 'Cheque de Terceros', icon: '✍️' }
 ];
 
-export const CollectionModal = ({ isOpen, onClose, clientId, clientName, onSave }: CollectionModalProps) => {
+export const CollectionModal = ({ isOpen, onClose, clientId, onSave }: CollectionModalProps) => {
   const [formData, setFormData] = useState({
     clientId,
     paymentDate: new Date().toISOString().split('T')[0],
@@ -35,7 +34,12 @@ export const CollectionModal = ({ isOpen, onClose, clientId, clientName, onSave 
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={`Registrar Cobranza: ${clientName}`} size="md">
+    <Modal 
+        isOpen={isOpen} 
+        onClose={onClose} 
+        title="Registrar Cobranza"
+        maxWidth="lg"
+      >
       <form onSubmit={handleSubmit} className="space-y-6 pt-2">
         
         <div className="p-4 bg-emerald-50 dark:bg-emerald-900/10 rounded-2xl border border-emerald-100 flex items-center justify-between">

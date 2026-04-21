@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Search, Truck, Filter, Calendar, DollarSign, FileText } from 'lucide-react';
+import { Plus, Search, Truck, DollarSign } from 'lucide-react';
 import { Button, DataTable, Modal } from '../../../core/components';
 import { useSales } from '../hooks/useSales';
 import type { SaleOrder } from '../hooks/useSales';
@@ -147,7 +147,7 @@ export const VentasDirectasPage = () => {
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)}
         title="Crear Venta Directa / Envío"
-        size="md"
+        maxWidth="md"
       >
         <div className="space-y-4 pt-2">
             {/* Buscador de Cliente */}

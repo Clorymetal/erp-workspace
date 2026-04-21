@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, Printer, Search, Download, History, User } from 'lucide-react';
 import { Button, DataTable } from '../../../core/components';
 import { useClientCtaCte } from '../hooks/useClientCtaCte';
-import type { ClientMovement } from '../hooks/useClientCtaCte';
 import { useClients } from '../hooks/useClients';
 import { CollectionModal } from '../components/CollectionModal';
 
@@ -17,9 +16,7 @@ export const ClientCtaCtePage = () => {
     history, 
     isLoadingHistory, 
     balance,
-    isLoadingBalance,
-    createPayment,
-    isSubmitting: isPaying
+    createPayment
   } = useClientCtaCte(id || '');
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -97,7 +94,7 @@ export const ClientCtaCtePage = () => {
     {
       key: 'acciones',
       header: '',
-      render: (row: any) => (
+      render: () => (
         <div className="flex justify-end gap-2">
           <button className="p-1.5 text-gray-400 hover:text-primary-500 transition-colors" title="Ver Detalles/Imprimir">
             <Printer size={16} />
@@ -206,7 +203,6 @@ export const ClientCtaCtePage = () => {
             isOpen={isPaymentModalOpen}
             onClose={() => setIsPaymentModalOpen(false)}
             clientId={client.id}
-            clientName={client.businessName}
             onSave={handleSavePayment}
         />
       )}

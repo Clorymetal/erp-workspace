@@ -18,8 +18,10 @@ export interface RepoOrder {
   orderNumber: number;
   patent: string | null;
   vehicleBrand: string | null;
+  vehicleModel?: string | null;
   pieceSummary: string | null;
   problemDescription: string | null;
+  observations?: string | null;
   status: 'INGRESADO' | 'PRESUPUESTO_PENDIENTE' | 'EN_REPARACION' | 'ESPERANDO_REPUESTOS' | 'LISTO' | 'ENTREGADO' | 'ANULADO';
   priority: 'NORMAL' | 'MEDIA' | 'ALTA' | 'URGENTE';
   client: { 

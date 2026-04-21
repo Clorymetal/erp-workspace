@@ -15,8 +15,7 @@ import {
   ChevronDown,
   Wrench,
   UserCircle2,
-  Truck,
-  CreditCard
+  Truck
 } from 'lucide-react';
 
 interface MenuItem {
