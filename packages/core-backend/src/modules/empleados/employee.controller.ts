@@ -3,6 +3,34 @@ import { EmployeeService } from './employee.service';
 
 export class EmployeeController {
   
+  static async create(req: Request, res: Response) {
+    try {
+      const data = await EmployeeService.createEmployee(req.body);
+      res.json({ success: true, data });
+    } catch (error: any) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  }
+
+  static async update(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const data = await EmployeeService.updateEmployee(Number(id), req.body);
+      res.json({ success: true, data });
+    } catch (error: any) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  }
+
+  static async getAll(req: Request, res: Response) {
+    try {
+      const data = await EmployeeService.getAllEmployees();
+      res.json({ success: true, data });
+    } catch (error: any) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  }
+
   static async getDashboard(req: Request, res: Response) {
     try {
       const year = parseInt(req.query.year as string) || 2026;

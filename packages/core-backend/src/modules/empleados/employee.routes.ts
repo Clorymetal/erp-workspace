@@ -3,6 +3,9 @@ import { EmployeeController } from './employee.controller';
 
 const router = Router();
 
+router.get('/', EmployeeController.getAll);
+router.post('/', EmployeeController.create);
+router.put('/:id', EmployeeController.update);
 router.get('/dashboard', EmployeeController.getDashboard);
 router.get('/:id/detail', EmployeeController.getDetail);
 router.post('/advance', EmployeeController.createAdvance);

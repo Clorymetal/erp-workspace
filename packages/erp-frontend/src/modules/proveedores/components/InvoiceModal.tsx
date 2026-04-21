@@ -40,6 +40,7 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
   // Filtrar proveedores por búsqueda
   const filteredProviders = providers.filter(p => 
     p.razonSocial.toLowerCase().includes(providerSearch.toLowerCase()) || 
+    p.nombreFantasia.toLowerCase().includes(providerSearch.toLowerCase()) || 
     p.cuit.includes(providerSearch)
   );
 
@@ -136,7 +137,7 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
                 <input
                   type="text"
                   placeholder="Buscar por Nombre o CUIT..."
-                  value={selectedProvider ? `${selectedProvider.razonSocial} (${selectedProvider.cuit})` : providerSearch}
+                  value={selectedProvider ? `${selectedProvider.nombreFantasia || selectedProvider.razonSocial} (${selectedProvider.cuit})` : providerSearch}
                   onFocus={() => {
                     setShowProviderList(true);
                     if (selectedProvider) {
@@ -162,7 +163,10 @@ export const InvoiceModal = ({ isOpen, onClose, onSave, initialData, expirationD
                         }}
                         className="p-3 hover:bg-orange-50 dark:hover:bg-orange-900/20 cursor-pointer border-b border-gray-50 dark:border-gray-700 last:border-0"
                       >
-                        <p className="text-sm font-bold text-gray-800 dark:text-gray-200">{p.razonSocial}</p>
+                        <p className="text-sm font-bold text-gray-800 dark:text-gray-200">
+                          {p.nombreFantasia || p.razonSocial}
+                        </p>
+                        {p.nombreFantasia && <p className="text-[10px] text-gray-400 italic leading-none mb-1">{p.razonSocial}</p>}
                         <p className="text-[10px] text-gray-500">CUIT: {p.cuit}</p>
                       </div>
                     ))

@@ -41,7 +41,7 @@ export const ProveedoresPage = () => {
   const [editingProviderId, setEditingProviderId] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({ 
-    razonSocial: '', cuit: '', telefono: '', email: '', provincia: '', cp: '', condFisc: '', isCtaCte: true,
+    razonSocial: '', nombreFantasia: '', cuit: '', telefono: '', email: '', provincia: '', cp: '', condFisc: '', isCtaCte: true,
     expirationDays: 0, netAmountCode: ''
   });
 
@@ -56,7 +56,7 @@ export const ProveedoresPage = () => {
       await saveProvider({ provider: formData, isEdit: isEditingProvider, id: editingProviderId || undefined });
       setIsModalOpen(false);
       setFormData({ 
-        razonSocial: '', cuit: '', telefono: '', email: '', provincia: '', cp: '', condFisc: '', isCtaCte: true,
+        razonSocial: '', nombreFantasia: '', cuit: '', telefono: '', email: '', provincia: '', cp: '', condFisc: '', isCtaCte: true,
         expirationDays: 0, netAmountCode: ''
       });
     } catch (e) {
@@ -97,7 +97,23 @@ export const ProveedoresPage = () => {
   };
 
   const columns = [
-    { key: 'razonSocial', header: 'Razón Social', sortable: true },
+    { 
+      key: 'razonSocial', 
+      header: 'Identificación', 
+      sortable: true,
+      render: (row: Proveedor) => (
+        <div className="flex flex-col">
+          <span className="font-bold text-gray-900 dark:text-white">
+            {row.nombreFantasia || row.razonSocial}
+          </span>
+          {row.nombreFantasia && (
+            <span className="text-[10px] text-gray-500 uppercase tracking-tighter italic">
+              {row.razonSocial}
+            </span>
+          )}
+        </div>
+      )
+    },
     { key: 'cuit', header: 'CUIT', sortable: true },
     { key: 'provincia', header: 'Provincia' },
     { 
@@ -148,7 +164,9 @@ export const ProveedoresPage = () => {
 
   const filteredData = providers.filter(p => {
     const s = searchTerm.toLowerCase();
-    const mSearch = p.razonSocial.toLowerCase().includes(s) || p.cuit.includes(s);
+    const mSearch = p.razonSocial.toLowerCase().includes(s) || 
+                   p.nombreFantasia.toLowerCase().includes(s) ||
+                   p.cuit.includes(s);
     const mProv = !filterProvince || p.provincia === filterProvince;
     const mCta = filterIsCtaCte === 'all' ? true : (filterIsCtaCte === 'cta_cte' ? p.isCtaCte : !p.isCtaCte);
     const mBal = filterBalanceStatus === 'all' ? true : (filterBalanceStatus === 'with_debt' ? p.saldo > 0 : p.saldo <= 0);
@@ -174,6 +192,7 @@ export const ProveedoresPage = () => {
           <ExportMenu 
             data={filteredData.map(p => ({
               Razon_Social: p.razonSocial,
+              Nombre_Fantasia: p.nombreFantasia,
               CUIT: p.cuit,
               Provincia: p.provincia,
               Saldo_Cta_Cte: p.saldo,
@@ -189,7 +208,7 @@ export const ProveedoresPage = () => {
           <Button variant="primary" icon={<Plus size={18} />} onClick={() => {
             setIsEditingProvider(false);
             setFormData({ 
-                razonSocial: '', cuit: '', telefono: '', email: '', provincia: '', cp: '', condFisc: '', isCtaCte: true,
+                razonSocial: '', nombreFantasia: '', cuit: '', telefono: '', email: '', provincia: '', cp: '', condFisc: '', isCtaCte: true,
                 expirationDays: 0, netAmountCode: '' 
             });
             setIsModalOpen(true);
@@ -261,8 +280,12 @@ export const ProveedoresPage = () => {
       >
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <div className="col-span-2">
-              <label className="text-sm font-bold">Razón Social</label>
+            <div className="col-span-2 sm:col-span-1">
+              <label className="text-sm font-bold text-primary-600 dark:text-primary-400">Nombre de Fantasía</label>
+              <input id="nombreFantasia" name="nombreFantasia" type="text" value={formData.nombreFantasia} onChange={e => setFormData({...formData, nombreFantasia: e.target.value})} className="w-full p-2 bg-white dark:bg-dark-bg border-2 border-primary-100 dark:border-primary-900/30 focus:border-primary-500 rounded-xl outline-none transition-all" placeholder="Ej: Streller" />
+            </div>
+            <div className="col-span-2 sm:col-span-1">
+              <label className="text-sm font-bold text-gray-500">Razón Social (Legal)</label>
               <input id="razonSocial" name="razonSocial" type="text" value={formData.razonSocial} onChange={e => setFormData({...formData, razonSocial: e.target.value})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg" />
             </div>
             <div>

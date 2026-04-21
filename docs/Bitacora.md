@@ -386,4 +386,45 @@ El módulo de Cuenta Corriente está **vuelo y 100% operativo en producción**. 
 - El ERP cuenta con un panel de control estratégico de alta visibilidad. La navegación es más intuitiva y el sistema de proveedores permite una gestión de ciclo de vida completo (Alta, Baja y Modificación). Todos los cambios están desplegados y validados en producción.
 
 ---
-_Nota: Al retomar el trabajo, leer siempre el último registro de estado y revisar `task.md`._
+### Sesión 21: 15 de Abril de 2026 - Parámetros Globales y Estabilización de Clientes
+**Objetivos:**
+- Estabilizar el frontend (fix imports Vite/TypeScript).
+- Sincronizar parámetros reales de producción (Provincias, IVA, Condiciones Fiscales).
+- Evolucionar el Maestro de Clientes con selectores dinámicos.
+
+**Acciones Realizadas:**
+- [x] **Frontend Fix:** Corrección masiva de errores de importación (`import type`) en Taller y Ventas, restableciendo la carga de las rutas.
+- [x] **Sincronización:** Desarrollo de scripts para importar parámetros desde Excel (`Compras.xlsx`) y sincronizar la base local con Producción (Neon).
+- [x] **Investigación:** Barrido total de datos de Ciudades/CPs. Se confirmó que solo existen Provincias en los parámetros oficiales.
+- [x] **UI Clientes:**
+  - Actualización de `ClientesPage.tsx` integrando el selector dinámico de Provincias (desde `Core_Parameter`).
+  - Ampliación de la ficha de cliente (Dirección, CP, Provincia).
+  - Mejora de visualización en tabla: Combina Ciudad y Provincia (ej: "Resistencia (Chaco)").
+- [x] **Scripts:** Creados `pullParamsFromProd.ts`, `list_sheets.ts` y auditores de Excel para mantenimiento futuro.
+
+**Estado Actual:**
+El entorno de desarrollo está sincronizado con los parámetros reales de producción. El Maestro de Clientes es ahora mucho más robusto y amigable. Listo para iniciar la conexión con el motor de facturación fiscal.
+
+---
+### Sesión 22: 16 de Abril de 2026 - Profesionalización del Taller y Gestión de Personal Pro
+**Objetivos:**
+- Finalizar el diseño de la Orden de Reparación (OR) y el TAG de taller.
+- Implementar la gestión de legajos técnicos en el módulo de personal.
+- Estabilizar el motor de impresión y resolver bugs de carga en taller.
+
+**Acciones Realizadas:**
+- [x] **Orden de Reparación de Taller (OR)**:
+    - **Frente**: Rediseño A4 vertical literal basado en el formulario oficial de Clorymetal (contiene autorización legal, tildes corregidas y recibo de conforme).
+    - **Dorso (Operario)**: Ficha de taller con 6 filas de M.O., 26 de repuestos e importes detallados.
+    - **TAG de Taller**: Rediseño del rótulo a tamaño XXL priorizando el Nombre de la Empresa sobre la patente para identificación visual rápida de piezas en taller.
+- [x] **Gestión de Personal Pro**:
+    - **Dual View**: Implementación de sistema de pestañas para alternar entre "Control de Sueldos" (Finanzas) y "Fichas Técnicas" (Legajos).
+    - **Edición Directa**: Botón y modal para actualizar CUIL, Dirección, Teléfono y Credenciales sin salir de la vista de personal.
+- [x] **Estabilización de Sistema**:
+    - **Dependencias**: Eliminación de `date-fns` y reemplazo por `Intl.DateTimeFormat` nativo para resolver conflictos de Vite en el monorepo.
+    - **Motor de Impresión**: Corrección de reglas CSS globales para evitar el renderizado en blanco y forzar saltos de página limpios.
+    - **UX Taller**: Blindaje del formulario de OR (type="button") para evitar guardados accidentales al añadir tareas.
+- [x] **Jerarquía Visual**: Unificación del "Nombre de Empresa" como identificador primario en tarjetas, tablas e impresiones.
+
+**Estado Actual:**
+- La fase de digitalización del taller de Clorymetal ha concluido con éxito. El taller ya puede operar con documentación digital idéntica a su papel histórico. El módulo de personal es ahora una herramienta integral de recursos humanos. Listos para avanzar hacia los roles de seguridad (RBAC) y la facturación electrónica (ARCA).

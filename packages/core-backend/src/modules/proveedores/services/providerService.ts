@@ -115,6 +115,7 @@ export const updateProvider = async (id: string, data: any) => {
       isCtaCte: data.isCtaCte,
       expirationDays: data.expirationDays ? Number(data.expirationDays) : undefined,
       netAmountCode: data.netAmountCode,
+      fantasyName: data.nombreFantasia || data.fantasyName,
       contacts: data.email || data.telefono || data.phone ? {
         updateMany: {
           where: {},
@@ -140,6 +141,7 @@ export const createProvider = async (data: any) => {
       isCtaCte: data.isCtaCte ?? true,
       expirationDays: data.expirationDays ? Number(data.expirationDays) : 0,
       netAmountCode: data.netAmountCode || null,
+      fantasyName: data.nombreFantasia || data.fantasyName,
       contacts: {
         create: {
           name: 'Principal',
@@ -187,6 +189,7 @@ export const getAllInvoices = async (filters: any) => {
   if (search) {
     where.OR = [
       { provider: { businessName: { contains: search, mode: 'insensitive' } } },
+      { provider: { fantasyName: { contains: search, mode: 'insensitive' } } },
       { provider: { taxId: { contains: search, mode: 'insensitive' } } },
       { invoiceNumber: { contains: search, mode: 'insensitive' } }
     ];

@@ -75,8 +75,24 @@
 - [X] Refactorizar Frontend para URLs dinámicas (Desarrollo vs Producción)
 - [X] Desplegar Frontend en **Vercel.com**
 
-### Próximos Pasos:
-- [ ] **Fase 7 (Tesorería)**: Reporte global de cheques emitidos y conciliación bancaria simple.
-- [ ] **Fase 12 (RRHH)**: Reportes de Cierre de Mes Avanzados e Históricos.
-- [ ] **Fase 13 (UI/UX)**: Pulido de los errores de Lint detectados para máxima estabilidad de código.
-- [ ] **Fase 14 (Mejoras)**: Reporte de movimientos por "Categoría" de gastos (Parámetros).
+## Fase 15: Gestión de Taller y Rectificación (COMPLETADA FASE 1 ✅)
+- [x] **Maestro de Clientes:** Ficha unificada con datos de domicilio, provincia y plazos de pago.
+- [x] **Orden de Reparación Industrial (OR):** Implementación de formato A4 vertical literal (Frente/Dorso) según PDF de Clorymetal.
+- [x] **Identificación Visual (TAG):** Rótulo de pieza gigante (XXL) con prioridad en Nombre de Empresa.
+- [x] **Hoja de Operario:** Ficha de control de taller con detalle de M.O. (6 filas), Repuestos (26 filas) e importes.
+- [ ] **Tablero Kanban (Taller):** Visualización de órdenes de reparación por estado (Pendiente, En Proceso, Finalizado).
+- [ ] **Ventas Directas:** Interfaz de facturación rápida para clientes de mostrador.
+- [ ] **Cuenta Corriente Clientes:** Unificación de deudas de taller y ventas con imputación de pagos.
+- [ ] **Integración Fiscal (ARCA/AFIP):** Obtención de CAE para facturas electrónicas y trazabilidad impositiva.
+- [ ] **Correlatividad de Comprobantes:** Sistema de numeración progresiva alineado con el sistema anterior.
+
+## Fase 16: Gestión Avanzada de Personal [95% COMPLETADO] ✅
+- [x] **Dual View:** Pestañas separadas para Control de Sueldos vs Fichas Técnicas.
+- [x] **Legajo Digital:** Edición directa de CUIL, dirección, teléfono y credenciales de acceso.
+- [x] **Motor de Formateo:** Migración de `date-fns` a `Intl` nativo para estabilidad en monorepo.
+- [x] **Seguridad de Campo:** Campos de usuario/password listos en base de datos.
+
+### Próximos Pasos Inmediatos:
+1. **Fase 15 (ARCA)**: Conexión con el motor de facturación electrónica de Argentina.
+2. **Fase 15 (Numeración)**: Lógica de contadores configurables para facturas y remitos.
+3. **Fase 7 (Tesorería)**: Reporte global de cheques emitidos y cartera de terceros.

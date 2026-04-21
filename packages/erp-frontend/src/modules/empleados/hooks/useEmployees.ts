@@ -66,11 +66,43 @@ export const useEmployees = (year: number, month: number) => {
     }
   });
 
+  const createEmployeeMutation = useMutation({
+    mutationFn: async (employeeData: any) => {
+      const res = await fetch(`${API_BASE_URL}/empleados`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(employeeData)
+      });
+      if (!res.ok) throw new Error('Error creating employee');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['employees'] });
+    }
+  });
+
+  const updateEmployeeMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number, data: any }) => {
+      const res = await fetch(`${API_BASE_URL}/empleados/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) throw new Error('Error updating employee');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['employees'] });
+    }
+  });
+
   return {
     employees: query.data || [],
     isLoading: query.isLoading,
     createAdvance: createAdvanceMutation.mutateAsync,
     deleteAdvance: deleteAdvanceMutation.mutateAsync,
-    updateSalary: updateSalaryMutation.mutateAsync
+    updateSalary: updateSalaryMutation.mutateAsync,
+    createEmployee: createEmployeeMutation.mutateAsync,
+    updateEmployee: updateEmployeeMutation.mutateAsync
   };
 };

@@ -23,6 +23,7 @@ model Prov_Category {
 model Prov_Provider {
   id             String   @id @default(uuid())
   businessName   String
+  fantasyName    String?
   taxId          String   @unique
   address        String?
   postalCode     String?
@@ -248,6 +249,21 @@ model Core_Notification {
   updatedAt   DateTime @updatedAt
 }
 
+model Core_BusinessConfig {
+  id            String   @id @default("singleton")
+  name          String   @default("Clorymetal SRL")
+  taxId         String   @default("00-00000000-0") // CUIT
+  address       String   @default("Dirección Ficticia 123")
+  city          String   @default("Resistencia")
+  province      String   @default("Chaco")
+  phone         String   @default("3624-000000")
+  email         String   @default("contacto@clorymetal.com.ar")
+  vatCondition  String   @default("Responsable Inscripto") // IVA
+  logoUrl       String?
+  
+  updatedAt     DateTime @updatedAt
+}
+
 // ==========================================
 // MODULE: EMPLEADOS
 // ==========================================
@@ -260,15 +276,24 @@ enum PayType {
 model Emp_Employee {
   id           Int       @id @default(autoincrement())
   name         String
+  cuil         String?   @unique
+  address      String?
+  phone        String?
   payType      PayType   @default(MONTHLY)
   baseSalary   Float
+  area         String    @default("TALLER") // ADMIN, TALLER, MOSTRADOR, VENTAS
   isActive     Boolean   @default(true)
+  
+  // Acceso al Sistema
+  username     String?   @unique
+  password     String?
   
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
   salaryPeriods Emp_SalaryPeriod[]
   advances      Emp_Advance[]
+  repoTasks     Repo_Task[] // Relación con tareas del taller
 }
 
 model Emp_SalaryPeriod {
@@ -321,3 +346,209 @@ model Emp_Advance {
   createdAt      DateTime     @default(now())
 }
 
+
+// ==========================================
+// MODULE: CLIENTES (Ventas / Cta Cte)
+// ==========================================
+
+model Cli_Client {
+  id             String         @id @default(uuid())
+  businessName   String
+  taxId          String         @unique // CUIT o DNI
+  email          String?
+  phone          String?
+  address        String?
+  city           String?
+  taxCondition   String?        @default("RI") // RI, Monotributo, Exento, Consumidor Final
+  
+  // Plazos de pago unificados (25, 30, 45 días)
+  paymentTermsDays Int           @default(30)
+  
+  // Relaciones
+  orders         Repo_Order[]
+  sales          Sale_Order[]
+  
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  payments       Cli_Payment[]
+  checks         Cli_Check[]
+}
+
+// ==========================================
+// MODULE: COBRANZAS Y CHEQUES (Cta Cte Clientes)
+// ==========================================
+
+model Cli_Payment {
+  id              String         @id @default(uuid())
+  clientId        String
+  client          Cli_Client    @relation(fields: [clientId], references: [id])
+  
+  paymentDate     DateTime       @default(now())
+  number          String?        // Recibo Nro
+  
+  totalAmount     Float          @default(0.0)
+  discountAmount  Float          @default(0.0)
+  
+  paymentMethod   String         @default("EFECTIVO") // EFECTIVO, TRANSFERENCIA, CHEQUE, TARJETA
+  referenceNotes  String?
+  
+  status          String         @default("CONFIRMADO") // CONFIRMADO, ANULADO
+  
+  // Imputaciones (a qué deuda se aplica)
+  imputations     Cli_PaymentItem[]
+  checks          Cli_Check[]
+  
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+model Cli_PaymentItem {
+  id              String         @id @default(uuid())
+  paymentId       String
+  payment         Cli_Payment    @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  
+  // Se puede imputar a una OR o a una Venta Directa
+  orderId         String?
+  order           Repo_Order?    @relation(fields: [orderId], references: [id])
+  
+  saleId          String?
+  sale            Sale_Order?    @relation(fields: [saleId], references: [id])
+  
+  amountPaid      Float          @default(0.0)
+}
+
+model Cli_Check {
+  id              String         @id @default(uuid())
+  clientId        String
+  client          Cli_Client    @relation(fields: [clientId], references: [id])
+  
+  paymentId       String?
+  payment         Cli_Payment?   @relation(fields: [paymentId], references: [id])
+  
+  checkNumber     String
+  bankName        String
+  issuerName      String?        // Quién firmó el cheque
+  taxId           String?        // CUIT del emisor
+  
+  issueDate       DateTime
+  dueDate         DateTime       // Fecha de cobro
+  amount          Float
+  
+  status          String         @default("EN_CARTERA") // EN_CARTERA, DEPOSITADO, ENTREGADO_PROV, COBRADO, RECHAZADO
+  
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+enum OrderPriority {
+  NORMAL
+  MEDIA
+  ALTA
+  URGENTE
+}
+
+enum OrderStatus {
+  INGRESADO
+  PRESUPUESTO_PENDIENTE
+  EN_REPARACION
+  ESPERANDO_REPUESTOS
+  LISTO
+  ENTREGADO
+  ANULADO
+}
+
+model Repo_Order {
+  id              String         @id @default(uuid())
+  orderNumber     Int            @unique @default(autoincrement()) // El Nro que verá Raúl y los clientes
+  
+  // Vehículo
+  patent          String?        
+  vehicleBrand    String?        
+  pieceSummary    String?        // Breve descripción de la pieza (Válvula, Campana)
+  problemDescription String?
+
+  priority        OrderPriority @default(NORMAL)
+  status          OrderStatus   @default(INGRESADO)
+  
+  // Relación con Cliente
+  clientId        String
+  client          Cli_Client    @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  
+  tasks           Repo_Task[]
+  
+  // Plazos y Fechas
+  dueDate         DateTime?      // Vencimiento específico si se pisa el default del cliente
+  entryDate       DateTime       @default(now())
+  finishDate      DateTime?
+  deliveryDate    DateTime?
+  
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  imputations     Cli_PaymentItem[]
+
+  @@index([patent])
+}
+
+model Repo_Task {
+  id              String         @id @default(uuid())
+  orderId         String
+  order           Repo_Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  pieceName       String         // Nombre de la pieza específica
+  serviceName     String         // Reparación, Rectificación, etc.
+  
+  // Mecánico asignado (Nino, José, Néstor)
+  mechanicId      Int?
+  mechanic        Emp_Employee?  @relation(fields: [mechanicId], references: [id])
+  
+  // Costos y Precios estándar
+  laborPrice      Float          @default(0.0) 
+  partsCost       Float          @default(0.0) // Insumos comprados afuera o internos
+  totalPrice      Float          @default(0.0)
+  
+  isCompleted     Boolean        @default(false)
+  completedAt     DateTime?
+  
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+// ==========================================
+// MODULE: VENTAS DIRECTAS / LOGÍSTICA
+// ==========================================
+
+enum SaleStatus {
+  PENDIENTE
+  DESPACHADO
+  EN_VIAJE
+  COBRADO
+  MUESTRA_PENDIENTE
+  ANULADO
+}
+
+model Sale_Order {
+  id              String         @id @default(uuid())
+  invoiceNumber   String?        // Para "Blanco" (ARCA)
+  remitoNumber    String?        // Para "Negro"
+  
+  clientId        String
+  client          Cli_Client    @relation(fields: [clientId], references: [id])
+  
+  status          SaleStatus     @default(PENDIENTE)
+  isCOD           Boolean        @default(false) // Contra-reembolso
+  
+  totalAmount     Float          @default(0.0)
+  itemsDescription String?       // Detalle manual inicial
+  
+  // Fechas y Vencimientos
+  saleDate        DateTime       @default(now())
+  dueDate         DateTime?      // Fecha límite para el cobranza (ej: Sáenz Peña 2-4 días)
+  shipDate        DateTime?
+  
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  imputations     Cli_PaymentItem[]
+}

@@ -44,7 +44,7 @@ export const ResumenDeudaPage = () => {
 
   // Agrupar y ordenar facturas por proveedor
   const groupedData = invoices.reduce((acc: any, inv: any) => {
-    const providerName = inv.provider?.businessName || 'Desconocido';
+    const providerName = inv.provider?.fantasyName || inv.provider?.businessName || 'Desconocido';
     const amountPaid = (inv.paymentsItems || []).reduce((sum: number, p: any) => sum + (Number(p.amountPaid) || 0), 0);
     const amountPending = (Number(inv.totalAmount) || 0) - amountPaid;
 
@@ -83,7 +83,8 @@ export const ResumenDeudaPage = () => {
 
   const exportData = invoices.map(inv => ({
     ...inv,
-    providerName: inv.provider?.businessName,
+    providerName: inv.provider?.fantasyName || inv.provider?.businessName,
+    razonSocial: inv.provider?.businessName,
     issueDate: new Date(inv.issueDate).toLocaleDateString(),
     dueDate: inv.dueDate ? new Date(inv.dueDate).toLocaleDateString() : '-'
   }));
@@ -266,7 +267,16 @@ export const ResumenDeudaPage = () => {
                       <tr className="bg-primary-50/20 dark:bg-primary-900/10 print-break-inside-avoid border-t-2 border-primary-100 dark:border-primary-900/30">
                         <td colSpan={7} className="px-6 py-3 border-b border-primary-100/50 dark:border-primary-900/30">
                           <div className="flex justify-between items-center w-full">
-                            <span className="font-black text-primary-900 dark:text-primary-100 tracking-tight uppercase">{prov}</span>
+                            <div className="flex flex-col">
+                              <span className="font-black text-primary-900 dark:text-primary-100 tracking-tight uppercase leading-none">
+                                {prov}
+                              </span>
+                              {groupedData[prov].invoices[0]?.provider?.fantasyName && (
+                                <span className="text-[9px] font-bold text-gray-400 uppercase italic">
+                                  {groupedData[prov].invoices[0]?.provider?.businessName}
+                                </span>
+                              )}
+                            </div>
                             <div className="flex items-center gap-4">
                               <span className="text-[10px] font-bold text-gray-500 no-print">CUIT: {groupedData[prov].invoices[0]?.provider?.taxId}</span>
                               <span className="hidden print:block text-[10pt] font-bold text-black border border-black px-2 py-0.5">CUIT: {groupedData[prov].invoices[0]?.provider?.taxId}</span>
@@ -337,9 +347,12 @@ export const ResumenDeudaPage = () => {
                     <tr key={inv.id} className="hover:bg-gray-50/50 dark:hover:bg-dark-background/30 transition-colors">
                       <td className="px-6 py-2">
                         <div className="flex flex-col">
-                          <span className="text-xs font-bold text-gray-900 dark:text-gray-100 uppercase truncate max-w-[200px]" title={inv.provider?.businessName}>
-                            {inv.provider?.businessName}
+                          <span className="text-xs font-bold text-gray-900 dark:text-gray-100 uppercase truncate max-w-[200px]" title={inv.provider?.fantasyName || inv.provider?.businessName}>
+                            {inv.provider?.fantasyName || inv.provider?.businessName}
                           </span>
+                          {inv.provider?.fantasyName && (
+                            <span className="text-[9px] text-gray-400 font-medium italic">{inv.provider?.businessName}</span>
+                          )}
                           <span className="text-[9px] text-gray-400 font-medium">CUIT: {inv.provider?.taxId}</span>
                         </div>
                       </td>

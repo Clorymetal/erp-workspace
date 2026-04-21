@@ -12,7 +12,11 @@ import {
   Sliders,
   FileText,
   History,
-  ChevronDown
+  ChevronDown,
+  Wrench,
+  UserCircle2,
+  Truck,
+  CreditCard
 } from 'lucide-react';
 
 interface MenuItem {
@@ -24,6 +28,15 @@ interface MenuItem {
 
 const MENU_ITEMS: MenuItem[] = [
   { 
+    name: 'Ventas y Taller', 
+    icon: Wrench,
+    subItems: [
+      { name: 'Tablero Taller', icon: Wrench, path: '/taller' },
+      { name: 'Ventas Directas', icon: Truck, path: '/ventas' },
+      { name: 'Maestro Clientes', icon: UserCircle2, path: '/clientes' },
+    ]
+  },
+  { 
     name: 'Proveedores', 
     icon: Building2,
     subItems: [
@@ -31,12 +44,18 @@ const MENU_ITEMS: MenuItem[] = [
       { name: 'Cuentas Corrientes', icon: History, path: '/resumen-deuda' },
       { name: 'Compras', icon: FileText, path: '/compras' },
       { name: 'Libro IVA', icon: FileText, path: '/libro-iva' },
-      { name: 'Parámetros (proveedores)', icon: Sliders, path: '/parametros' },
     ]
   },
   { name: 'Inventario', icon: PackageSearch, path: '/inventario' },
   { name: 'Empleados', icon: Users, path: '/empleados' },
-  { name: 'Configuración', icon: Settings, path: '/settings' },
+  { 
+    name: 'Configuración', 
+    icon: Settings,
+    subItems: [
+      { name: 'Mi Negocio', icon: Building2, path: '/configuracion' },
+      { name: 'Parámetros Globales', icon: Sliders, path: '/parametros' },
+    ]
+  },
 ];
 
 export const Sidebar = () => {

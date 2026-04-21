@@ -102,7 +102,14 @@ export const LibroIvaComprasPage = () => {
       header: 'Proveedor',
       render: (row: any) => (
         <div className="flex flex-col max-w-[200px]">
-          <span className="font-semibold text-gray-900 truncate">{row.provider?.businessName}</span>
+          <span className="font-semibold text-gray-900 truncate">
+            {row.provider?.fantasyName || row.provider?.businessName}
+          </span>
+          {row.provider?.fantasyName && (
+            <span className="text-[10px] text-gray-400 italic">
+              {row.provider?.businessName}
+            </span>
+          )}
           <span className="text-[10px] text-gray-400">CUIT: {row.provider?.taxId}</span>
         </div>
       )
@@ -174,6 +181,7 @@ export const LibroIvaComprasPage = () => {
     ...inv,
     taxId: inv.provider?.taxId,
     businessName: inv.provider?.businessName,
+    fantasyName: inv.provider?.fantasyName,
     taxCondition: inv.provider?.taxCondition,
     issueDate: new Date(inv.issueDate).toLocaleDateString()
   }));

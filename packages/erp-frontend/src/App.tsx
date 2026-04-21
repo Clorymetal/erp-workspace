@@ -24,6 +24,12 @@ import ParametersPage from './modules/configuracion/pages/ParametersPage';
 import { EmpleadosPage } from './modules/empleados/EmpleadosPage';
 import { LoginPage } from './modules/auth/pages/LoginPage';
 import { ProviderCtaCtePage } from './modules/proveedores/pages/ProviderCtaCtePage';
+import { ClientesPage } from './modules/workshop/pages/ClientesPage';
+import { ClientCtaCtePage } from './modules/workshop/pages/ClientCtaCtePage';
+import { WorkshopDashboard } from './modules/workshop/pages/WorkshopDashboard';
+import { VentasDirectasPage } from './modules/workshop/pages/VentasDirectasPage';
+import { CompanySettingsPage } from './modules/config/pages/CompanySettingsPage';
+
 
 // Recuperar Client ID de las variables de entorno de Vite
 // Si no existe, usamos uno de prueba (debe ser cambiado tras el setup en Google Cloud Console)
@@ -73,6 +79,11 @@ function App() {
                   <Route path="libro-iva" element={<LibroIvaComprasPage />} />
                   <Route path="parametros" element={<ParametersPage />} />
                   <Route path="empleados" element={<EmpleadosPage />} />
+                  <Route path="clientes" element={<ClientesPage />} />
+                  <Route path="clientes/:id/cta-cte" element={<ClientCtaCtePage />} />
+                  <Route path="taller" element={<WorkshopDashboard />} />
+                  <Route path="ventas" element={<VentasDirectasPage />} />
+                  <Route path="configuracion" element={<CompanySettingsPage />} />
                 </Route>
               </Route>
 

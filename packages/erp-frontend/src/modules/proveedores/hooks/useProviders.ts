@@ -4,6 +4,7 @@ import { API_BASE_URL } from '../../../core/config/apiConfig';
 export interface Proveedor {
   id: string;
   razonSocial: string;
+  nombreFantasia: string;
   cuit: string;
   email: string;
   telefono: string;
@@ -24,6 +25,7 @@ const fetchProviders = async (): Promise<Proveedor[]> => {
   return data.map((p: any) => ({
     id: String(p.id),
     razonSocial: p.businessName,
+    nombreFantasia: p.fantasyName || '',
     cuit: p.taxId,
     email: p.contacts?.[0]?.email || '',
     telefono: p.contacts?.[0]?.phone || '',

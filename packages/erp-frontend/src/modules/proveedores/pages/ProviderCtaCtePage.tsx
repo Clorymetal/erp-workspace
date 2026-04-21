@@ -119,8 +119,9 @@ export const ProviderCtaCtePage = () => {
           </button>
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
-              Cuenta Corriente: <span className="text-primary-500">{provider?.razonSocial}</span>
+              Cuenta Corriente: <span className="text-primary-500">{provider?.nombreFantasia || provider?.razonSocial}</span>
             </h1>
+            {provider?.nombreFantasia && <p className="text-sm text-gray-400 font-medium -mt-1 leading-none mb-1">{provider?.razonSocial}</p>}
             <p className="text-sm text-gray-500 italic">CUIT: {provider?.cuit}</p>
           </div>
         </div>

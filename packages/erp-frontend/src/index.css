@@ -45,14 +45,26 @@
 @media print {
   @page {
     margin: 1cm;
-    size: A4 landscape;
+    size: A4 portrait;
   }
 
-  /* 1. Ocultar TODO lo que no sea el reporte */
+  /* Utilidad para elementos que solo deben existir en el papel */
+  .print-only {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  /* 1. Ocultar la UI del sistema pero DEJAR el contenido de impresión */
   aside, nav, header, footer, 
-  .no-print, .filter-section, button, [role="button"],
-  .sidebar-container {
+  .no-print, .sidebar-container, 
+  button, [role="button"], .filter-section {
     display: none !important;
+  }
+
+  /* 2. Asegurar que la hoja de impresión NO sea ocultada por sus padres */
+  .print-only {
+    display: block !important;
+    visibility: visible !important;
   }
 
   /* 2. Reset de contenedores principales para evitar hojas en blanco y caracteres gigantes */
@@ -106,6 +118,10 @@
 }
 
 /* Utilities */
+.print-only {
+  display: none;
+}
+
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }

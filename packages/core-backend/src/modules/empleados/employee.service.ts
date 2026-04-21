@@ -4,6 +4,49 @@ const prisma = new PrismaClient();
 
 export class EmployeeService {
   
+  static async getAllEmployees() {
+    return prisma.emp_Employee.findMany({
+      where: { isActive: true },
+      select: { id: true, name: true, area: true, isActive: true, cuil: true, username: true, address: true, phone: true },
+      orderBy: { name: 'asc' }
+    });
+  }
+
+  static async createEmployee(data: any) {
+    return prisma.emp_Employee.create({
+      data: {
+        name: data.name,
+        cuil: data.cuil,
+        address: data.address,
+        phone: data.phone,
+        baseSalary: data.baseSalary || 0,
+        payType: data.payType || 'MONTHLY',
+        area: data.area || 'TALLER',
+        username: data.username,
+        password: data.password, // TODO: Hash password in production
+        isActive: true
+      }
+    });
+  }
+
+  static async updateEmployee(id: number, data: any) {
+    return prisma.emp_Employee.update({
+      where: { id },
+      data: {
+        name: data.name,
+        cuil: data.cuil,
+        address: data.address,
+        phone: data.phone,
+        baseSalary: data.baseSalary,
+        payType: data.payType,
+        area: data.area,
+        username: data.username,
+        password: data.password,
+        isActive: data.isActive
+      }
+    });
+  }
+
   // 1. Obtener panel principal y Auto-generar periodos faltantes
   static async getDashboard(year: number, month: number) {
     const employees = await prisma.emp_Employee.findMany({
