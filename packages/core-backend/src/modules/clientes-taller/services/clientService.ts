@@ -96,9 +96,7 @@ export const getClientBalance = async (clientId: string) => {
 
   if (!client) return { balance: 0 };
 
-  const totalOrders = client.orders.reduce((acc, o) => acc + (o.status !== 'ANULADO' ? (o.tasks ? o.tasks.reduce((sum, t) => sum + t.totalPrice, 0) : 0) : 0), 0);
-  // Nota: La relación de Repo_Order con sus tareas debe ser sumada manualmente si no se cargó el totalPrice en la orden.
-  // Pero según nuestro modelo, sumaremos de las tareas directamente.
+  // Cálculo refinado sumando tareas de órdenes y ventas:
   
   // Refinamos el cálculo:
   const orders = await prisma.repo_Order.findMany({
@@ -114,7 +112,7 @@ export const getClientBalance = async (clientId: string) => {
     where: { clientId, status: 'CONFIRMADO' }
   });
 
-  const totalDebt = orders.reduce((acc, o) => acc + o.tasks.reduce((sum, t) => sum + t.totalPrice, 0), 0) + 
+  const totalDebt = orders.reduce((acc, o) => acc + o.tasks.reduce((sum: number, t: any) => sum + t.totalPrice, 0), 0) + 
                     sales.reduce((acc, s) => acc + s.totalAmount, 0);
   
   const totalPaid = payments.reduce((acc, p) => acc + p.totalAmount + (p.discountAmount || 0), 0);
@@ -145,7 +143,7 @@ export const getClientMovementHistory = async (clientId: string) => {
   const movements: any[] = [];
 
   orders.forEach(o => {
-    const total = o.tasks.reduce((sum, t) => sum + t.totalPrice, 0);
+    const total = o.tasks.reduce((sum: number, t: any) => sum + t.totalPrice, 0);
     movements.push({
       id: o.id,
       date: o.createdAt,
