@@ -5,7 +5,7 @@ export class EmployeeService {
   static async getAllEmployees() {
     return prisma.emp_Employee.findMany({
       where: { isActive: true },
-      select: { id: true, name: true, area: true, isActive: true, cuil: true, username: true, address: true, phone: true },
+      select: { id: true, name: true, area: true, isActive: true },
       orderBy: { name: 'asc' }
     });
   }
