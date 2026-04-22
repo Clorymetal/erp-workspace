@@ -14,14 +14,9 @@ export class EmployeeService {
     return prisma.emp_Employee.create({
       data: {
         name: data.name,
-        cuil: data.cuil,
-        address: data.address,
-        phone: data.phone,
         baseSalary: data.baseSalary || 0,
         payType: data.payType || 'MONTHLY',
         area: data.area || 'TALLER',
-        username: data.username,
-        password: data.password, // TODO: Hash password in production
         isActive: true
       }
     });
@@ -32,14 +27,9 @@ export class EmployeeService {
       where: { id },
       data: {
         name: data.name,
-        cuil: data.cuil,
-        address: data.address,
-        phone: data.phone,
         baseSalary: data.baseSalary,
         payType: data.payType,
         area: data.area,
-        username: data.username,
-        password: data.password,
         isActive: data.isActive
       }
     });
@@ -49,7 +39,12 @@ export class EmployeeService {
   static async getDashboard(year: number, month: number) {
     const employees = await prisma.emp_Employee.findMany({
       where: { isActive: true },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        area: true,
+        payType: true,
+        baseSalary: true,
         salaryPeriods: {
           where: { periodYear: year, periodMonth: month }
         }
@@ -87,7 +82,12 @@ export class EmployeeService {
   static async getEmployeeDetail(employeeId: number, year: number, month: number) {
     return prisma.emp_Employee.findUnique({
       where: { id: employeeId },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        area: true,
+        payType: true,
+        baseSalary: true,
         salaryPeriods: {
           where: { periodYear: year, periodMonth: month },
           include: {
