@@ -45,7 +45,6 @@ export const CuentasCorrientesPage = () => {
     return matchSearch && matchDue;
   });
 
-  const totalFilteredDebt = filteredData.reduce((acc: number, c: Client) => acc + c.balance, 0);
 
   // Totales por segmento
   const vencidos = clients.filter(c => c.dueStatus === 'VENCIDO');
