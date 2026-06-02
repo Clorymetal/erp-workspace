@@ -138,8 +138,17 @@ export const ClienteDetalle: React.FC<ClienteDetalleProps> = ({ clientId, onClos
         `Caso contrario, le solicitamos regularizar su saldo a la brevedad para continuar disfrutando de los beneficios de su cuenta corriente.\n` +
         `Saludos cordiales, Equipo Clorymetal.`;
 
-      let phone = detail.phone?.replace(/[^0-9]/g, '') || '';
-      if (phone && !phone.startsWith('54')) phone = '54' + phone;
+      const digits = detail.phone?.replace(/[^0-9]/g, '') || '';
+      let phone: string;
+      if (digits.startsWith('549')) {
+        phone = digits;
+      } else if (digits.startsWith('54')) {
+        phone = '549' + digits.slice(2);
+      } else if (digits.startsWith('9')) {
+        phone = '54' + digits;
+      } else {
+        phone = '549' + digits;
+      }
 
       // Convertir canvas a Blob JPEG
       const blob: Blob = await new Promise((resolve) =>

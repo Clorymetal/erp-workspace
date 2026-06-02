@@ -67,8 +67,23 @@ export const CuentasCorrientesPage = () => {
       `Si necesita coordinar el pago o tiene alguna consulta, no dude en contactarnos.\n` +
       `¡Muchas gracias y hasta pronto! 😊`;
 
-    let phone = client.phone.replace(/[^0-9]/g, '');
-    if (phone && !phone.startsWith('54')) phone = '54' + phone;
+    // Normalización inteligente para Argentina:
+    // Normalización inteligente para Argentina
+    let digits = client.phone.replace(/[^0-9]/g, '');
+    let phone: string;
+    
+    if (digits.startsWith('549')) {
+      phone = digits; // ya está completo
+    } else if (digits.startsWith('54')) {
+      // tiene código país pero le falta el 9
+      phone = '549' + digits.slice(2);
+    } else if (digits.startsWith('9')) {
+      // empieza con 9 (formato celular sin código de país)
+      phone = '54' + digits;
+    } else {
+      // número local sin nada → agregar 549
+      phone = '549' + digits;
+    }
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
   };
 
