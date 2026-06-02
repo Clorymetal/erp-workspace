@@ -23,6 +23,7 @@ import employeeRouter from './modules/empleados/employee.routes';
 import authRouter from './modules/auth/api/authRoutes';
 import workshopRouter from './modules/clientes-taller/api/routes';
 import configRouter from './modules/config/config.routes';
+import clientRouter from './modules/clientes/api/clientRoutes';
 
 app.use('/api/dashboard', dashboardRouter);
 app.use('/api/proveedores', proveedoresRouter);
@@ -32,6 +33,7 @@ app.use('/api/empleados', employeeRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/workshop', workshopRouter);
 app.use('/api/config', configRouter);
+app.use('/api/clientes', clientRouter);
 
 // Standard Error Handler (must be last)
 app.use(errorMiddleware);

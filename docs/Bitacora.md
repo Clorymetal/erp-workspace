@@ -428,3 +428,25 @@ El entorno de desarrollo está sincronizado con los parámetros reales de produc
 
 **Estado Actual:**
 - La fase de digitalización del taller de Clorymetal ha concluido con éxito. El taller ya puede operar con documentación digital idéntica a su papel histórico. El módulo de personal es ahora una herramienta integral de recursos humanos. Listos para avanzar hacia los roles de seguridad (RBAC) y la facturación electrónica (ARCA).
+
+---
+### Sesión 23: 21-22 de Abril de 2026 - Persistencia de Proveedores y Estabilización de Adelantos
+
+**Objetivos:**
+- Resolver el fallo de persistencia del campo "Nombre de Fantasía" en proveedores.
+- Corregir el error 500 en el dashboard de adelantos de empleados en producción.
+- Garantizar la estabilidad del entorno sin compromiso de datos.
+
+**Acciones Realizadas:**
+- [x] **Proveedores:** Sincronización del mapeo de datos entre Frontend (`nombreFantasia`) y Backend (`fantasyName`). El campo ahora persiste correctamente en la base de datos.
+- [x] **Build de Backend:** Resolución de errores de TypeScript en el módulo de taller (`clientService.ts`) que bloqueaban los despliegues en Render.
+- [x] **Estabilización de Empleados:**
+    - Identificación de error 500 crítico debido a desincronización de esquema: el código buscaba columnas nuevas (`address`, `phone`, `cuil`, `username`) que aún no existen en la DB de producción (Neon).
+    - Aplicación de "blindaje" en `employee.service.ts`: se restringieron las consultas `select` para ignorar estas columnas y restaurar el servicio de inmediato.
+    - Unificación de la conexión a base de datos (Prisma Singleton) para optimizar el rendimiento.
+- [x] **Mejoras UX:** Actualización del selector de mes para iniciar en el mes corriente (Abril) y optimización de la carga de datos para evitar latencia (eliminando el bucle N+1).
+
+**Estado Actual:**
+- El ERP recuperó la estabilidad total. Los adelantos de Marzo son visibles y operativos.
+- El módulo de proveedores está al 100% de su funcionalidad requerida.
+- **Pendiente:** Realizar una migración controlada de base de datos en Neon para habilitar los campos de legajo técnico de empleados sin romper el sistema.

@@ -33,6 +33,7 @@ const MENU_ITEMS: MenuItem[] = [
       { name: 'Tablero Taller', icon: Wrench, path: '/taller' },
       { name: 'Ventas Directas', icon: Truck, path: '/ventas' },
       { name: 'Maestro Clientes', icon: UserCircle2, path: '/clientes' },
+      { name: 'Cuentas Corrientes', icon: History, path: '/cuentas-corrientes' },
     ]
   },
   { 

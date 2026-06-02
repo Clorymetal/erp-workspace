@@ -247,12 +247,14 @@ model Cli_Client {
   city             String?
   taxCondition     String?       @default("RI")
   paymentTermsDays Int           @default(30)
+  billingCycle     String        @default("POR_REMITO") // POR_REMITO | MENSUAL
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
   checks           Cli_Check[]
   payments         Cli_Payment[]
   orders           Repo_Order[]
   sales            Sale_Order[]
+  remitos          Cli_Remito[]
 }
 
 model Cli_Payment {
@@ -277,10 +279,31 @@ model Cli_PaymentItem {
   paymentId  String
   orderId    String?
   saleId     String?
+  remitoId   String?
   amountPaid Float       @default(0.0)
   order      Repo_Order? @relation(fields: [orderId], references: [id])
   payment    Cli_Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
   sale       Sale_Order? @relation(fields: [saleId], references: [id])
+  remito     Cli_Remito? @relation(fields: [remitoId], references: [id])
+}
+
+model Cli_Remito {
+  id               String            @id @default(uuid())
+  clientId         String
+  date             DateTime          @default(now())
+  documentType     String            @default("Remito")
+  invoiceNumber    String?
+  totalAmount      Float             @default(0.0)
+  paymentTermDays  Int               @default(30)
+  dueDate          DateTime
+  status           String            @default("PENDIENTE") // PENDIENTE, PARCIAL, COBRADO, VENCIDO
+  driverName       String?
+  driverDni        String?
+  driverPhone      String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  client           Cli_Client        @relation(fields: [clientId], references: [id])
+  imputations      Cli_PaymentItem[]
 }
 
 model Cli_Check {

@@ -27,7 +27,7 @@ export const ClientesPage = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({ 
-    businessName: '', taxId: '', phone: '', email: '', address: '', city: '', province: 'Chaco', postalCode: '', taxCondition: 'RI', paymentTermsDays: 30
+    businessName: '', taxId: '', phone: '', email: '', address: '', city: '', province: 'Chaco', postalCode: '', taxCondition: 'RI', paymentTermsDays: 30, billingCycle: 'POR_REMITO'
   });
 
   const handleSave = async () => {
@@ -189,6 +189,21 @@ export const ClientesPage = () => {
           <div className="col-span-2">
             <label className="text-xs font-black uppercase text-gray-400 mb-1 block">Plazo de Pago (Días Corridos)</label>
             <input type="number" value={formData.paymentTermsDays} onChange={e => setFormData({...formData, paymentTermsDays: Number(e.target.value)})} className="w-full p-2.5 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-xl outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div className="col-span-2 p-3 bg-purple-50 dark:bg-purple-900/10 rounded-xl border border-purple-100 dark:border-purple-800/30">
+            <label className="text-xs font-black uppercase text-purple-700 dark:text-purple-300 block mb-2">Tipo de Facturación (Cuenta Corriente)</label>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" value="POR_REMITO" checked={formData.billingCycle === 'POR_REMITO'} onChange={e => setFormData({...formData, billingCycle: e.target.value})} className="accent-purple-600" />
+                <span className="text-sm font-semibold">Por Remito</span>
+                <span className="text-xs text-gray-500">(vence según el plazo otorgado en cada trabajo)</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" value="MENSUAL" checked={formData.billingCycle === 'MENSUAL'} onChange={e => setFormData({...formData, billingCycle: e.target.value})} className="accent-purple-600" />
+                <span className="text-sm font-semibold">Mensual</span>
+                <span className="text-xs text-gray-500">(todos los remitos del mes vencen el 1° del siguiente)</span>
+              </label>
+            </div>
           </div>
         </div>
       </Modal>

@@ -13,6 +13,7 @@ export interface Cliente {
   postalCode: string;
   taxCondition: string;
   paymentTermsDays: number;
+  billingCycle: string;
 }
 
 const fetchClients = async (search?: string): Promise<Cliente[]> => {

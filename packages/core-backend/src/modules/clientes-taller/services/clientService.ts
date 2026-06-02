@@ -43,7 +43,8 @@ export const createClient = async (data: any) => {
       address: data.address || '',
       city: data.city || data.localidad || '',
       taxCondition: data.taxCondition || data.condFisc || 'RI',
-      paymentTermsDays: data.paymentTermsDays ? Number(data.paymentTermsDays) : 30
+      paymentTermsDays: data.paymentTermsDays ? Number(data.paymentTermsDays) : 30,
+      billingCycle: data.billingCycle || 'POR_REMITO'
     }
   });
 };
@@ -59,7 +60,8 @@ export const updateClient = async (id: string, data: any) => {
       address: data.address,
       city: data.city || data.localidad,
       taxCondition: data.taxCondition,
-      paymentTermsDays: data.paymentTermsDays ? Number(data.paymentTermsDays) : undefined
+      paymentTermsDays: data.paymentTermsDays ? Number(data.paymentTermsDays) : undefined,
+      billingCycle: data.billingCycle || undefined
     }
   });
 };

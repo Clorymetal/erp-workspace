@@ -26,6 +26,7 @@ import { LoginPage } from './modules/auth/pages/LoginPage';
 import { ProviderCtaCtePage } from './modules/proveedores/pages/ProviderCtaCtePage';
 import { ClientesPage } from './modules/workshop/pages/ClientesPage';
 import { ClientCtaCtePage } from './modules/workshop/pages/ClientCtaCtePage';
+import { CuentasCorrientesPage } from './modules/clientes/pages/CuentasCorrientesPage';
 import { WorkshopDashboard } from './modules/workshop/pages/WorkshopDashboard';
 import { VentasDirectasPage } from './modules/workshop/pages/VentasDirectasPage';
 import { CompanySettingsPage } from './modules/config/pages/CompanySettingsPage';
@@ -81,6 +82,7 @@ function App() {
                   <Route path="empleados" element={<EmpleadosPage />} />
                   <Route path="clientes" element={<ClientesPage />} />
                   <Route path="clientes/:id/cta-cte" element={<ClientCtaCtePage />} />
+                  <Route path="cuentas-corrientes" element={<CuentasCorrientesPage />} />
                   <Route path="taller" element={<WorkshopDashboard />} />
                   <Route path="ventas" element={<VentasDirectasPage />} />
                   <Route path="configuracion" element={<CompanySettingsPage />} />
