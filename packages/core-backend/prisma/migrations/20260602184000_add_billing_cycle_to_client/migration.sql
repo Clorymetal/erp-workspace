@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Cli_Client" ADD COLUMN "billingCycle" TEXT NOT NULL DEFAULT 'POR_REMITO';
