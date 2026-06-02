@@ -63,6 +63,7 @@ export const useClients = (search?: string) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clients'] });
+      queryClient.invalidateQueries({ queryKey: ['clientes'] });
     }
   });
 
@@ -77,6 +78,7 @@ export const useClients = (search?: string) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clients'] });
+      queryClient.invalidateQueries({ queryKey: ['clientes'] });
     }
   });
 
