@@ -35,7 +35,7 @@ export const DataTable = <T extends { id?: string | number }>({
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-gray-50/50 dark:bg-dark-background/50 text-gray-500 dark:text-gray-400 text-sm font-medium border-b border-gray-200 dark:border-dark-border">
+            <tr className="bg-gray-50/50 dark:bg-dark-background/50 text-gray-500 dark:text-gray-200 text-sm font-medium border-b border-gray-200 dark:border-dark-border">
               {columns.map((col, idx) => (
                 <th 
                   key={String(col.key)} 

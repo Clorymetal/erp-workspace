@@ -85,7 +85,7 @@ export const CuentasCorrientesPage = () => {
     emerald: 'bg-emerald-50/50 dark:bg-emerald-950/10 text-emerald-600 border-emerald-100 dark:border-emerald-950/20 hover:bg-emerald-50',
   };
   const activeColorMap: Record<string, string> = {
-    gray:    'bg-gray-750 text-white border-gray-750 dark:bg-gray-700 dark:border-gray-700 shadow-md scale-[1.02]',
+    gray:    'bg-gray-800 text-white border-gray-800 dark:bg-gray-700 dark:border-gray-700 shadow-md scale-[1.02]',
     red:     'bg-red-500 text-white border-red-500 shadow-md scale-[1.02]',
     orange:  'bg-orange-500 text-white border-orange-500 shadow-md scale-[1.02]',
     emerald: 'bg-emerald-500 text-white border-emerald-500 shadow-md scale-[1.02]',
@@ -223,24 +223,24 @@ export const CuentasCorrientesPage = () => {
       >
         <div className="grid grid-cols-2 gap-4">
           <div className="col-span-2">
-            <label className="text-sm font-bold">Razón Social</label>
-            <input type="text" value={formData.businessName} onChange={e => setFormData({...formData, businessName: e.target.value})} className="w-full p-2 bg-gray-50 border rounded-lg" />
+            <label className="text-xs font-black uppercase text-gray-400 mb-1 block">Razón Social</label>
+            <input type="text" value={formData.businessName} onChange={e => setFormData({...formData, businessName: e.target.value})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg outline-none focus:ring-2 focus:ring-primary-500" />
           </div>
           <div>
-            <label className="text-sm font-bold">CUIT</label>
-            <input type="text" value={formData.taxId} onChange={e => setFormData({...formData, taxId: e.target.value})} className="w-full p-2 bg-gray-50 border rounded-lg" />
+            <label className="text-xs font-black uppercase text-gray-400 mb-1 block">CUIT</label>
+            <input type="text" value={formData.taxId} onChange={e => setFormData({...formData, taxId: e.target.value})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg outline-none focus:ring-2 focus:ring-primary-500" />
           </div>
           <div>
-            <label className="text-sm font-bold">WhatsApp / Teléfono</label>
-            <input type="text" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full p-2 bg-gray-50 border rounded-lg" placeholder="549362XXXXXXX" />
+            <label className="text-xs font-black uppercase text-gray-400 mb-1 block">WhatsApp / Teléfono</label>
+            <input type="text" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg outline-none focus:ring-2 focus:ring-primary-500" placeholder="549362XXXXXXX" />
           </div>
           <div>
-            <label className="text-sm font-bold">Email</label>
-            <input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full p-2 bg-gray-50 border rounded-lg" />
+            <label className="text-xs font-black uppercase text-gray-400 mb-1 block">Email</label>
+            <input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg outline-none focus:ring-2 focus:ring-primary-500" />
           </div>
           <div>
-            <label className="text-sm font-bold">Ciudad</label>
-            <input type="text" value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} className="w-full p-2 bg-gray-50 border rounded-lg" />
+            <label className="text-xs font-black uppercase text-gray-400 mb-1 block">Ciudad</label>
+            <input type="text" value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} className="w-full p-2 bg-gray-50 dark:bg-dark-bg/50 border dark:border-dark-border rounded-lg outline-none focus:ring-2 focus:ring-primary-500" />
           </div>
           <div className="col-span-2 p-3 bg-purple-50 dark:bg-purple-900/10 rounded-xl border border-purple-100 dark:border-purple-800/30">
             <label className="text-xs font-bold uppercase text-purple-700 dark:text-purple-300 block mb-2">Tipo de Facturación</label>
