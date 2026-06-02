@@ -67,7 +67,8 @@ export const CuentasCorrientesPage = () => {
       `Si necesita coordinar el pago o tiene alguna consulta, no dude en contactarnos.\n` +
       `¡Muchas gracias y hasta pronto! 😊`;
 
-    const phone = client.phone.replace(/[^0-9]/g, '');
+    let phone = client.phone.replace(/[^0-9]/g, '');
+    if (phone && !phone.startsWith('54')) phone = '549' + phone;
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
   };
 
