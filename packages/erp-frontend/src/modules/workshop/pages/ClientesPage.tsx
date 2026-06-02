@@ -42,7 +42,7 @@ export const ClientesPage = () => {
   };
 
   const resetForm = () => {
-    setFormData({ businessName: '', taxId: '', phone: '', email: '', address: '', city: '', province: 'Chaco', postalCode: '', taxCondition: 'RI', paymentTermsDays: 30 });
+    setFormData({ businessName: '', taxId: '', phone: '', email: '', address: '', city: '', province: 'Chaco', postalCode: '', taxCondition: 'RI', paymentTermsDays: 30, billingCycle: 'POR_REMITO' });
     setIsEditing(false);
     setSelectedId(null);
   };
