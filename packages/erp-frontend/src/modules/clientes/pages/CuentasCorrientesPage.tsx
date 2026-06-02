@@ -63,7 +63,7 @@ export const CuentasCorrientesPage = () => {
 
     const nextVto = formatDate(client.nextDueDate);
     const text =
-      `Hola! Le escribimos desde *Clorymetal* para recordarle amablemente que tiene un vencimiento próximo el *${nextVto}* por un saldo de *${formatCurrency(client.balance)}*.\n\n` +
+      `Hola! Le escribimos desde *Clorymetal* para recordarle que tiene un vencimiento próximo el *${nextVto}* por un saldo de *${formatCurrency(client.balance)}*.\n\n` +
       `Si necesita coordinar el pago o tiene alguna consulta, no dude en contactarnos.\n` +
       `¡Muchas gracias y hasta pronto! 😊`;
 
