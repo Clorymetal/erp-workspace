@@ -139,7 +139,7 @@ export const ClienteDetalle: React.FC<ClienteDetalleProps> = ({ clientId, onClos
         `Saludos cordiales, Equipo Clorymetal.`;
 
       let phone = detail.phone?.replace(/[^0-9]/g, '') || '';
-      if (phone && !phone.startsWith('54')) phone = '549' + phone;
+      if (phone && !phone.startsWith('54')) phone = '54' + phone;
 
       // Convertir canvas a Blob JPEG
       const blob: Blob = await new Promise((resolve) =>

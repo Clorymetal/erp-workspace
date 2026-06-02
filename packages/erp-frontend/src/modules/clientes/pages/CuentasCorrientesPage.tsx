@@ -68,7 +68,7 @@ export const CuentasCorrientesPage = () => {
       `¡Muchas gracias y hasta pronto! 😊`;
 
     let phone = client.phone.replace(/[^0-9]/g, '');
-    if (phone && !phone.startsWith('54')) phone = '549' + phone;
+    if (phone && !phone.startsWith('54')) phone = '54' + phone;
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
   };
 
