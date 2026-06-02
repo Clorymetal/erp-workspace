@@ -45,9 +45,17 @@ export const CuentasCorrientesPage = () => {
     return matchSearch && matchDue;
   });
 
-  const totalDebt = filteredData.reduce((acc: number, c: Client) => acc + c.balance, 0);
+  const totalFilteredDebt = filteredData.reduce((acc: number, c: Client) => acc + c.balance, 0);
+
+  // Totales por segmento
   const vencidos = clients.filter(c => c.dueStatus === 'VENCIDO');
   const proximos = clients.filter(c => c.dueStatus === 'PROXIMO');
+  const alDia = clients.filter(c => c.dueStatus === 'AL_DIA');
+
+  const totalVencido = vencidos.reduce((acc, c) => acc + c.balance, 0);
+  const totalProximo = proximos.reduce((acc, c) => acc + c.balance, 0);
+  const totalAlDia = alDia.reduce((acc, c) => acc + c.balance, 0);
+  const totalGeneral = clients.reduce((acc, c) => acc + c.balance, 0);
 
   // Enviar recordatorio directamente desde la fila
   const handleSendReminder = (client: Client, e: React.MouseEvent) => {
@@ -64,24 +72,24 @@ export const CuentasCorrientesPage = () => {
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
   };
 
-  const DUE_FILTERS: { key: DueFilter; label: string; icon: React.ReactNode; color: string; count: number }[] = [
-    { key: 'TODOS', label: 'Todos', icon: <CheckCircle2 size={16} />, color: 'gray', count: clients.length },
-    { key: 'VENCIDO', label: 'Vencidos', icon: <AlertCircle size={16} />, color: 'red', count: vencidos.length },
-    { key: 'PROXIMO', label: 'Próx. a vencer', icon: <Clock size={16} />, color: 'orange', count: proximos.length },
-    { key: 'AL_DIA', label: 'Al día', icon: <CheckCircle2 size={16} />, color: 'emerald', count: clients.filter(c => c.dueStatus === 'AL_DIA').length },
+  const DUE_FILTERS: { key: DueFilter; label: string; icon: React.ReactNode; color: string; count: number; amount: number }[] = [
+    { key: 'TODOS', label: 'Todos', icon: <CheckCircle2 size={16} />, color: 'gray', count: clients.length, amount: totalGeneral },
+    { key: 'VENCIDO', label: 'Vencidos', icon: <AlertCircle size={16} />, color: 'red', count: vencidos.length, amount: totalVencido },
+    { key: 'PROXIMO', label: 'Próx. a vencer', icon: <Clock size={16} />, color: 'orange', count: proximos.length, amount: totalProximo },
+    { key: 'AL_DIA', label: 'Al día', icon: <CheckCircle2 size={16} />, color: 'emerald', count: alDia.length, amount: totalAlDia },
   ];
 
   const colorMap: Record<string, string> = {
-    gray:    'bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800/50 dark:text-gray-300',
-    red:     'bg-red-50 text-red-600 border-red-200 dark:bg-red-900/20 dark:text-red-400',
-    orange:  'bg-orange-50 text-orange-600 border-orange-200 dark:bg-orange-900/20 dark:text-orange-400',
-    emerald: 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400',
+    gray:    'bg-gray-50 dark:bg-dark-surface/30 text-gray-600 border-gray-200 dark:border-dark-border hover:bg-gray-100/50',
+    red:     'bg-red-50/50 dark:bg-red-950/10 text-red-600 border-red-100 dark:border-red-950/20 hover:bg-red-50',
+    orange:  'bg-orange-50/50 dark:bg-orange-950/10 text-orange-600 border-orange-100 dark:border-orange-950/20 hover:bg-orange-50',
+    emerald: 'bg-emerald-50/50 dark:bg-emerald-950/10 text-emerald-600 border-emerald-100 dark:border-emerald-950/20 hover:bg-emerald-50',
   };
   const activeColorMap: Record<string, string> = {
-    gray:    'bg-gray-600 text-white border-gray-600',
-    red:     'bg-red-500 text-white border-red-500',
-    orange:  'bg-orange-500 text-white border-orange-500',
-    emerald: 'bg-emerald-500 text-white border-emerald-500',
+    gray:    'bg-gray-750 text-white border-gray-750 dark:bg-gray-700 dark:border-gray-700 shadow-md scale-[1.02]',
+    red:     'bg-red-500 text-white border-red-500 shadow-md scale-[1.02]',
+    orange:  'bg-orange-500 text-white border-orange-500 shadow-md scale-[1.02]',
+    emerald: 'bg-emerald-500 text-white border-emerald-500 shadow-md scale-[1.02]',
   };
 
   const columns = [
@@ -144,32 +152,42 @@ export const CuentasCorrientesPage = () => {
           <p className="text-sm text-gray-500 mt-1">Gestión de remitos pendientes y cobranzas de clientes.</p>
         </div>
         <div className="flex gap-3 items-center">
-          <div className="bg-white dark:bg-dark-surface px-6 py-2 rounded-2xl border border-red-500/20 shadow-sm flex flex-col justify-center">
-            <span className="text-[10px] uppercase tracking-wider font-bold text-gray-400">Total a Cobrar</span>
-            <span className="text-xl font-black text-red-500">{formatCurrency(totalDebt)}</span>
-          </div>
           <Button variant="primary" icon={<Plus size={18} />} onClick={() => setIsModalOpen(true)}>
             Nuevo Cliente
           </Button>
         </div>
       </div>
 
-      {/* FILTROS DE VENCIMIENTO */}
-      <div className="flex flex-wrap gap-3">
+      {/* FILTROS DE VENCIMIENTO CON IMPORTES ABAJO */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {DUE_FILTERS.map(f => (
-          <button
-            key={f.key}
-            onClick={() => setDueFilter(f.key)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border transition-all ${
-              dueFilter === f.key ? activeColorMap[f.color] : colorMap[f.color]
-            }`}
-          >
-            {f.icon}
-            {f.label}
-            <span className={`ml-1 px-1.5 py-0.5 rounded-full text-xs font-black ${
-              dueFilter === f.key ? 'bg-white/25' : 'bg-black/10 dark:bg-white/10'
-            }`}>{f.count}</span>
-          </button>
+          <div key={f.key} className="flex flex-col gap-2">
+            <button
+              onClick={() => setDueFilter(f.key)}
+              className={`flex flex-col items-start gap-2 p-4 rounded-2xl text-left border transition-all ${
+                dueFilter === f.key ? activeColorMap[f.color] : colorMap[f.color]
+              }`}
+            >
+              <div className="flex items-center justify-between w-full">
+                <span className="flex items-center gap-1.5 text-sm font-bold uppercase tracking-wider opacity-90">
+                  {f.icon}
+                  {f.label}
+                </span>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
+                  dueFilter === f.key ? 'bg-white/20 text-white' : 'bg-gray-100 dark:bg-dark-bg text-gray-700 dark:text-gray-300 border dark:border-dark-border'
+                }`}>{f.count}</span>
+              </div>
+            </button>
+            <div className="text-center bg-gray-50 dark:bg-dark-surface/50 border border-gray-100 dark:border-dark-border rounded-xl py-2">
+              <span className="text-[10px] text-gray-400 block uppercase tracking-widest font-bold mb-0.5">Importe Total</span>
+              <span className={`text-lg font-black tracking-tight ${
+                f.color === 'red' ? 'text-red-500' : 
+                f.color === 'orange' ? 'text-orange-500' : 
+                f.color === 'emerald' ? 'text-emerald-500' : 
+                'text-gray-700 dark:text-gray-300'
+              }`}>{formatCurrency(f.amount)}</span>
+            </div>
+          </div>
         ))}
       </div>
 
