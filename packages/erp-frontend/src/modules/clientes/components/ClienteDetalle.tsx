@@ -2,10 +2,11 @@ import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { X, Plus, DollarSign, MessageCircle, Loader2, ClipboardCheck } from 'lucide-react';
 import { Button, DataTable } from '../../../core/components';
-import { useClientDetail } from '../hooks/useClients';
+import { useClientDetail, useClients } from '../hooks/useClients';
 import { RemitoModal } from './RemitoModal';
 import { CobranzaModal } from './CobranzaModal';
 import { EstadoCuentaRecibo } from './EstadoCuentaRecibo';
+import { Edit, Trash2 } from 'lucide-react';
 
 interface ClienteDetalleProps {
   clientId: string;
@@ -14,9 +15,12 @@ interface ClienteDetalleProps {
 
 export const ClienteDetalle: React.FC<ClienteDetalleProps> = ({ clientId, onClose }) => {
   const { detail, isLoading } = useClientDetail(clientId);
+  const { deleteRemito, deletePayment } = useClients();
   const [activeTab, setActiveTab] = useState<'REMITOS' | 'PAGOS'>('REMITOS');
   const [isRemitoModalOpen, setIsRemitoModalOpen] = useState(false);
   const [isCobranzaModalOpen, setIsCobranzaModalOpen] = useState(false);
+  const [remitoEditData, setRemitoEditData] = useState<any>(null);
+  const [paymentEditData, setPaymentEditData] = useState<any>(null);
   const [isSendingWA, setIsSendingWA] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const reciboRef = useRef<HTMLDivElement>(null);
@@ -39,28 +43,69 @@ export const ClienteDetalle: React.FC<ClienteDetalleProps> = ({ clientId, onClos
 
   const remitoColumns = [
     { key: 'date', header: 'Fecha', render: (r: any) => formatDate(r.date) },
+    { key: 'invoiceNumber', header: 'Factura', render: (r: any) => r.invoiceNumber || '-' },
     { key: 'driverName', header: 'Chofer / Retira' },
     { key: 'dueDate', header: 'Vto', render: (r: any) => formatDate(r.dueDate) },
     {
       key: 'status', header: 'Estado', render: (r: any) => (
         <span className={`px-2 py-1 text-xs rounded-full font-bold
-          ${r.status === 'PENDIENTE' ? 'bg-orange-100 text-orange-600' :
-            r.status === 'PARCIAL' ? 'bg-blue-100 text-blue-600' :
-            r.status === 'VENCIDO' ? 'bg-red-100 text-red-600' :
-            'bg-emerald-100 text-emerald-600'}`}>
+          ${r.status === 'PENDIENTE' ? 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400' :
+            r.status === 'PARCIAL' ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' :
+            r.status === 'VENCIDO' ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' :
+            'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'}`}>
           {r.status}
         </span>
       )
     },
-    { key: 'totalAmount', header: 'Total', render: (r: any) => <span className="font-bold">{formatCurrency(r.totalAmount)}</span> }
+    { key: 'totalAmount', header: 'Total', render: (r: any) => <span className="font-bold">{formatCurrency(r.totalAmount)}</span> },
+    { key: 'actions', header: '', render: (r: any) => (
+        <div className="flex justify-end gap-2">
+          <button onClick={(e) => { e.stopPropagation(); setRemitoEditData(r); setIsRemitoModalOpen(true); }} className="p-1.5 text-gray-400 hover:text-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded">
+            <Edit size={16} />
+          </button>
+          <button onClick={(e) => { e.stopPropagation(); handleDeleteRemito(r.id); }} className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded">
+            <Trash2 size={16} />
+          </button>
+        </div>
+      )
+    }
   ];
 
   const paymentColumns = [
     { key: 'paymentDate', header: 'Fecha', render: (r: any) => formatDate(r.paymentDate) },
     { key: 'paymentMethod', header: 'Medio' },
     { key: 'referenceNotes', header: 'Ref' },
-    { key: 'totalAmount', header: 'Monto', render: (r: any) => <span className="font-bold text-emerald-600">{formatCurrency(r.totalAmount)}</span> }
+    { key: 'totalAmount', header: 'Monto', render: (r: any) => <span className="font-bold text-emerald-600 dark:text-emerald-400">{formatCurrency(r.totalAmount)}</span> },
+    { key: 'actions', header: '', render: (r: any) => (
+        <div className="flex justify-end gap-2">
+          <button onClick={(e) => { e.stopPropagation(); setPaymentEditData(r); setIsCobranzaModalOpen(true); }} className="p-1.5 text-gray-400 hover:text-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded">
+            <Edit size={16} />
+          </button>
+          <button onClick={(e) => { e.stopPropagation(); handleDeletePayment(r.id); }} className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded">
+            <Trash2 size={16} />
+          </button>
+        </div>
+      )
+    }
   ];
+
+  const handleDeleteRemito = async (id: string) => {
+    if (!window.confirm('¿Está seguro de eliminar este remito?')) return;
+    try {
+      await deleteRemito(id);
+    } catch (e: any) {
+      alert(e.message || 'Error al eliminar remito');
+    }
+  };
+
+  const handleDeletePayment = async (id: string) => {
+    if (!window.confirm('¿Está seguro de eliminar este pago? Los remitos asociados volverán a estado pendiente.')) return;
+    try {
+      await deletePayment(id);
+    } catch (e: any) {
+      alert(e.message || 'Error al eliminar pago');
+    }
+  };
 
   const showToast = (msg: string) => {
     setToastMsg(msg);
@@ -200,7 +245,7 @@ export const ClienteDetalle: React.FC<ClienteDetalleProps> = ({ clientId, onClos
           {activeTab === 'REMITOS' && (
             <div className="space-y-4">
               <div className="flex justify-end">
-                <Button variant="primary" icon={<Plus size={16} />} onClick={() => setIsRemitoModalOpen(true)}>Cargar Remito</Button>
+                <Button variant="primary" icon={<Plus size={16} />} onClick={() => { setRemitoEditData(null); setIsRemitoModalOpen(true); }}>Cargar Remito</Button>
               </div>
               <DataTable data={detail.remitos} columns={remitoColumns} isLoading={false} />
             </div>
@@ -208,7 +253,7 @@ export const ClienteDetalle: React.FC<ClienteDetalleProps> = ({ clientId, onClos
           {activeTab === 'PAGOS' && (
             <div className="space-y-4">
               <div className="flex justify-end">
-                <Button variant="primary" icon={<DollarSign size={16} />} onClick={() => setIsCobranzaModalOpen(true)}>Registrar Cobro</Button>
+                <Button variant="primary" icon={<DollarSign size={16} />} onClick={() => { setPaymentEditData(null); setIsCobranzaModalOpen(true); }}>Registrar Cobro</Button>
               </div>
               <DataTable data={detail.payments} columns={paymentColumns} isLoading={false} />
             </div>
@@ -228,8 +273,8 @@ export const ClienteDetalle: React.FC<ClienteDetalleProps> = ({ clientId, onClos
         />
       </div>
 
-      <RemitoModal isOpen={isRemitoModalOpen} onClose={() => setIsRemitoModalOpen(false)} clientId={clientId} />
-      <CobranzaModal isOpen={isCobranzaModalOpen} onClose={() => setIsCobranzaModalOpen(false)} clientId={clientId} />
+      <RemitoModal isOpen={isRemitoModalOpen} onClose={() => { setIsRemitoModalOpen(false); setRemitoEditData(null); }} clientId={clientId} editData={remitoEditData} />
+      <CobranzaModal isOpen={isCobranzaModalOpen} onClose={() => { setIsCobranzaModalOpen(false); setPaymentEditData(null); }} clientId={clientId} editData={paymentEditData} />
 
       {/* Toast de instrucción WhatsApp */}
       {toastMsg && (

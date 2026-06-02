@@ -79,6 +79,70 @@ export const useClients = () => {
     }
   });
 
+  const updateRemitoMutation = useMutation({
+    mutationFn: async ({ remitoId, data }: { remitoId: string, data: any }) => {
+      const res = await fetch(`${API_BASE_URL}/clientes/remitos/${remitoId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) throw new Error('Failed to update remito');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['clientes'] });
+      queryClient.invalidateQueries({ queryKey: ['clienteDetail'] });
+    }
+  });
+
+  const deleteRemitoMutation = useMutation({
+    mutationFn: async (remitoId: string) => {
+      const res = await fetch(`${API_BASE_URL}/clientes/remitos/${remitoId}`, {
+        method: 'DELETE'
+      });
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to delete remito');
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['clientes'] });
+      queryClient.invalidateQueries({ queryKey: ['clienteDetail'] });
+    }
+  });
+
+  const updatePaymentMutation = useMutation({
+    mutationFn: async ({ paymentId, data }: { paymentId: string, data: any }) => {
+      const res = await fetch(`${API_BASE_URL}/clientes/pagos/${paymentId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) throw new Error('Failed to update payment');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['clientes'] });
+      queryClient.invalidateQueries({ queryKey: ['clienteDetail'] });
+    }
+  });
+
+  const deletePaymentMutation = useMutation({
+    mutationFn: async (paymentId: string) => {
+      const res = await fetch(`${API_BASE_URL}/clientes/pagos/${paymentId}`, {
+        method: 'DELETE'
+      });
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to delete payment');
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['clientes'] });
+      queryClient.invalidateQueries({ queryKey: ['clienteDetail'] });
+    }
+  });
+
   return {
     clients,
     isLoading,
@@ -86,8 +150,16 @@ export const useClients = () => {
     isSubmitting: saveClientMutation.isPending,
     createRemito: createRemitoMutation.mutateAsync,
     isCreatingRemito: createRemitoMutation.isPending,
+    updateRemito: updateRemitoMutation.mutateAsync,
+    isUpdatingRemito: updateRemitoMutation.isPending,
+    deleteRemito: deleteRemitoMutation.mutateAsync,
+    isDeletingRemito: deleteRemitoMutation.isPending,
     createPayment: createPaymentMutation.mutateAsync,
-    isCreatingPayment: createPaymentMutation.isPending
+    isCreatingPayment: createPaymentMutation.isPending,
+    updatePayment: updatePaymentMutation.mutateAsync,
+    isUpdatingPayment: updatePaymentMutation.isPending,
+    deletePayment: deletePaymentMutation.mutateAsync,
+    isDeletingPayment: deletePaymentMutation.isPending
   };
 };
 

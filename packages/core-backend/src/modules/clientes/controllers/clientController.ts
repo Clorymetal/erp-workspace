@@ -211,3 +211,139 @@ export const createPayment = async (req: Request, res: Response, next: NextFunct
     next(error);
   }
 };
+
+export const updateRemito = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { remitoId } = req.params;
+    const data = req.body;
+    
+    const remito = await prisma.cli_Remito.findUnique({
+      where: { id: remitoId },
+      include: { imputations: true }
+    });
+
+    if (!remito) return res.status(404).json({ message: 'Remito no encontrado' });
+
+    let status = remito.status;
+    const alreadyPaid = remito.imputations.reduce((acc, imp) => acc + imp.amountPaid, 0);
+    const newTotalAmount = data.totalAmount !== undefined ? parseFloat(data.totalAmount) : remito.totalAmount;
+
+    if (alreadyPaid >= newTotalAmount && newTotalAmount > 0) {
+      status = 'COBRADO';
+    } else if (alreadyPaid > 0 && alreadyPaid < newTotalAmount) {
+      status = 'PARCIAL';
+    } else {
+      status = 'PENDIENTE';
+    }
+
+    const updated = await prisma.cli_Remito.update({
+      where: { id: remitoId },
+      data: {
+        date: data.date ? new Date(data.date) : undefined,
+        dueDate: data.dueDate ? new Date(data.dueDate) : undefined,
+        totalAmount: newTotalAmount,
+        invoiceNumber: data.invoiceNumber !== undefined ? data.invoiceNumber : undefined,
+        driverName: data.driverName !== undefined ? data.driverName : undefined,
+        driverDni: data.driverDni !== undefined ? data.driverDni : undefined,
+        driverPhone: data.driverPhone !== undefined ? data.driverPhone : undefined,
+        documentType: data.documentType !== undefined ? data.documentType : undefined,
+        status
+      }
+    });
+
+    res.json(updated);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteRemito = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { remitoId } = req.params;
+    
+    const remito = await prisma.cli_Remito.findUnique({
+      where: { id: remitoId },
+      include: { imputations: true }
+    });
+
+    if (!remito) return res.status(404).json({ message: 'Remito no encontrado' });
+
+    if (remito.imputations.length > 0) {
+      return res.status(400).json({ 
+        message: 'No se puede borrar el remito porque tiene pagos asociados. Borre los pagos primero.' 
+      });
+    }
+
+    await prisma.cli_Remito.delete({
+      where: { id: remitoId }
+    });
+
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updatePayment = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { paymentId } = req.params;
+    const { paymentDate, paymentMethod, referenceNotes } = req.body;
+
+    const updated = await prisma.cli_Payment.update({
+      where: { id: paymentId },
+      data: {
+        paymentDate: paymentDate ? new Date(paymentDate) : undefined,
+        paymentMethod: paymentMethod !== undefined ? paymentMethod : undefined,
+        referenceNotes: referenceNotes !== undefined ? referenceNotes : undefined
+      }
+    });
+
+    res.json(updated);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deletePayment = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { paymentId } = req.params;
+
+    await prisma.$transaction(async (tx) => {
+      const paymentItems = await tx.cli_PaymentItem.findMany({
+        where: { paymentId }
+      });
+
+      const remitosAfectadosIds = [...new Set(paymentItems.map(i => i.remitoId).filter(Boolean))] as string[];
+
+      await tx.cli_Payment.delete({
+        where: { id: paymentId }
+      });
+
+      for (const rId of remitosAfectadosIds) {
+        const remito = await tx.cli_Remito.findUnique({
+          where: { id: rId },
+          include: { imputations: true }
+        });
+
+        if (remito) {
+          const stillPaid = remito.imputations.reduce((acc, imp) => acc + imp.amountPaid, 0);
+          let newStatus = 'PENDIENTE';
+          if (stillPaid >= remito.totalAmount && remito.totalAmount > 0) {
+            newStatus = 'COBRADO';
+          } else if (stillPaid > 0) {
+            newStatus = 'PARCIAL';
+          }
+
+          await tx.cli_Remito.update({
+            where: { id: rId },
+            data: { status: newStatus }
+          });
+        }
+      }
+    });
+
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+};
